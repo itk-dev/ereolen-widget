@@ -11,7 +11,7 @@ Set environment variables in your web server, e.g. for [Apache](https://httpd.ap
 ```sh
 SetEnv APP_ENV prod
 SetEnv APP_SECRET ChangeThis
-SetEnv DATABASE_URL 'mysql://username:password@host:port/sorteringsabc'
+SetEnv DATABASE_URL 'mysql://username:password@host:port/ereolen_widget
 SetEnv CORS_ALLOW_ORIGIN '^https?://'
 ```
 
