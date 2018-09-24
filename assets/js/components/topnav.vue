@@ -1,20 +1,27 @@
 <template>
     <div class="row topnav">
-        <div class="col-2 topnav-left">
+        <div class="col-3 col-sm-2 topnav-left">
             <p class="text-white mt-2 mb-2">Widgets</p>
         </div>
-        <div class="col-10 topnav-right">
-            <ul class="nav">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">Byg widget</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Vejlednigner</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Om brug af widgets</a>
-                </li>
-            </ul>
+        <div class="col-9 col-sm-10 topnav-right">
+            <nav class="navbar navbar-expand-sm mt-0 mb-0 ">
+                <button class="navbar-toggler text-white float-right mt-0" type="button" data-toggle="collapse" data-target="#topnavRight" aria-controls="topnavRight" aria-expanded="false" aria-label="Toggle navigation">
+                    <v-icon name="bars" />
+                </button>
+                <div class="collapse navbar-collapse" id="topnavRight">
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">Byg widget</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Vejlednigner</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Om brug af widgets</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
         </div>
     </div>
 </template>

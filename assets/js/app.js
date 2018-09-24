@@ -3,14 +3,15 @@ import Vue from 'vue'
  
 import widget from './components/widget'
 import topnav from './components/topnav'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faFileCode, faCopy } from '@fortawesome/free-regular-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import Icon from 'vue-awesome/components/Icon'
+import 'vue-awesome/icons/code'
+import 'vue-awesome/icons/copy'
+import 'vue-awesome/icons/bars'
 
-library.add(faFileCode, faCopy)
+// globally (in your main .js file)
+Vue.component('v-icon', Icon)
 
-Vue.component('font-awesome-icon', FontAwesomeIcon)
- 
+
 /**
 * Create a fresh Vue Application instance
 */

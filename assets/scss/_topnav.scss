@@ -8,5 +8,9 @@
     }
     .nav-link {
         padding-left: 0;
+        color: $white;
+        &.active {
+            color: $danger;
+        }
     }
 }
