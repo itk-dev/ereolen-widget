@@ -1,0 +1,12 @@
+.topnav {
+    background-color: $gray-800;
+    &-left {
+        text-transform: uppercase;
+    }
+    &-right {
+        background-color: $gray-900;
+    }
+    .nav-link {
+        padding-left: 0;
+    }
+}
