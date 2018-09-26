@@ -5,8 +5,11 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'en'
+    env(SEARCH_CACHE_TTL): 3600
     email_sender_address: '%env(EMAIL_SENDER_ADDRESS)%'
     email_sender_name: '%env(EMAIL_SENDER_NAME)%'
+    search_ereol_url: '%env(SEARCH_EREOL_URL)%'
+    search_cache_ttl: '%env(SEARCH_CACHE_TTL)%'
 
 services:
     # default configuration for services in *this* file

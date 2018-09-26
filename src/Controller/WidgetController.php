@@ -11,47 +11,102 @@
 namespace App\Controller;
 
 use App\Entity\Widget;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/widget")
+ */
 class WidgetController extends AbstractController
 {
+    /** @var \Psr\Cache\CacheItemPoolInterface */
+    private $cacheItemPool;
+
+    /** @var array */
+    private $parameterBag;
+
+    public function __construct(CacheItemPoolInterface $cacheItemPool, ParameterBagInterface $parameterBag)
+    {
+        $this->cacheItemPool = $cacheItemPool;
+        $this->parameterBag = $parameterBag;
+    }
+
     /**
-     * @Route("/widget/{id}", name="widget_show")
+     * Wrapper around (ie. proxy for) the real search on ereolen.dk.
+     *
+     * @Route("/search", name="widget_search")
+     */
+    public function search(Request $request)
+    {
+        $baseUrl = $this->parameterBag->get('search_ereol_url');
+        $cacheTtl = (int) $this->parameterBag->get('search_cache_ttl');
+        $query = $request->query->all();
+        $cacheKey = md5(json_encode($query));
+        $cachedItem = $this->cacheItemPool->getItem($cacheKey);
+
+        if ($cachedItem->isHit()) {
+            $data = $cachedItem->get();
+
+            return new JsonResponse(...$data);
+        }
+
+        try {
+            $client = new Client([
+                    'base_uri' => $baseUrl,
+                ]);
+            $response = $client->get('widget/search', [
+                    'query' => $request->query->all(),
+                ]);
+            $cachedItem->set([
+                    (string) $response->getBody(),
+                    $response->getStatusCode(),
+                    $response->getHeaders(),
+                    true,
+                ])->expiresAfter($cacheTtl);
+            $this->cacheItemPool->save($cachedItem);
+        } catch (ClientException $exception) {
+            $response = $exception->getResponse();
+        }
+
+        if (empty($response)) {
+            throw new BadRequestHttpException();
+        }
+
+        return new JsonResponse(
+                (string) $response->getBody(),
+                $response->getStatusCode(),
+                $response->getHeaders(),
+                true
+            );
+    }
+
+    /**
+     * @Route("/{id}", name="widget_show")
      */
     public function show(Widget $widget)
     {
-        /* return $this->render('widget/index.html.twig', [
-            'controller_name' => 'WidgetController',
-        ]); */
-
-        /*$repository = $this->getDoctrine()->getRepository(Widget::class);
-
-        $widget = $this->getDoctrine()
-            ->getRepository(Widget::class)
-            ->find($id);
-
-        if (!$widget) {
-            throw $this->createNotFoundException(
-                'NO widget found for id '.$id
-            );
-        }*/
-
-        // return new Response('Checkout this cool widget '.$widget->getTitle());
+        // @TODO Log widget access.
         return $this->render('widget/show.html.twig', ['widget' => $widget]);
-        /*$entityManager = $this->getDoctrine()->getManager();
+    }
 
-        $widget = new Widget();
-        $widget->setTitle('My first widget');
+    /**
+     * @Route("/{id}/redirect", name="widget_redirect")
+     */
+    public function doRedirect(Request $request, Widget $widget)
+    {
+        $url = $request->get('url');
+        if (empty($url)) {
+            throw new BadRequestHttpException('Invalid url: '.($url ?? '(empty)'));
+        }
+        // @TODO: Log widget url access.
 
-
-        // tell Doctrine you want to (eventually) save the widget (no queries yet)
-        $entityManager->persist($widget);
-
-        // actually executes the queries (i.e. the INSERT query)
-        $entityManager->flush();
-
-        return new Response('Saved new widget with id '.$widget->getId());*/
+        return $this->redirect($url);
     }
 }
