@@ -1,6 +1,51 @@
 easy_admin:
     entities:
-        - App\Entity\Widget
-#        # List the entity class name you want to manage
-#        - App\Entity\Category
-#        - App\Entity\User
+        Widget:
+            class: App\Entity\Widget
+            role_prefix: ROLE_ADMIN_WIDGET
+            list:
+                fields:
+                    - property: title
+                    - property: createdBy
+                    - property: createdAt
+            form:
+                fields:
+                    - property: title
+
+        User:
+            class: App\Entity\User
+            controller: App\Controller\Admin\UserController
+            role_prefix: ROLE_ADMIN_USER
+            list:
+                fields:
+                    - property: email
+                    - property: enabled
+                      type: boolean
+                    - property: createdBy
+                    - property: createdAt
+                    - property: lastLogin
+            form:
+                fields:
+                    - property: email
+                    - property: enabled
+                    - property: roles
+                      type: choice
+                      type_options:
+                          multiple: true
+                          expanded: true
+                          choices:
+                              ROLE_USER: ROLE_USER
+                              ROLE_ADMIN: ROLE_ADMIN
+
+            new:
+                fields:
+                    - property: email
+                    - property: enabled
+                    - property: roles
+                      type: choice
+                      type_options:
+                          multiple: true
+                          expanded: true
+                          choices:
+                              ROLE_USER: ROLE_USER
+                              ROLE_ADMIN: ROLE_ADMIN

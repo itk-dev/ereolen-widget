@@ -23,6 +23,14 @@ bin/console doctrine:database:create
 bin/console doctrine:migrations:migrate --no-interaction
 ```
 
+### Create users
+
+```sh
+bin/console fos:user:create --super-admin super-admin@example.com super-admin@example.com super-admin-password
+bin/console fos:user:create admin@example.com admin@example.com admin-password
+bin/console fos:user:promote admin@example.com ROLE_ADMIN
+```
+
 ## Start/stop built-in web server
 
 Start

@@ -10,13 +10,18 @@
 
 namespace App\Entity;
 
+use App\Traits\BlameableEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\WidgetRepository")
  */
 class Widget
 {
+    use BlameableEntity;
+    use TimestampableEntity;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="guid")
