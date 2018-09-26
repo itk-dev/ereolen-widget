@@ -1,0 +1,14 @@
+.nav-link {
+    padding-left: 0;
+    .topbar & {
+        color: $white;
+    }
+    @include transition(color, .4s, ease-out);
+    &:hover {
+        color: darken($danger, 10%);
+        @include transition(color, .2s, ease-in);
+    }
+    &.active {
+        color: $danger;
+    }
+}

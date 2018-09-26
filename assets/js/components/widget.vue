@@ -1,119 +1,101 @@
 <template>
-    <div class="row">
-        <div class="col-sm-2 sidebar pt-3 pb-3">
-            <nav class="nav flex-column">
-                <a class="nav-link active" href="#">Materiale karrusel</a>
-            </nav>
-        </div>
-        <div class="col-sm-10 main pt-3 pb-3">
-            <h1>Byg din eReolen materiale karrusel</h1>
-            <form>
-                <fieldset>
-                    <h3>Indhold</h3>
-                    <div class="form-group">
-                        <div class="row justify-content-start">
-                            <div class="col-auto">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" name="content" id="" value="manuel" checked>
-                                        Tilføj manuelt
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" name="content" id="" value="search">
-                                        Brug søgning fra eReolen
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-10 col-lg-8">
-                            <div class="form-group">
-                                <label for="">Søg efter bøger du vil vise i karrusellen</label>
-                                <input type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder="Skriv bogens forfatter, titel, isbn eller forlag">
-                            </div>
-                            <div class="form-group">
-                                <label for="">Widget titel (Overskrift)</label>
-                                <input type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder="Skriv bogens forfatter, titel, isbn eller forlag">
-                                <small id="helpId" class="form-text text-muted">Denne vises som overskrift i widgeten</small>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <h3>Udseende</h3>
-                    <div class="row">
-                        <div class="col-sm-10 col-lg-8">
-                            <div class="form-group">
-                                <label for="widget_color">Farve</label>
-                                <select class="form-control" name="widget_color" id="widget_color">
-                                    <option>Lys</option>
-                                    <option>Mørk</option>
-                                </select>
-                            </div>
-                        
-                            <div class="form-group">
-                                <label for="widget_size">Farve</label>
-                                <select class="form-control" name="widget_size" id="widget_size">
-                                        <option>320 x 50</option>
-                                        <option>320 x 100</option>
-                                        <option>200 x 200</option>
-                                        <option>250 x 250</option>
-                                        <option>300 x 250</option>
-                                        <option>336 x 280</option>
-                                        <optgroup label="Horisontale">
-                                            <option>468 x 60</option>
-                                            <option>728 x 90</option>
-                                            <option>970 x 90</option>
-                                        </optgroup>
-                                        <optgroup label="Vertikale">
-                                            <option>120 x 600</option>
-                                            <option>160 x 600</option>
-                                            <option>300 x 600</option>
-                                        </optgroup>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <h3>Preview</h3>
-                    <div class="preview bg-white">
-                        
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <h3>Indlejringskode</h3>
-                    <p>Indsæt denne kode på dit website for at få vist din widget.</p>
-                    <div class="code-preview">
-                        <div class="code-preview-header">
-                            <div class="row">
-                                <div class="col-auto"><v-icon name="code" />HTML</div>
-                                <div class="col-auto ml-auto bg-black"><v-icon name="copy" />Kopier</div>
-                            </div>
-                        </div>
-                        <div class="code-preview-content">
-                            <pre><code>
-                                &lt;iframe src="https://widget.ereolen.dk/follow/1/?uri=ereolen:artist:6sFIWsNpZYqfjUpaCgueju&size=detail&theme=light" width="250" height="250" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"&gt;&lt;/iframe&gt;
-                            </code></pre>
-                        </div>
-                    </div>
-                </fieldset>
-            </form>
-        </div>
+    <div class="er-widget theme-light" v-bind:style="cssProps">
+        <h1 class="er-widget-title">{{ widgetTitle }}</h1>
+        <ul class="materials">
+            <li class="material-item">
+                <a class="material-item-link active" href="https://ereolen.dk/ting/object/870970-basis%3A54769598"><img src="https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzY5NTk4.jpg?itok=75FnfW5A" alt="Hilmar Wulff: Ondt vejr (Ved Søren Elung Jensen)" title="Hilmar Wulff: Ondt vejr (Ved Søren Elung Jensen)"></a>
+            </li>
+            <li class="material-item">
+                <a class="material-item-link" href="https://ereolen.dk/ting/object/870970-basis%3A54791275"><img src="https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzkxMjc1.jpg?itok=KrBUf4Dr" alt="Line Kyed Knudsen: Liv og Emma på cykeltur" title="Line Kyed Knudsen: Liv og Emma på cykeltur"></a>
+            </li>
+            <li class="material-item">
+                <a class="material-item-link" href="https://ereolen.dk/ting/object/870970-basis%3A54768974"><img src="https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzY4OTc0.jpg?itok=Mw95ATJq" alt="A.P. Rosell, direktør - Bind 1" title="A.P. Rosell, direktør - Bind 1"></a>
+            </li>
+        </ul>
+        <a class="er-widget-backlink" href="https://ereolen.dk/search/ting/dkcclterm.op%3D201809%2A%20AND%20dkcclterm.sp%3Ddan%20OR%20870970-basis%253A54643136">Se alle titler</a>
+        <img src="https://ereolen.dk/sites/all/themes/orwell/svg/eReolen_Logo.svg" class="er-widget-logo" alt="eReolen">
     </div>
 </template>
  
 <script>
-   export default {
-       name: "widget"
-   }
+    export default {
+        name: 'widget',
+        data: function() {
+            return {
+                widgetWidth: 250,
+                widgetHeight: 250,
+                widgetTitle: "Nyeste titler"
+            }
+        },
+        computed: {
+            cssProps() { 
+                return {
+                    '--widget-width': this.widgetWidth + 'px',
+                    '--widget-height': this.widgetHeight + 'px'
+                }
+            }
+        }
+    }
 </script>
  
 <style scoped>
-
+    .er-widget {
+        width: var(--widget-width);
+        height: var(--widget-height);
+        overflow: hidden;
+        position: relative;
+    }
+    .er-widget.theme-light {
+        background-color:  #f0f0f0;
+        color: #212121;
+    }
+    .er-widget.theme-dark {
+        background-color:  #212121;
+        color: #fff;
+    }
+    .er-widget .er-widget-title {
+        margin: .5rem;
+        font-size: 1.5rem;
+    }
+    .er-widget ul.materials{
+        list-style: none;
+        margin: 0 0 0 .5rem;
+        padding: 0;
+        width: 1000px;
+    }
+    .er-widget ul.materials li{
+        margin: 0;
+        display: inline-block;
+    }
+    .er-widget ul.materials li a{
+        display: block;
+    }
+    .er-widget ul.materials li a img{
+        width: 100px;
+        max-height: 100%;
+    }
+    .er-widget-backlink {
+        border: 1px solid #666;
+        border-radius: 2px;
+        padding: 5px 10px;
+        color: #666;
+        background-color: transparent;
+        transition: color .2s ease-in, border-color .2s ease-in, background-color .2s ease-in;
+        position: absolute;
+        left: .5rem;
+        bottom: .5rem;
+    }
+    .er-widget-backlink:hover {
+        border: 1px solid #b81b40;
+        color: #fff;
+        background-color: #b81b40;
+        text-decoration: none;
+        transition: color .4s ease-out, border-color .4s ease-out, background-color .4s ease-out;
+    }
+    .er-widget-logo {
+        height: 1.2rem;
+        position: absolute;
+        right: .5rem;
+        bottom: .5rem;
+    }
 </style>

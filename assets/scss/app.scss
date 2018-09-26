@@ -77,11 +77,14 @@ $border-radius-sm:            $border-radius;
 @import "~bootstrap/scss/bootstrap";
 
 /* Import components */
-
-@import "topnav";
+@import "mixin";
 @import "main";
+@import "nav";
+@import "topbar";
 @import "sidebar";
 @import "forms";
+@import "widget-preview";
+@import "code-preview";
 
 /* Custom styles */
 

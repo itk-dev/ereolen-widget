@@ -23,10 +23,18 @@ bin/console doctrine:database:create
 bin/console doctrine:migrations:migrate --no-interaction
 ```
 
-## Start built-in web server
+## Start/stop built-in web server
+
+Start
 
 ```sh
 bin/console server:run
+```
+
+Stop
+
+```sh
+bin/console server:stop
 ```
 
 and go to [http://127.0.0.1:8000/](http://127.0.0.1:8000/).

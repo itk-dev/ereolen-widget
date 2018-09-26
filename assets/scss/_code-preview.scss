@@ -1,0 +1,35 @@
+.code-preview {
+    background-color: $white;
+    &-header {
+        background-color: $gray-500;
+        color: $gray-700;
+        &-title, &-copy {
+            padding: $spacer/4 $spacer;
+            margin: 0;
+            display: block;
+        }
+        &-copy {
+            background-color: $black;
+            color: $white;
+            @include transition(color, .4s, ease-out);
+            &:hover {
+                text-transform: none;
+                color: $gray-400;
+                @include transition(color, .2s, ease-in);
+            }
+        }
+        .fa-icon {
+            margin-right: $spacer/2;
+        }
+    }
+    &-content {
+        border-left: 1px solid $gray-500;
+        border-bottom: 1px solid $gray-500;
+        border-right: 1px solid $gray-500;
+        padding: $spacer;
+        pre code{
+            word-wrap: break-word;
+            white-space: normal;
+        }
+    }
+}

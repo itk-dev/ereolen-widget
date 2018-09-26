@@ -1,14 +1,14 @@
 <template>
-    <div class="row topnav">
-        <div class="col-3 col-sm-2 topnav-left">
+    <div class="row topbar">
+        <div class="col-3 col-sm-2 topbar-left">
             <p class="text-white mt-2 mb-2">Widgets</p>
         </div>
-        <div class="col-9 col-sm-10 topnav-right">
+        <div class="col-9 col-sm-10 topbar-right">
             <nav class="navbar navbar-expand-sm mt-0 mb-0 ">
-                <button class="navbar-toggler text-white float-right mt-0" type="button" data-toggle="collapse" data-target="#topnavRight" aria-controls="topnavRight" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler text-white float-right mt-0" type="button" data-toggle="collapse" data-target="#topbarRight" aria-controls="topbarRight" aria-expanded="false" aria-label="Toggle navigation">
                     <v-icon name="bars" />
                 </button>
-                <div class="collapse navbar-collapse" id="topnavRight">
+                <div class="collapse navbar-collapse" id="topbarRight">
                     <ul class="nav">
                         <li class="nav-item">
                             <a class="nav-link active" href="#">Byg widget</a>
@@ -28,10 +28,10 @@
  
 <script>
    export default {
-       name: "topnav"
+       name: "topbar"
    }
 </script>
  
-<style scoped>
+<style>
 
 </style>
