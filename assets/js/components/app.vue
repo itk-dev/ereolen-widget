@@ -43,7 +43,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">Widget titel (Overskrift)</label>
-                                <input type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder="Skriv bogens forfatter, titel, isbn eller forlag">
+                                <input type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder="Skriv bogens forfatter, titel, isbn eller forlag" v-model="widgetTitle">
                                 <small id="helpId" class="form-text text-muted">Denne vises som overskrift i widgeten</small>
                             </div>
                         </div>
@@ -54,34 +54,20 @@
                     <div class="row">
                         <div class="col-sm-10 col-lg-8">
                             <div class="form-group">
-                                <label for="widget_color">Farve</label>
-                                <select class="form-control" name="widget_color" id="widget_color">
-                                    <option>Lys</option>
-                                    <option>Mørk</option>
+                                <label for="widget_theme">Farve</label>
+                                <select class="form-control" name="widget_theme" id="widget_theme" v-model="widgetTheme">
+                                    <option v-for="(option,index) in widgetThemes" v-bind:value="index" v-bind:key="option.id">
+                                        {{ option.label }}
+                                    </option>
                                 </select>
                             </div>
                         
                             <div class="form-group">
-                                <label for="widget_size">Farve</label>
-                                <select class="form-control" name="widget_size" id="widget_size">
-                                        <optgroup label="Rektangulære">
-                                            <option>320 x 50</option>
-                                            <option>320 x 100</option>
-                                            <option>200 x 200</option>
-                                            <option>250 x 250</option>
-                                            <option>300 x 250</option>
-                                            <option>336 x 280</option>
-                                        </optgroup>
-                                        <optgroup label="Horisontale">
-                                            <option>468 x 60</option>
-                                            <option>728 x 90</option>
-                                            <option>970 x 90</option>
-                                        </optgroup>
-                                        <optgroup label="Vertikale">
-                                            <option>120 x 600</option>
-                                            <option>160 x 600</option>
-                                            <option>300 x 600</option>
-                                        </optgroup>
+                                <label for="widget_size">Størrelse</label>
+                                <select class="form-control" name="widget_size" id="widget_size" v-model="widgetSize" @change="selectSize">
+                                    <option v-for="(option,index) in widgetSizes" v-bind:value="index" v-bind:key="option.id">
+                                        {{ option.label }} {{ option.width }}x{{ option.height }}
+                                    </option>                                        
                                 </select>
                             </div>
                         </div>
@@ -90,7 +76,10 @@
                 <fieldset>
                     <h3>Preview</h3>
                     <div class="widget-preview bg-white">
-                        <widget />
+                        <widget v-bind:height="widgetSizes[widgetSize].height" v-bind:width="widgetSizes[widgetSize].width" v-bind:title="widgetTitle" v-if="widgetTitle.length != 0"/>
+                        <div class="widget-preview default" v-if="widgetTitle.length === 0">
+                            Preview opdateres når du har valgt materialer.
+                        </div>
                     </div>
                 </fieldset>
                 <fieldset>
@@ -115,7 +104,7 @@
                                 </div>
                                 <div class="code-preview-content">
                                     <pre><code>
-                                        &lt;iframe src="https://widget.ereolen.dk/follow/1/?uri=ereolen:artist:6sFIWsNpZYqfjUpaCgueju&size=detail&theme=light" width="250" height="250" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"&gt;&lt;/iframe&gt;
+                                        &lt;iframe src="https://widget.ereolen.dk/follow/1/?uri=ereolen:artist:6sFIWsNpZYqfjUpaCgueju&size={{ widgetSizes[widgetSize].width }}x{{ widgetSizes[widgetSize].height }}&theme={{ widgetThemes[widgetTheme].class }}" width="{{ widgetSizes[widgetSize].width }}" height="{{ widgetSizes[widgetSize].height }}" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"&gt;&lt;/iframe&gt;
                                     </code></pre>
                                 </div>
                             </div>
@@ -130,9 +119,36 @@
 <script>
     export default {
         name: "app",
-        data: function() {
+        data() {
             return {
-                contentSearch: 'manuel'
+                widgetTitle: "",
+                contentSearch: "manuel",
+                widgetThemes: [
+                    { label: "Lys", class: "light"},
+                    { label: "Mørk", class: "dark" }
+                ],
+                widgetTheme: 0,
+                widgetSizes: [
+                    { label: "Rektangulær", width: "250", height: "250" },
+                    { label: "Banner", width: "468", height: "60" },
+                    { label: "Skyskraber", width: "120", height: "600" },
+                    { label: "Bred skyskraber", width: "160", height: "600" },
+                    { label: "Lille kvadrat", width: "200", height: "200" },
+                    { label: "Kvadrat", width: "250", height: "250" },
+                    { label: "Mellemstor rektangel", width: "300", height: "250" },
+                    { label: "Stor rektangel", width: "336", height: "280" },
+                    { label: "Halvside", width: "300", height: "600" },
+                    { label: "Mobilbanner", width: "320", height: "50" },
+                    { label: "Mobilbanner 2", width: "320", height: "100" },
+                    { label: "Stort leaderboard", width: "970", height: "90" }
+                ],
+                widgetSize: 0,
+                selectedOption: ""
+            }
+        },
+        methods:{
+            selectSize:function() {
+                this.selectedOption = '';
             }
         }
     }

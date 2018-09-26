@@ -1,6 +1,6 @@
 <template>
     <div class="er-widget theme-light" v-bind:style="cssProps">
-        <h1 class="er-widget-title">{{ widgetTitle }}</h1>
+        <h1 class="er-widget-title">{{ title }}</h1>
         <ul class="materials">
             <li class="material-item">
                 <a class="material-item-link active" href="https://ereolen.dk/ting/object/870970-basis%3A54769598"><img src="https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzY5NTk4.jpg?itok=75FnfW5A" alt="Hilmar Wulff: Ondt vejr (Ved Søren Elung Jensen)" title="Hilmar Wulff: Ondt vejr (Ved Søren Elung Jensen)"></a>
@@ -20,18 +20,12 @@
 <script>
     export default {
         name: 'widget',
-        data: function() {
-            return {
-                widgetWidth: 250,
-                widgetHeight: 250,
-                widgetTitle: "Nyeste titler"
-            }
-        },
+        props: ['title', 'width', 'height'],
         computed: {
             cssProps() { 
                 return {
-                    '--widget-width': this.widgetWidth + 'px',
-                    '--widget-height': this.widgetHeight + 'px'
+                    '--widget-width': this.width + 'px',
+                    '--widget-height': this.height + 'px'
                 }
             }
         }

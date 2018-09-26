@@ -2,4 +2,10 @@
     min-height: 10rem;
     margin-bottom: $spacer;
     padding: $spacer;
+    &.default {
+        background-color: $danger;
+        color: $white;
+        margin: $spacer;
+        padding: $spacer;
+    }
 }
