@@ -4,6 +4,7 @@ easy_admin:
             class: App\Entity\Widget
             role_prefix: ROLE_ADMIN_WIDGET
             list:
+                actions: ['show']
                 fields:
                     - property: title
                     - property: createdBy
@@ -11,6 +12,13 @@ easy_admin:
             form:
                 fields:
                     - property: title
+
+            show:
+                fields:
+                    - property: title
+                    - property: content
+                    - property: content
+                      template: content.html.twig
 
         User:
             class: App\Entity\User

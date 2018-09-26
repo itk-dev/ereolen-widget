@@ -1,4 +1,20 @@
-# Project setup
+# eReolen widget
+
+## API
+
+The API (see http://127.0.0.1:8000/api/) can be used to create, edit
+and get widgets. It's not possible to get a list of widgets.
+
+To create a widget:
+
+```
+curl --silent http://127.0.0.1:8000/api/widgets --header 'content-type: application/json' --data @- <<'JSON' | json_pp
+{
+  "title": "My first widget",
+  "content": [1,2,"3"]
+}
+JSON
+```
 
 ## Install
 

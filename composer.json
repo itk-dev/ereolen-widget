@@ -6,6 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "alterphp/easyadmin-extension-bundle": "^1.2",
+        "api-platform/api-pack": "^1.1",
         "easycorp/easyadmin-bundle": "^1.17",
         "friendsofsymfony/user-bundle": "^2.1",
         "itk-dev/database-bundle": "^1.2",

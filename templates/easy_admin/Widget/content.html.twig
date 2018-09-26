@@ -1,0 +1,3 @@
+{% if view == 'show' %}
+    <pre>{{ value|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+{% endif %}

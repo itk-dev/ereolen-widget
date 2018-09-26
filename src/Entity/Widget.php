@@ -10,12 +10,22 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Traits\BlameableEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\WidgetRepository")
+ * @ApiResource(
+ *     normalizationContext={"groups"={"widget_read"}},
+ *     denormalizationContext={"groups"={"widget_write"}},
+ *     collectionOperations={"post"},
+ *     itemOperations={"get", "put"},
+ *     attributes={"order"={"title"}}
+ * )
  */
 class Widget
 {
@@ -26,16 +36,21 @@ class Widget
      * @ORM\Id
      * @ORM\Column(type="guid")
      * @ORM\GeneratedValue(strategy="UUID")
+     * @Groups({"widget_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"widget_read", "widget_write"})
+     * @Assert\NotBlank()
      */
     private $title;
 
     /**
      * @ORM\Column(type="json")
+     * @Groups({"widget_read", "widget_write"})
+     * @Assert\NotBlank()
      */
     private $content = [];
 
