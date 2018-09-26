@@ -18,9 +18,9 @@ use Doctrine\ORM\Mapping as ORM;
 class Widget
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\Column(type="guid")
+     * @ORM\GeneratedValue(strategy="UUID")
      */
     private $id;
 
@@ -34,7 +34,7 @@ class Widget
      */
     private $content = [];
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
