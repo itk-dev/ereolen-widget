@@ -21,6 +21,7 @@ easy_admin:
                     - property: email
                     - property: enabled
                       type: boolean
+                    - property: roles
                     - property: createdBy
                     - property: createdAt
                     - property: lastLogin
