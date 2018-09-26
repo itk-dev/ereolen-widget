@@ -11,6 +11,7 @@
 namespace App\Controller;
 
 use App\Entity\Widget;
+use App\Repository\WidgetRequestItemRepository;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Psr\Cache\CacheItemPoolInterface;
@@ -32,10 +33,14 @@ class WidgetController extends AbstractController
     /** @var array */
     private $parameterBag;
 
-    public function __construct(CacheItemPoolInterface $cacheItemPool, ParameterBagInterface $parameterBag)
+    /** @var \App\Repository\WidgetRequestItemRepository */
+    private $requestItemRepository;
+
+    public function __construct(CacheItemPoolInterface $cacheItemPool, ParameterBagInterface $parameterBag, WidgetRequestItemRepository $requestItemRepository)
     {
         $this->cacheItemPool = $cacheItemPool;
         $this->parameterBag = $parameterBag;
+        $this->requestItemRepository = $requestItemRepository;
     }
 
     /**
@@ -90,9 +95,10 @@ class WidgetController extends AbstractController
     /**
      * @Route("/{id}", name="widget_show")
      */
-    public function show(Widget $widget)
+    public function show(Request $request, Widget $widget)
     {
-        // @TODO Log widget access.
+        $this->requestItemRepository->logWidgetRequest($widget, $request);
+
         return $this->render('widget/show.html.twig', ['widget' => $widget]);
     }
 
@@ -105,7 +111,8 @@ class WidgetController extends AbstractController
         if (empty($url)) {
             throw new BadRequestHttpException('Invalid url: '.($url ?? '(empty)'));
         }
-        // @TODO: Log widget url access.
+
+        $this->requestItemRepository->logWidgetRedirectRequest($widget, $url, $request);
 
         return $this->redirect($url);
     }
