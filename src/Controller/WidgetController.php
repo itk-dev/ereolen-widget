@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 /**
  * @Route("/widget")
@@ -53,7 +54,7 @@ class WidgetController extends AbstractController
         $baseUrl = $this->parameterBag->get('search_ereol_url');
         $cacheTtl = (int) $this->parameterBag->get('search_cache_ttl');
         $query = $request->query->all();
-        $cacheKey = md5(json_encode($query));
+        $cacheKey = 'app_widget_search_'.md5(json_encode($query));
         $cachedItem = $this->cacheItemPool->getItem($cacheKey);
 
         if ($cachedItem->isHit()) {
@@ -67,10 +68,22 @@ class WidgetController extends AbstractController
                     'base_uri' => $baseUrl,
                 ]);
             $response = $client->get('widget/search', [
-                    'query' => $request->query->all(),
+                'query' => $request->query->all(),
                 ]);
+
+            // Change url in "links" to point to proxy.
+            $result = json_decode((string) $response->getBody(), true);
+            if (isset($result['links'])) {
+                $result['links'] = array_map(function ($url) {
+                    $info = parse_url($url);
+                    parse_str($info['query'] ?? '', $query);
+
+                    return $this->generateUrl('widget_search', $query, UrlGenerator::ABSOLUTE_URL);
+                }, $result['links']);
+            }
+
             $cachedItem->set([
-                    (string) $response->getBody(),
+                    json_encode($result),
                     $response->getStatusCode(),
                     $response->getHeaders(),
                     true,
