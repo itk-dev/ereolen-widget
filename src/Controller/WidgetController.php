@@ -83,7 +83,7 @@ class WidgetController extends AbstractController
                 $data = [
                     json_encode($result),
                     $response->getStatusCode(),
-                    $response->getHeaders(),
+                    [],
                     true,
                 ];
                 $cachedItem->set($data)->expiresAfter($cacheTtl);
@@ -94,7 +94,7 @@ class WidgetController extends AbstractController
                 return new JsonResponse(
                     (string) $response->getBody(),
                     $response->getStatusCode(),
-                    $response->getHeaders(),
+                    [],
                     true
                 );
             }
