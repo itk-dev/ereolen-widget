@@ -1,0 +1,22 @@
+{% set container_id = 'widget-statistics' %}
+<div id="{{ container_id }}">{{ 'Loading widget statistics'|trans }}</div>
+<script>(function ($) {
+    var config  = {{ {
+        statistics_url: path('widget_statistics', {id: item.id}),
+        container_id: container_id
+    }|json_encode|raw }};
+    $.get(config.statistics_url, function (data) {
+        var dl = $('<dl class="dl-horizontal"/>');
+        for (var name in data) {
+            var value = data[name];
+            var dt = $('<dt/>').html(name);
+            dl.append(dt);
+            var dd = $('<dd/>').html(null === value ? '–' : value);
+            dl.append(dd);
+        }
+        //JSON.stringify(data, null, 2));
+        $('#'+config.container_id).html(dl);
+        ;;; console.log(config);
+        ;;; console.log(data);
+    });
+}(jQuery))</script>

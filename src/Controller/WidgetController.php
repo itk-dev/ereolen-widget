@@ -11,7 +11,7 @@
 namespace App\Controller;
 
 use App\Entity\Widget;
-use App\Repository\WidgetRequestItemRepository;
+use App\Service\WidgetStatisticsService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Psr\Cache\CacheItemPoolInterface;
@@ -33,14 +33,14 @@ class WidgetController extends AbstractController
     /** @var array */
     private $parameterBag;
 
-    /** @var \App\Repository\WidgetRequestItemRepository */
-    private $requestItemRepository;
+    /** @var \App\Service\WidgetStatisticsService */
+    private $statistics;
 
-    public function __construct(CacheItemPoolInterface $cacheItemPool, ParameterBagInterface $parameterBag, WidgetRequestItemRepository $requestItemRepository)
+    public function __construct(CacheItemPoolInterface $cacheItemPool, ParameterBagInterface $parameterBag, WidgetStatisticsService $statistics)
     {
         $this->cacheItemPool = $cacheItemPool;
         $this->parameterBag = $parameterBag;
-        $this->requestItemRepository = $requestItemRepository;
+        $this->statistics = $statistics;
     }
 
     /**
@@ -97,7 +97,7 @@ class WidgetController extends AbstractController
      */
     public function show(Request $request, Widget $widget)
     {
-        $this->requestItemRepository->logWidgetRequest($widget, $request);
+        $this->statistics->addRequest($widget, $request);
 
         return $this->render('widget/show.html.twig', ['widget' => $widget]);
     }
@@ -112,8 +112,18 @@ class WidgetController extends AbstractController
             throw new BadRequestHttpException('Invalid url: '.($url ?? '(empty)'));
         }
 
-        $this->requestItemRepository->logWidgetRedirectRequest($widget, $url, $request);
+        $this->statistics->addRedirectRequest($widget, $url, $request);
 
         return $this->redirect($url);
+    }
+
+    /**
+     * @Route("/{id}/statistics", name="widget_statistics")
+     */
+    public function statistics(Request $request, Widget $widget)
+    {
+        $statistics = $this->statistics->getStatistics($widget);
+
+        return new JsonResponse($statistics);
     }
 }

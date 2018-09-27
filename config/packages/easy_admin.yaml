@@ -16,9 +16,8 @@ easy_admin:
             show:
                 fields:
                     - property: title
-                    - property: content
-                    - property: content
-                      template: content.html.twig
+                    - property: statistics
+                      template: statistics.html.twig
 
         User:
             class: App\Entity\User
