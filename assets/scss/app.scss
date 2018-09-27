@@ -34,7 +34,7 @@ $purple:                            #673ab7;
 $blue:                              #3661d8;
 $navy:                              #2b3ba2;
 $petroleum:                         #008486;
-$green:                             #008850;
+$green:                             #95b978;
 $yellow:                            #ffe13d;
 $orange:                            #ff5f31;
 $red:                               #d32f2f;
@@ -85,6 +85,7 @@ $border-radius-sm:            $border-radius;
 @import "forms";
 @import "widget-preview";
 @import "code-preview";
+@import "content-search";
 
 /* Custom styles */
 

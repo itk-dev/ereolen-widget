@@ -33,18 +33,50 @@
                     <div class="row">
                         <div class="col-sm-10 col-lg-8">
                             <div class="form-group" v-if="contentSearch === 'manuel'">
-                                <label for="">Søg efter bøger du vil vise i karrusellen</label>
-                                <input type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder="Skriv bogens forfatter, titel, isbn eller forlag">
+                                <label for="contentSearchManual">Søg efter bøger du vil vise i karrusellen</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                    <div class="input-group-text"><v-icon name="search" /></div>
+                                    </div>
+                                    <input type="text" class="form-control" name="contentSearchManual" id="contentSearchManual" placeholder="Skriv bogens forfatter, titel, isbn eller forlag" v-model="contentSearchManual">
+                                </div>
                             </div>
                             <div class="form-group" v-if="contentSearch === 'search'">
-                                <label for="">Indsæt url fra eReolen</label>
-                                <input type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder="F.eks. : https://ereolen.dk/search/ting/jussi%20adler">
-                                <small id="helpId" class="form-text text-muted">Lav først en søgning på <a href="//ereolen.dk">eReolen.dk</a> og kopier url'en i adresselinjen. Indsæt derefter url'en her.</small>
+                                <label for="contentSearchSearch">Indsæt url fra eReolen</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                    <div class="input-group-text">URL</div>
+                                    </div>
+                                    <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" placeholder="F.eks. : https://ereolen.dk/search/ting/jussi%20adler">
+                                </div>
+                                <small id="contentSearchSearchHelp" class="form-text text-muted">Lav først en søgning på <a href="//ereolen.dk">eReolen.dk</a> og kopier url'en i adresselinjen. Indsæt derefter url'en her.</small>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="row content-search" v-if="contentSearch === 'manuel' && contentSearchManual.length != 0">
+                        <div class="col-sm-12">
+                            <label>Søgeresultat: <strong>Tryk på bøgerne for at tilføje</strong></label> <a href="#" class="btn btn-success btn-sm text-light ml-2">Tilføj alle</a>
+                            <div class="row content-search-results">
+                                <slot name="contenSearchResults"></slot>
+                                <material v-for="(material,index) in widgetContent" v-bind:key="material.id" v-bind:title="widgetContent[index].title" v-bind:coverUrl="widgetContent[index].coverUrl" v-bind:url="widgetContent[index].url"></material>
+                            </div>
+                            <div class="row content-search-results added">
+                                <div class="col-sm-12">
+                                    <hr>
+                                    <label>Tilfjøede bøger: <strong>Tryk på bøgerne for at fjerne</strong></label> <a href="#" class="btn btn-danger btn-sm text-light ml-2">Fjern alle</a>
+                                </div>
+                                <material v-for="(material,index) in widgetContent" v-bind:key="material.id" v-bind:title="widgetContent[index].title" v-bind:coverUrl="widgetContent[index].coverUrl" v-bind:url="widgetContent[index].url" v-bind:action="'remove'"></material>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-10 col-lg-8">
                             <div class="form-group">
-                                <label for="">Widget titel (Overskrift)</label>
-                                <input type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder="Skriv bogens forfatter, titel, isbn eller forlag" v-model="widgetTitle">
-                                <small id="helpId" class="form-text text-muted">Denne vises som overskrift i widgeten</small>
+                                <label for="widgetTitle">Widget titel (Overskrift)</label>
+                                <input type="text" class="form-control" name="widgetTitle" id="widgetTitle" aria-describedby="widgetTitleHelp" placeholder="Skriv bogens forfatter, titel, isbn eller forlag" v-model="widgetTitle">
+                                <small id="widgetTitleHelp" class="form-text text-muted">Denne vises som overskrift i widgeten</small>
                             </div>
                         </div>
                     </div>
@@ -121,8 +153,21 @@
         name: "app",
         data() {
             return {
+                widgetContent: [
+                    {   
+                        title: "Hilmar Wulff: Ondt vejr (Ved Søren Elung Jensen)", 
+                        coverUrl: "https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzY5NTk4.jpg?itok=75FnfW5A", 
+                        url: "https://ereolen.dk/ting/object/870970-basis%3A54769598" 
+                    },
+                    { 
+                        title: "Line Kyed Knudsen: Liv og Emma på cykeltur",
+                        coverUrl: "https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzkxMjc1.jpg?itok=KrBUf4Dr",
+                        url: "https://ereolen.dk/ting/object/870970-basis%3A54791275" 
+                    }
+                ],
                 widgetTitle: "",
                 contentSearch: "manuel",
+                contentSearchManual: "",
                 widgetThemes: [
                     { label: "Lys", class: "light"},
                     { label: "Mørk", class: "dark" }

@@ -10,6 +10,7 @@ import Vue from 'vue'
 import App from './components/app'
 import Topbar from './components/topbar'
 import Widget from './components/widget'
+import Material from './components/material'
 
 /**
 * Import vue-awesome fontawesome-icons (https://github.com/Justineo/vue-awesome)[https://github.com/Justineo/vue-awesome]
@@ -21,17 +22,21 @@ import Icon from 'vue-awesome/components/Icon'
 import 'vue-awesome/icons/code'
 import 'vue-awesome/icons/copy'
 import 'vue-awesome/icons/bars'
+import 'vue-awesome/icons/search'
+import 'vue-awesome/icons/plus'
+import 'vue-awesome/icons/minus'
 
 /**
 * Add the Icon component globally 
 */
 Vue.component('v-icon', Icon)
 Vue.component('widget', Widget)
+Vue.component('material', Material)
 
 /**
 * Create Vue Application instance with the id `app`
 */
 new Vue({
   el: '#app',
-  components: {App, Topbar, Widget}
+  components: {App, Topbar, Widget, Material}
 });
