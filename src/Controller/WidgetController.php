@@ -56,53 +56,55 @@ class WidgetController extends AbstractController
         $query = $request->query->all();
         $cacheKey = 'app_widget_search_'.md5(json_encode($query));
         $cachedItem = $this->cacheItemPool->getItem($cacheKey);
+        $data = null;
 
         if ($cachedItem->isHit()) {
             $data = $cachedItem->get();
-
-            return new JsonResponse(...$data);
-        }
-
-        try {
-            $client = new Client([
+        } else {
+            try {
+                $client = new Client([
                     'base_uri' => $baseUrl,
                 ]);
-            $response = $client->get('widget/search', [
-                'query' => $request->query->all(),
+                $response = $client->get('widget/search', [
+                    'query' => $request->query->all(),
                 ]);
 
-            // Change url in "links" to point to proxy.
-            $result = json_decode((string) $response->getBody(), true);
-            if (isset($result['links'])) {
-                $result['links'] = array_map(function ($url) {
-                    $info = parse_url($url);
-                    parse_str($info['query'] ?? '', $query);
+                // Change url in "links" to point to proxy.
+                $result = json_decode((string) $response->getBody(), true);
+                if (isset($result['links'])) {
+                    $result['links'] = array_map(function ($url) {
+                        $info = parse_url($url);
+                        parse_str($info['query'] ?? '', $query);
 
-                    return $this->generateUrl('widget_search', $query, UrlGenerator::ABSOLUTE_URL);
-                }, $result['links']);
-            }
+                        return $this->generateUrl('widget_search', $query, UrlGenerator::ABSOLUTE_URL);
+                    }, $result['links']);
+                }
 
-            $cachedItem->set([
+                $data = [
                     json_encode($result),
                     $response->getStatusCode(),
                     $response->getHeaders(),
                     true,
-                ])->expiresAfter($cacheTtl);
-            $this->cacheItemPool->save($cachedItem);
-        } catch (ClientException $exception) {
-            $response = $exception->getResponse();
+                ];
+                $cachedItem->set($data)->expiresAfter($cacheTtl);
+                $this->cacheItemPool->save($cachedItem);
+            } catch (ClientException $exception) {
+                $response = $exception->getResponse();
+
+                return new JsonResponse(
+                    (string) $response->getBody(),
+                    $response->getStatusCode(),
+                    $response->getHeaders(),
+                    true
+                );
+            }
         }
 
-        if (empty($response)) {
+        if (empty($data)) {
             throw new BadRequestHttpException();
         }
 
-        return new JsonResponse(
-                (string) $response->getBody(),
-                $response->getStatusCode(),
-                $response->getHeaders(),
-                true
-            );
+        return new JsonResponse(...$data);
     }
 
     /**

@@ -12,14 +12,14 @@
         </a>
     </div>
 </template>
- 
+
 <script>
    export default {
         name: 'material',
         props: ['title', 'coverUrl', 'url', 'action']
     }
 </script>
- 
+
 <style>
 
 </style>

@@ -38,7 +38,7 @@
                                     <div class="input-group-prepend">
                                     <div class="input-group-text"><v-icon name="search" /></div>
                                     </div>
-                                    <input type="text" class="form-control" name="contentSearchManual" id="contentSearchManual" placeholder="Skriv bogens forfatter, titel, isbn eller forlag" v-model="contentSearchManual">
+                                    <input type="text" class="form-control" name="contentSearchManual" id="contentSearchManual" placeholder="Skriv bogens forfatter, titel, isbn eller forlag" v-model="search.query">
                                 </div>
                             </div>
                             <div class="form-group" v-if="contentSearch === 'search'">
@@ -47,18 +47,17 @@
                                     <div class="input-group-prepend">
                                     <div class="input-group-text">URL</div>
                                     </div>
-                                    <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" placeholder="F.eks. : https://ereolen.dk/search/ting/jussi%20adler">
+                                    <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" placeholder="F.eks. : https://ereolen.dk/search/ting/jussi%20adler" v-model="search.url">
                                 </div>
                                 <small id="contentSearchSearchHelp" class="form-text text-muted">Lav først en søgning på <a href="//ereolen.dk">eReolen.dk</a> og kopier url'en i adresselinjen. Indsæt derefter url'en her.</small>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row content-search" v-if="contentSearch === 'manuel' && contentSearchManual.length != 0">
+                    <div class="row content-search" v-if="contentSearch === 'manuel' && searchResult && searchResult.length != 0">
                         <div class="col-sm-12">
                             <label>Søgeresultat: <strong>Tryk på bøgerne for at tilføje</strong></label> <a href="#" class="btn btn-success btn-sm text-light ml-2">Tilføj alle</a>
                             <div class="row content-search-results">
-                                <slot name="contenSearchResults"></slot>
                                 <material v-for="(material,index) in widgetContent" v-bind:key="material.id" v-bind:title="widgetContent[index].title" v-bind:coverUrl="widgetContent[index].coverUrl" v-bind:url="widgetContent[index].url"></material>
                             </div>
                             <div class="row content-search-results added">
@@ -93,13 +92,13 @@
                                     </option>
                                 </select>
                             </div>
-                        
+
                             <div class="form-group">
                                 <label for="widget_size">Størrelse</label>
                                 <select class="form-control" name="widget_size" id="widget_size" v-model="widgetSize" @change="selectSize">
                                     <option v-for="(option,index) in widgetSizes" v-bind:value="index" v-bind:key="option.id">
                                         {{ option.label }} {{ option.width }}x{{ option.height }}
-                                    </option>                                        
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -147,22 +146,25 @@
         </div>
     </div>
 </template>
- 
+
 <script>
+    const debounce = require('debounce')
+    const queryString = require('query-string');
+
     export default {
         name: "app",
         data() {
             return {
                 widgetContent: [
-                    {   
-                        title: "Hilmar Wulff: Ondt vejr (Ved Søren Elung Jensen)", 
-                        coverUrl: "https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzY5NTk4.jpg?itok=75FnfW5A", 
-                        url: "https://ereolen.dk/ting/object/870970-basis%3A54769598" 
+                    {
+                        title: "Hilmar Wulff: Ondt vejr (Ved Søren Elung Jensen)",
+                        coverUrl: "https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzY5NTk4.jpg?itok=75FnfW5A",
+                        url: "https://ereolen.dk/ting/object/870970-basis%3A54769598"
                     },
-                    { 
+                    {
                         title: "Line Kyed Knudsen: Liv og Emma på cykeltur",
                         coverUrl: "https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzkxMjc1.jpg?itok=KrBUf4Dr",
-                        url: "https://ereolen.dk/ting/object/870970-basis%3A54791275" 
+                        url: "https://ereolen.dk/ting/object/870970-basis%3A54791275"
                     }
                 ],
                 widgetTitle: "",
@@ -188,17 +190,75 @@
                     { label: "Stort leaderboard", width: "970", height: "90" }
                 ],
                 widgetSize: 0,
-                selectedOption: ""
+                selectedOption: "",
+                search: {
+                    query: null,
+                    url: null
+                },
+                searchState: null,
+                searchResult: null,
             }
         },
         methods:{
             selectSize:function() {
                 this.selectedOption = '';
+            },
+            debouncedSearch: function() {
+                this._debouncedSearch();
+            },
+            doSearch: function() {
+                const searchUrl = '/widget/search';
+                let query = null;
+                switch (this.contentSearch) {
+                // case 'search':
+                //     if (!this.search.url) {
+                //         return
+                //     }
+
+                //     query = {url: this.search.url}
+                //     break
+
+                case 'manuel':
+                    if (!this.search.query) {
+                        return;
+                    }
+
+                    query = {query: this.search.query}
+                    break
+                }
+
+                this.searchState = 'searching';
+                var vm = this
+                if (null !== query) {
+                    fetch(searchUrl+'?'+queryString.stringify(query)).then(response => {
+                        if (!response.ok) {
+                            vm.searchResult = null;
+                            vm.searchState = null;
+                            throw Error('ex: '+response.statusText);
+                        }
+
+                        return response.json();
+                    }).then(result => {
+                        vm.searchResult = result.data;
+                        vm.searchState = null;
+                    }).catch(error => {
+                        vm.searchResult = error;
+                        vm.searchState = null;
+                    });
+                }
             }
+        },
+        watch: {
+            contentSearch: 'debouncedSearch',
+            'search.query': 'debouncedSearch',
+            'search.url': 'debouncedSearch'
+        },
+        created: function() {
+            this._debouncedSearch = debounce(this.doSearch, 500)
         }
     }
 </script>
- 
+
 <style>
 
 </style>
