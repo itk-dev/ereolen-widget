@@ -20,6 +20,16 @@ JSON
 
 ## Installation
 
+https://github.com/lexik/LexikJWTAuthenticationBundle/blob/master/Resources/doc/index.md#installation
+
+```
+curl --request POST --header 'content-type: application/json' http://127.0.0.1:8000/api/login_check --data '{"email":"admin@example.com","password":"admin-password"}'
+```
+
+```
+curl --request GET --header 'authorization: Bearer {token}' http://127.0.0.1:8000/api/widgets
+```
+
 ### Environment variables
 
 Set environment variables in your web server, e.g. for [Apache](https://httpd.apache.org/docs/2.4/mod/mod_env.html#setenv):

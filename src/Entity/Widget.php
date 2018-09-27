@@ -22,8 +22,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     normalizationContext={"groups"={"widget_read"}},
  *     denormalizationContext={"groups"={"widget_write"}},
- *     collectionOperations={"post"},
- *     itemOperations={"get", "put"},
+ *     collectionOperations={
+ *       "get"={"access_control"="is_granted('ROLE_ADMIN')"},
+ *       "post"
+ *     },
+ *     itemOperations={
+ *       "get",
+ *       "put"
+ *     },
  *     attributes={"order"={"title"}}
  * )
  */
