@@ -54,20 +54,20 @@
                         </div>
                     </div>
 
-                    <div class="row content-search" v-if="contentSearch === 'manuel' && searchResult && searchResult.length != 0">
+                    <div class="row content-search" v-if="contentSearch === 'manuel' && searchResult && searchResult.data.length != 0">
                         <div class="col-sm-12">
-                            <label>Søgeresultat: <strong>Tryk på bøgerne for at tilføje</strong></label> <a href="#" class="btn btn-success btn-sm text-light ml-2">Tilføj alle</a>
+                            <label>Søgeresultat: <strong>Tryk på bøgerne for at tilføje</strong></label> <a href="#" class="btn btn-success btn-sm text-light ml-2" @click="addAllMaterials">Tilføj alle</a>
                             <div class="row content-search-results">
-                                <material v-for="(material,index) in widgetContent" v-bind:key="material.id" v-bind:title="widgetContent[index].title" v-bind:cover="widgetContent[index].cover" v-bind:url="widgetContent[index].url" />
-                            </div>
-                            <div class="row content-search-results added">
-                                <div class="col-sm-12">
-                                    <hr>
-                                    <label>Tilfjøede bøger: <strong>Tryk på bøgerne for at fjerne</strong></label> <a href="#" class="btn btn-danger btn-sm text-light ml-2">Fjern alle</a>
-                                </div>
-                                <material v-for="(material,index) in widgetContent" v-bind:key="material.id" v-bind:title="widgetContent[index].title" v-bind:cover="widgetContent[index].cover" v-bind:url="widgetContent[index].url" v-bind:action="'remove'" />
+                                <material v-for="material in searchResult.data" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="plus" v-bind:action="addMaterial" />
                             </div>
                         </div>
+                    </div>
+
+                    <div class="row content-search-results added">
+                        <div class="col-sm-12">
+                            <label>Tilfjøede bøger: <strong>Tryk på bøgerne for at fjerne</strong></label> <span href="#" class="btn btn-danger btn-sm text-light ml-2" @click="removeAllMaterials">Fjern alle</span>
+                        </div>
+                        <material v-for="material in widgetContent" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="minus" v-bind:action="removeMaterial" />
                     </div>
 
                     <div class="row">
@@ -135,7 +135,7 @@
                                 </div>
                                 <div class="code-preview-content">
                                     <pre><code>
-                                        &lt;iframe src="https://widget.ereolen.dk/follow/1/?uri=ereolen:artist:6sFIWsNpZYqfjUpaCgueju&size={{ widgetSizes[widgetSize].width }}x{{ widgetSizes[widgetSize].height }}&theme={{ widgetThemes[widgetTheme].class }}" width="{{ widgetSizes[widgetSize].width }}" height="{{ widgetSizes[widgetSize].height }}" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"&gt;&lt;/iframe&gt;
+                                            &lt;iframe src="https://widget.ereolen.dk/follow/1/?uri=ereolen:artist:6sFIWsNpZYqfjUpaCgueju&size={{ widgetSizes[widgetSize].width }}x{{ widgetSizes[widgetSize].height }}&theme={{ widgetThemes[widgetTheme].class }}" width="{{ widgetSizes[widgetSize].width }}" height="{{ widgetSizes[widgetSize].height }}" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"&gt;&lt;/iframe&gt;
                                     </code></pre>
                                 </div>
                             </div>
@@ -150,26 +150,17 @@
 <script>
     const axios = require('axios');
     const debounce = require('debounce')
+    const queryString = require('query-string')
 
     const CancelToken = axios.CancelToken;
     let cancelSearch = null;
 
-   export default {
+    export default {
         name: 'App',
         data() {
             return {
-                widgetContent: [
-                    {
-                        title: 'Hilmar Wulff: Ondt vejr (Ved Søren Elung Jensen)',
-                        cover: 'https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzY5NTk4.jpg?itok=75FnfW5A',
-                        url: 'https://ereolen.dk/ting/object/870970-basis%3A54769598'
-                    },
-                    {
-                        title: 'Line Kyed Knudsen: Liv og Emma på cykeltur',
-                        cover: 'https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzkxMjc1.jpg?itok=KrBUf4Dr',
-                        url: 'https://ereolen.dk/ting/object/870970-basis%3A54791275'
-                    }
-                ],
+                // The selected materials
+                widgetContent: [],
                 widgetTitle: '',
                 contentSearch: 'manuel',
                 contentSearchManual: '',
@@ -217,8 +208,34 @@
         },
         created: function() {
             this._debouncedSearch = debounce(this.doSearch, 500)
+            const search = queryString.parse(location.hash)
+            if ('query' in search) {
+                this.search.query = search['query']
+            }
         },
         methods:{
+            addMaterial: function(material) {
+                const list = this.searchResult.data;
+                const index = list.indexOf(material);
+                if (index > -1) {
+                    this.widgetContent.push(list[index]);
+                    list.splice(index, 1);
+                }
+            },
+            removeMaterial: function(material) {
+                const list = this.widgetContent;
+                const index = list.indexOf(material);
+                if (index > -1) {
+                    list.splice(index, 1);
+                }
+            },
+            addAllMaterials: function() {
+                this.widgetContent = this.widgetContent.concat(this.searchResult.data)
+                this.searchResult = null
+            },
+            removeAllMaterials: function() {
+                this.widgetContent = [];
+            },
             selectSize:function() {
                 this.selectedOption = '';
             },
