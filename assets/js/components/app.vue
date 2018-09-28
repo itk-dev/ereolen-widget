@@ -148,8 +148,12 @@
 </template>
 
 <script>
+    const axios = require('axios');
     const debounce = require('debounce')
     const queryString = require('query-string');
+
+    const CancelToken = axios.CancelToken;
+    let cancelSearch = null;
 
     export default {
         name: "app",
@@ -191,12 +195,20 @@
                 ],
                 widgetSize: 0,
                 selectedOption: "",
+                // The search query.
                 search: {
+                    // "Manuel" search
                     query: null,
+                    // Search by ereolen.dk url
                     url: null
                 },
                 searchState: null,
-                searchResult: null,
+                // User message, e.g. "Searching for James Hetfield …"
+                searchMessage: null,
+                // Any errors reported while searching.
+                searchError: null,
+                // The search result after a succesful search.
+                searchResult: null
             }
         },
         methods:{
@@ -208,41 +220,57 @@
             },
             doSearch: function() {
                 const searchUrl = '/widget/search';
-                let query = null;
+                let searchMessage = null;
+                let params = null;
                 switch (this.contentSearch) {
-                // case 'search':
-                //     if (!this.search.url) {
-                //         return
-                //     }
-
-                //     query = {url: this.search.url}
-                //     break
-
-                case 'manuel':
-                    if (!this.search.query) {
-                        return;
+                case 'search':
+                    if (!this.search.url) {
+                        return
                     }
 
-                    query = {query: this.search.query}
+                    searchMessage = 'Searching …'
+
+                    params = {url: this.search.url}
+                    break
+
+                case 'manuel':
+                    if (!this.search.query || this.search.query.length < 3) {
+                        return;
+                    }
+                    searchMessage = 'Searching for "'+this.search.query+'" …'
+
+                    params = {query: this.search.query}
                     break
                 }
 
-                this.searchState = 'searching';
                 var vm = this
-                if (null !== query) {
-                    fetch(searchUrl+'?'+queryString.stringify(query)).then(response => {
-                        if (!response.ok) {
-                            vm.searchResult = null;
-                            vm.searchState = null;
-                            throw Error('ex: '+response.statusText);
-                        }
-
-                        return response.json();
-                    }).then(result => {
+                if (null !== params) {
+                    vm.searchState = 'searching';
+                    vm.searchError = null;
+                    if (null !== cancelSearch) {
+                        cancelSearch();
+                    }
+                    if (null !== searchMessage) {
+                        this.searchMessage = searchMessage
+                    }
+                    axios.get(searchUrl, {
+                        cancelToken: new CancelToken(function executor(c) {
+                            // An executor function receives a cancel function as a parameter
+                            cancelSearch = c;
+                        }),
+                        params: params
+                    })
+                    .then(result => {
                         vm.searchResult = result.data;
                         vm.searchState = null;
-                    }).catch(error => {
-                        vm.searchResult = error;
+                        vm.searchMessage = null;
+                        vm.searchError = null;
+                    })
+                    .catch(error => {
+                        if (axios.isCancel(error)) {
+                            return;
+                        }
+                        vm.searchError = error;
                         vm.searchState = null;
                     });
                 }
