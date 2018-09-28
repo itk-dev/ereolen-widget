@@ -36,7 +36,7 @@
                                 <label for="contentSearchManual">Søg efter bøger du vil vise i karrusellen</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                    <div class="input-group-text"><v-icon name="search" /></div>
+                                        <div class="input-group-text"><v-icon name="search" /></div>
                                     </div>
                                     <input type="text" class="form-control" name="contentSearchManual" id="contentSearchManual" placeholder="Skriv bogens forfatter, titel, isbn eller forlag" v-model="search.query">
                                 </div>
@@ -45,7 +45,7 @@
                                 <label for="contentSearchSearch">Indsæt url fra eReolen</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                    <div class="input-group-text">URL</div>
+                                        <div class="input-group-text">URL</div>
                                     </div>
                                     <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" placeholder="F.eks. : https://ereolen.dk/search/ting/jussi%20adler" v-model="search.url">
                                 </div>
@@ -58,14 +58,14 @@
                         <div class="col-sm-12">
                             <label>Søgeresultat: <strong>Tryk på bøgerne for at tilføje</strong></label> <a href="#" class="btn btn-success btn-sm text-light ml-2">Tilføj alle</a>
                             <div class="row content-search-results">
-                                <material v-for="(material,index) in widgetContent" v-bind:key="material.id" v-bind:title="widgetContent[index].title" v-bind:coverUrl="widgetContent[index].coverUrl" v-bind:url="widgetContent[index].url"></material>
+                                <material v-for="(material,index) in widgetContent" v-bind:key="material.id" v-bind:title="widgetContent[index].title" v-bind:cover="widgetContent[index].cover" v-bind:url="widgetContent[index].url" />
                             </div>
                             <div class="row content-search-results added">
                                 <div class="col-sm-12">
                                     <hr>
                                     <label>Tilfjøede bøger: <strong>Tryk på bøgerne for at fjerne</strong></label> <a href="#" class="btn btn-danger btn-sm text-light ml-2">Fjern alle</a>
                                 </div>
-                                <material v-for="(material,index) in widgetContent" v-bind:key="material.id" v-bind:title="widgetContent[index].title" v-bind:coverUrl="widgetContent[index].coverUrl" v-bind:url="widgetContent[index].url" v-bind:action="'remove'"></material>
+                                <material v-for="(material,index) in widgetContent" v-bind:key="material.id" v-bind:title="widgetContent[index].title" v-bind:cover="widgetContent[index].cover" v-bind:url="widgetContent[index].url" v-bind:action="'remove'" />
                             </div>
                         </div>
                     </div>
@@ -107,7 +107,7 @@
                 <fieldset>
                     <h3>Preview</h3>
                     <div class="widget-preview bg-white">
-                        <widget v-bind:height="widgetSizes[widgetSize].height" v-bind:width="widgetSizes[widgetSize].width" v-bind:title="widgetTitle" v-if="widgetTitle.length != 0"/>
+                        <widget v-bind:height="widgetSizes[widgetSize].height" v-bind:width="widgetSizes[widgetSize].width" v-bind:title="widgetTitle" v-if="widgetTitle.length != 0" />
                         <div class="widget-preview default" v-if="widgetTitle.length === 0">
                             Preview opdateres når du har valgt materialer.
                         </div>
@@ -150,51 +150,50 @@
 <script>
     const axios = require('axios');
     const debounce = require('debounce')
-    const queryString = require('query-string');
 
     const CancelToken = axios.CancelToken;
     let cancelSearch = null;
 
-    export default {
-        name: "app",
+   export default {
+        name: 'App',
         data() {
             return {
                 widgetContent: [
                     {
-                        title: "Hilmar Wulff: Ondt vejr (Ved Søren Elung Jensen)",
-                        coverUrl: "https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzY5NTk4.jpg?itok=75FnfW5A",
-                        url: "https://ereolen.dk/ting/object/870970-basis%3A54769598"
+                        title: 'Hilmar Wulff: Ondt vejr (Ved Søren Elung Jensen)',
+                        cover: 'https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzY5NTk4.jpg?itok=75FnfW5A',
+                        url: 'https://ereolen.dk/ting/object/870970-basis%3A54769598'
                     },
                     {
-                        title: "Line Kyed Knudsen: Liv og Emma på cykeltur",
-                        coverUrl: "https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzkxMjc1.jpg?itok=KrBUf4Dr",
-                        url: "https://ereolen.dk/ting/object/870970-basis%3A54791275"
+                        title: 'Line Kyed Knudsen: Liv og Emma på cykeltur',
+                        cover: 'https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzkxMjc1.jpg?itok=KrBUf4Dr',
+                        url: 'https://ereolen.dk/ting/object/870970-basis%3A54791275'
                     }
                 ],
-                widgetTitle: "",
-                contentSearch: "manuel",
-                contentSearchManual: "",
+                widgetTitle: '',
+                contentSearch: 'manuel',
+                contentSearchManual: '',
                 widgetThemes: [
-                    { label: "Lys", class: "light"},
-                    { label: "Mørk", class: "dark" }
+                    { label: 'Lys', class: 'light' },
+                    { label: 'Mørk', class: 'dark' }
                 ],
                 widgetTheme: 0,
                 widgetSizes: [
-                    { label: "Rektangulær", width: "250", height: "250" },
-                    { label: "Banner", width: "468", height: "60" },
-                    { label: "Skyskraber", width: "120", height: "600" },
-                    { label: "Bred skyskraber", width: "160", height: "600" },
-                    { label: "Lille kvadrat", width: "200", height: "200" },
-                    { label: "Kvadrat", width: "250", height: "250" },
-                    { label: "Mellemstor rektangel", width: "300", height: "250" },
-                    { label: "Stor rektangel", width: "336", height: "280" },
-                    { label: "Halvside", width: "300", height: "600" },
-                    { label: "Mobilbanner", width: "320", height: "50" },
-                    { label: "Mobilbanner 2", width: "320", height: "100" },
-                    { label: "Stort leaderboard", width: "970", height: "90" }
+                    { label: 'Rektangulær', width: '250', height: '250' },
+                    { label: 'Banner', width: '468', height: '60' },
+                    { label: 'Skyskraber', width: '120', height: '600' },
+                    { label: 'Bred skyskraber', width: '160', height: '600' },
+                    { label: 'Lille kvadrat', width: '200', height: '200' },
+                    { label: 'Kvadrat', width: '250', height: '250' },
+                    { label: 'Mellemstor rektangel', width: '300', height: '250' },
+                    { label: 'Stor rektangel', width: '336', height: '280' },
+                    { label: 'Halvside', width: '300', height: '600' },
+                    { label: 'Mobilbanner', width: '320', height: '50' },
+                    { label: 'Mobilbanner 2', width: '320', height: '100' },
+                    { label: 'Stort leaderboard', width: '970', height: '90' }
                 ],
                 widgetSize: 0,
-                selectedOption: "",
+                selectedOption: '',
                 // The search query.
                 search: {
                     // "Manuel" search
@@ -210,6 +209,14 @@
                 // The search result after a succesful search.
                 searchResult: null
             }
+        },
+        watch: {
+            contentSearch: 'debouncedSearch',
+            'search.query': 'debouncedSearch',
+            'search.url': 'debouncedSearch'
+        },
+        created: function() {
+            this._debouncedSearch = debounce(this.doSearch, 500)
         },
         methods:{
             selectSize:function() {
@@ -275,14 +282,6 @@
                     });
                 }
             }
-        },
-        watch: {
-            contentSearch: 'debouncedSearch',
-            'search.query': 'debouncedSearch',
-            'search.url': 'debouncedSearch'
-        },
-        created: function() {
-            this._debouncedSearch = debounce(this.doSearch, 500)
         }
     }
 </script>

@@ -84,7 +84,7 @@ yarn install
 Build for production:
 
 ```sh
-yarn encore production
+yarn run build
 ```
 
 `git add` and `commit` changes in `public/build`.
@@ -92,5 +92,19 @@ yarn encore production
 During development:
 
 ```sh
-yarn encore dev --watch
+yarn run watch
+```
+
+## Coding standards
+
+```sh
+yarn run check-coding-standards
+```
+
+```sh
+yarn run check-coding-standards-js
+```
+
+```sh
+yarn run check-coding-standards-scss
 ```

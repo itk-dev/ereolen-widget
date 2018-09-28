@@ -1,9 +1,4 @@
-/**
-* Require the scss for the app.
-*/
-require('../scss/app.scss')
-
-import Vue from 'vue' 
+import Vue from 'vue'
 /**
 * Import componenets
 */
@@ -27,7 +22,12 @@ import 'vue-awesome/icons/plus'
 import 'vue-awesome/icons/minus'
 
 /**
-* Add the Icon component globally 
+* Require the scss for the app.
+*/
+require('../scss/app.scss')
+
+/**
+* Add the Icon component globally
 */
 Vue.component('v-icon', Icon)
 Vue.component('widget', Widget)
