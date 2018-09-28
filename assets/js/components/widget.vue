@@ -16,13 +16,26 @@
         <img src="https://ereolen.dk/sites/all/themes/orwell/svg/eReolen_Logo.svg" class="er-widget-logo" alt="eReolen">
     </div>
 </template>
- 
+
 <script>
     export default {
-        name: 'widget',
-        props: ['title', 'width', 'height'],
+        name: 'Widget',
+        props: {
+          title: {
+            type: String,
+            required: true
+          },
+          width: {
+            type: Number,
+            required: true
+          },
+          height: {
+            type: Number,
+            required: true
+          }
+        },
         computed: {
-            cssProps() { 
+            cssProps() {
                 return {
                     '--widget-width': this.width + 'px',
                     '--widget-height': this.height + 'px'
@@ -31,7 +44,7 @@
         }
     }
 </script>
- 
+
 <style scoped>
     .er-widget {
         width: var(--widget-width);

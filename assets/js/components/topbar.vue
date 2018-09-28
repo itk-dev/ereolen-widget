@@ -25,13 +25,13 @@
         </div>
     </div>
 </template>
- 
+
 <script>
    export default {
-       name: "topbar"
+       name: 'TopBar'
    }
 </script>
- 
+
 <style>
 
 </style>
