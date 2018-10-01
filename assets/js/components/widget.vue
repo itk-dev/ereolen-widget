@@ -1,18 +1,11 @@
 <template>
     <div class="er-widget theme-light" v-bind:style="cssProps">
-        <h1 class="er-widget-title">{{ title }}</h1>
+        <h1 class="er-widget-title">{{ title || $t('(no title)') }}</h1>
         <ul class="materials">
-            <li v-for="material in widgetContent" v-bind:key="material.id">
-
-            </li>
-            <li class="material-item">
-                <a class="material-item-link active" href="https://ereolen.dk/ting/object/870970-basis%3A54769598"><img src="https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzY5NTk4.jpg?itok=75FnfW5A" alt="Hilmar Wulff: Ondt vejr (Ved Søren Elung Jensen)" title="Hilmar Wulff: Ondt vejr (Ved Søren Elung Jensen)"></a>
-            </li>
-            <li class="material-item">
-                <a class="material-item-link" href="https://ereolen.dk/ting/object/870970-basis%3A54791275"><img src="https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzkxMjc1.jpg?itok=KrBUf4Dr" alt="Line Kyed Knudsen: Liv og Emma på cykeltur" title="Line Kyed Knudsen: Liv og Emma på cykeltur"></a>
-            </li>
-            <li class="material-item">
-                <a class="material-item-link" href="https://ereolen.dk/ting/object/870970-basis%3A54768974"><img src="https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzY4OTc0.jpg?itok=Mw95ATJq" alt="A.P. Rosell, direktør - Bind 1" title="A.P. Rosell, direktør - Bind 1"></a>
+            <li v-for="material in widgetContent" class="material-item" v-bind:key="material.id">
+                <a class="material-item-link" v-bind:href="material.url">
+                    <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title">
+                </a>
             </li>
         </ul>
         <a class="er-widget-backlink" href="https://ereolen.dk/search/ting/dkcclterm.op%3D201809%2A%20AND%20dkcclterm.sp%3Ddan%20OR%20870970-basis%253A54643136">Se alle titler</a>

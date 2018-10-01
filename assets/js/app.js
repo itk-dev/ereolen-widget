@@ -1,4 +1,6 @@
 import Vue from 'vue'
+import makeI18n from './i18n'
+
 /**
 * Import componenets
 */
@@ -33,10 +35,24 @@ Vue.component('v-icon', Icon)
 Vue.component('widget', Widget)
 Vue.component('material', Material)
 
-/**
-* Create Vue Application instance with the id `app`
-*/
-new Vue({
-  el: '#app',
-  components: {App, Topbar, Widget, Material}
-});
+const container = document.getElementById('app')
+
+if (null !== container) {
+    const config = (() => {
+        try {
+            return JSON.parse(container.getAttribute('data-configuration'))
+        } catch (e) {
+            return {}
+        }
+    })()
+    const i18n = makeI18n(config.locale || 'da')
+
+    /**
+     * Create Vue Application instance with the id `app`
+     */
+    new Vue({
+        el: container,
+        i18n,
+        components: {App, Topbar, Widget, Material}
+    });
+}

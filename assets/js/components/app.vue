@@ -6,10 +6,10 @@
             </nav>
         </div>
         <div class="col-sm-10 main pt-3 pb-3">
-            <h1>Byg din eReolen materiale karrusel</h1>
+            <h1>{{ $t('Build your carousel') }}</h1>
             <form>
                 <fieldset>
-                    <h3>Indhold</h3>
+                    <h3>{{ $t('Widget content') }}</h3>
                     <div class="form-group">
                         <div class="row justify-content-start">
                             <div class="col-auto">
@@ -17,7 +17,7 @@
                                     <!-- #TODO: Show itk-spinner while searching  -->
                                     <label class="form-check-label">
                                         <input type="radio" class="form-check-input" name="content" id="" value="manuel" checked v-model="contentSearch">
-                                        Tilføj manuelt
+                                        {{ $t('Add manually') }}
                                     </label>
                                 </div>
                             </div>
@@ -25,7 +25,7 @@
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input type="radio" class="form-check-input" name="content" id="" value="search" v-model="contentSearch">
-                                        Brug søgning fra eReolen
+                                        {{ $t('Use search from eReolen') }}
                                     </label>
                                 </div>
                             </div>
@@ -34,37 +34,37 @@
                     <div class="row">
                         <div class="col-sm-10 col-lg-8">
                             <div class="form-group" v-if="contentSearch === 'manuel'">
-                                <label for="contentSearchManual">Søg efter bøger du vil vise i karrusellen</label>
+                                <label for="contentSearchManual">{{ $t('Search for materials you want to show in the carousel') }}</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text"><v-icon name="search" /></div>
                                     </div>
-                                    <input type="text" class="form-control" name="contentSearchManual" id="contentSearchManual" placeholder="Skriv bogens forfatter, titel, isbn eller forlag" v-model="search.query" v-on:keyup.enter="debouncedSearch">
+                                    <input type="text" class="form-control" name="contentSearchManual" id="contentSearchManual" v-bind:placeholder="$t('Enter author, title, isbn or publisher')" v-model="search.query" v-on:keyup.enter="debouncedSearch">
                                 </div>
                             </div>
                             <div class="form-group" v-if="contentSearch === 'search'">
-                                <label for="contentSearchSearch">Indsæt url fra eReolen</label>
+                                <label for="contentSearchSearch">{{ $t('Insert url from eReolen') }}</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <div class="input-group-text">URL</div>
+                                        <div class="input-group-text">{{ $t('URL') }}</div>
                                     </div>
-                                    <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" placeholder="F.eks. : https://ereolen.dk/search/ting/jussi%20adler" v-model="search.url" v-on:keyup.enter="debouncedSearch">
+                                    <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" v-bind:placeholder="$t('Example: https://ereolen.dk/search/ting/jussi%20adler')" v-model="search.url" v-on:keyup.enter="debouncedSearch">
                                 </div>
-                                <small id="contentSearchSearchHelp" class="form-text text-muted">Lav først en søgning på <a href="//ereolen.dk">eReolen.dk</a> og kopier url'en i adresselinjen. Indsæt derefter url'en her.</small>
+                                <small id="contentSearchSearchHelp" class="form-text text-muted" v-html="$t('Perform a search on eReolen and copy the url in the address bar. Then paste it here.', {ereolen_url: '//ereolen.dk', ereolen_name: 'eReolen'})" />
                             </div>
                         </div>
                     </div>
 
                     <div class="row content-search" v-if="contentSearch === 'manuel' && searchResult && searchResult.data.length != 0">
                         <div class="col-sm-12">
-                            <label>Søgeresultat: <strong>Tryk på bøgerne for at tilføje</strong></label><a href="#" class="btn btn-success btn-sm text-light ml-2" @click="addAllMaterials">Tilføj alle</a>
+                            <label>{{ $t('Search result') }}:: <strong>{{ $t('Click on a material to add it to the carousel') }}</strong></label><a href="#" class="btn btn-success btn-sm text-light ml-2" @click="addAllMaterials">{{ $t('Add all materials to carousel') }}</a>
                             <div class="row content-search-results">
                                 <material v-for="material in searchResult.data" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="plus" v-bind:action="addMaterial" />
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-12">
-                        <label>Tilfjøede bøger: <strong>Tryk på bøgerne for at fjerne</strong></label><a href="#" class="btn btn-danger btn-sm text-light ml-2" @click="removeAllMaterials">Fjern alle</a>
+                        <label>{{ $t('Materials in the carousel') }}:: <strong>{{ $t('Click on a material to remove it from the carousel') }}</strong></label><a href="#" class="btn btn-danger btn-sm text-light ml-2" @click="removeAllMaterials">{{ $t('Remove all materials from carousel') }}</a>
                         <div class="row content-search-results added">
                             <material v-for="material in widgetContent" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="minus" v-bind:action="removeMaterial" />
                         </div>
@@ -73,28 +73,28 @@
                     <div class="row">
                         <div class="col-sm-10 col-lg-8">
                             <div class="form-group">
-                                <label for="widgetTitle">Widget titel (Overskrift)</label>
+                                <label for="widgetTitle">{{ $t('Widget title') }}</label>
                                 <input type="text" class="form-control" name="widgetTitle" id="widgetTitle" aria-describedby="widgetTitleHelp" placeholder="Skriv bogens forfatter, titel, isbn eller forlag" v-model="widgetTitle">
-                                <small id="widgetTitleHelp" class="form-text text-muted">Denne vises som overskrift i widgeten</small>
+                                <small id="widgetTitleHelp" class="form-text text-muted">{{ $t('The widget title is displayed as a heading in the widgeten') }}</small>
                             </div>
                         </div>
                     </div>
                 </fieldset>
                 <fieldset>
-                    <h3>Udseende</h3>
+                    <h3>{{ $t('Widget display settings') }}</h3>
                     <div class="row">
                         <div class="col-sm-10 col-lg-8">
                             <div class="form-group">
-                                <label for="widget_theme">Farve</label>
+                                <label for="widget_theme">{{ $t('Widget color') }}</label>
                                 <select class="form-control" name="widget_theme" id="widget_theme" v-model="widgetTheme">
                                     <option v-for="(option,index) in widgetThemes" v-bind:value="index" v-bind:key="option.id">
-                                        {{ option.label }}
+                                        {{ $t(option.label) }}
                                     </option>
                                 </select>
                             </div>
 
                             <div class="form-group">
-                                <label for="widget_size">Størrelse</label>
+                                <label for="widget_size">{{ $t('Widget size') }}</label>
                                 <select class="form-control" name="widget_size" id="widget_size" v-model="widgetSize" @change="selectSize">
                                     <option v-for="(option,index) in widgetSizes" v-bind:value="index" v-bind:key="option.id">
                                         {{ option.label }} {{ option.width }}x{{ option.height }}
@@ -105,32 +105,32 @@
                     </div>
                 </fieldset>
                 <fieldset>
-                    <h3>Preview</h3>
+                    <h3>{{ $t('Widget preview') }}</h3>
                     <div class="widget-preview bg-white">
                         <!-- #TODO: Show itk-spinner while updating  -->
-                        <widget v-bind:height="widgetSizes[widgetSize].height" v-bind:width="widgetSizes[widgetSize].width" v-bind:title="widgetTitle" v-bind:widget-content="widgetContent" v-if="widgetTitle.length != 0" />
-                        <div class="widget-preview default" v-if="widgetTitle.length === 0">
-                            Preview opdateres når du har valgt materialer.
+                        <widget v-bind:height="widgetSizes[widgetSize].height" v-bind:width="widgetSizes[widgetSize].width" v-bind:title="widgetTitle" v-bind:widget-content="widgetContent" v-if="widgetContent.length &gt; 0" />
+                        <div class="widget-preview default" v-else>
+                            {{ $t('Preview will update when you add or remove materials') }}
                         </div>
                     </div>
                 </fieldset>
                 <fieldset>
                     <div class="row">
                         <div class="col-sm-10 col-lg-8">
-                            <h3>Indlejringskode</h3>
-                            <label>Indsæt denne kode på dit website for at få vist din widget.</label>
+                            <h3>{{ $t('Widget embed code') }}</h3>
+                            <label>{{ $t('Insert this code on your website to display the widget.') }}</label>
                             <div class="code-preview">
                                 <div class="code-preview-header">
                                     <div class="row">
                                         <div class="col-auto">
                                             <span class="code-preview-header-title">
-                                                <v-icon name="code" />HTML
+                                                <v-icon name="code" />{{ $t('HTML') }}
                                             </span>
                                         </div>
                                         <div class="col-auto ml-auto">
                                             <!-- #TODO: Add functionality to copy code on click -->
                                             <a href="#" class="code-preview-header-copy">
-                                                <v-icon name="copy" />Kopier
+                                                <v-icon name="copy" />{{ $t('Copy') }}
                                             </a>
                                         </div>
                                     </div>
@@ -152,7 +152,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <button type="button" class="btn btn-primary" v-on:click="saveWidget" v-bind:disabled="!isValid()">{{ widget ? 'Update widget' : 'Save widget' }}</button>
+                <button type="button" class="btn btn-primary" v-on:click="saveWidget" v-bind:disabled="!isValid()">{{ widget ? $t('Update widget') : $t('Save widget') }}</button>
             </form>
         </div>
     </div>
@@ -176,8 +176,8 @@
                 contentSearch: 'manuel',
                 contentSearchManual: '',
                 widgetThemes: [
-                    {label: 'Lys', class: 'light'},
-                    {label: 'Mørk', class: 'dark'}
+                    {label: 'theme.light', class: 'light'},
+                    {label: 'theme.dark', class: 'dark'}
                 ],
                 widgetTheme: 0,
                 widgetSizes: [

@@ -21,6 +21,7 @@ module.exports = {
         'vue/html-indent': ['error', 4, {}],
         'vue/v-bind-style': 'longform',
         'vue/v-on-style': 'longform',
+        'vue/no-v-html': false,
         'vue/max-attributes-per-line': false,
         'vue/attributes-order': false
     },

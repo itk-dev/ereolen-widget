@@ -14,8 +14,19 @@
                 }|json_encode|raw }}
         </script>
     {% endif %}
-    <div class="container-fluid">
-        <topbar></topbar>
-        <app></app>
+    {% set configuration = {} %}
+    <div id="app" data-configuration="{{ configuration|json_encode }}">
+        <div class="container-fluid">
+            <topbar></topbar>
+            <app></app>
+        </div>
     </div>
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('build/app.js') }}"></script>
 {% endblock %}
