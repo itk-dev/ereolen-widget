@@ -108,7 +108,7 @@
                     <h3>Preview</h3>
                     <div class="widget-preview bg-white">
                         <!-- #TODO: Show itk-spinner while updating  -->
-                        <widget v-bind:height="widgetSizes[widgetSize].height" v-bind:width="widgetSizes[widgetSize].width" v-bind:title="widgetTitle" v-if="widgetTitle.length != 0" />
+                        <widget v-bind:height="widgetSizes[widgetSize].height" v-bind:width="widgetSizes[widgetSize].width" v-bind:title="widgetTitle" v-bind:widget-content="widgetContent" v-if="widgetTitle.length != 0" />
                         <div class="widget-preview default" v-if="widgetTitle.length === 0">
                             Preview opdateres når du har valgt materialer.
                         </div>
@@ -174,18 +174,18 @@
                 ],
                 widgetTheme: 0,
                 widgetSizes: [
-                    {label: 'Rektangulær', width: '250', height: '250'},
-                    {label: 'Banner', width: '468', height: '60'},
-                    {label: 'Skyskraber', width: '120', height: '600'},
-                    {label: 'Bred skyskraber', width: '160', height: '600'},
-                    {label: 'Lille kvadrat', width: '200', height: '200'},
-                    {label: 'Kvadrat', width: '250', height: '250'},
-                    {label: 'Mellemstor rektangel', width: '300', height: '250'},
-                    {label: 'Stor rektangel', width: '336', height: '280'},
-                    {label: 'Halvside', width: '300', height: '600'},
-                    {label: 'Mobilbanner', width: '320', height: '50'},
-                    {label: 'Mobilbanner 2', width: '320', height: '100'},
-                    {label: 'Stort leaderboard', width: '970', height: '90'}
+                    {label: 'Rektangulær', width: 250, height: 250},
+                    {label: 'Banner', width: 468, height: 60},
+                    {label: 'Skyskraber', width: 120, height: 600},
+                    {label: 'Bred skyskraber', width: 160, height: 600},
+                    {label: 'Lille kvadrat', width: 200, height: 200},
+                    {label: 'Kvadrat', width: 250, height: 250},
+                    {label: 'Mellemstor rektangel', width: 300, height: 250},
+                    {label: 'Stor rektangel', width: 336, height: 280},
+                    {label: 'Halvside', width: 300, height: 600},
+                    {label: 'Mobilbanner', width: 320, height: 50},
+                    {label: 'Mobilbanner 2', width: 320, height: 100},
+                    {label: 'Stort leaderboard', width: 970, height: 90}
                 ],
                 widgetSize: 0,
                 selectedOption: '',

@@ -35,6 +35,10 @@
           height: {
             type: Number,
             required: true
+          },
+          widgetContent: {
+            type: Array,
+            required: true
           }
         },
         computed: {
