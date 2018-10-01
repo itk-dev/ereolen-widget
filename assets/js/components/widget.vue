@@ -17,22 +17,22 @@
     export default {
         name: 'Widget',
         props: {
-          title: {
-            type: String,
-            required: true
-          },
-          width: {
-            type: Number,
-            required: true
-          },
-          height: {
-            type: Number,
-            required: true
-          },
-          widgetContent: {
-            type: Array,
-            required: true
-          }
+            title: {
+                type: String,
+                required: true
+            },
+            width: {
+                type: Number,
+                required: true
+            },
+            height: {
+                type: Number,
+                required: true
+            },
+            widgetContent: {
+                type: Array,
+                required: true
+            }
         },
         computed: {
             cssProps() {

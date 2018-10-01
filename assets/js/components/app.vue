@@ -159,12 +159,12 @@
 </template>
 
 <script>
-    const axios = require('axios');
+    const axios = require('axios')
     const debounce = require('debounce')
     const queryString = require('query-string')
 
-    const CancelToken = axios.CancelToken;
-    let cancelSearch = null;
+    const CancelToken = axios.CancelToken
+    let cancelSearch = null
 
     export default {
         name: 'App',
@@ -229,7 +229,7 @@
                 this.widgetTitle = this.widget.title
                 this.widgetContent = this.widget.content
             } catch (e) {
-              // continue regardless of error
+                // continue regardless of error
             }
 
             this._debouncedSearch = debounce(this.doSearch, 500)
@@ -246,7 +246,7 @@
                 if (!this.isValid()) {
                     return
                 }
-                const vm = this;
+                const vm = this
                 const data = {
                     title: this.widgetTitle,
                     content: this.widgetContent
@@ -261,7 +261,7 @@
                         })
                         .catch(function (error) {
                             vm.saveMessage = 'Error saving widget'
-                        });
+                        })
                 } else {
                     // Create
                     const saveUrl = '/api/widgets'
@@ -275,26 +275,26 @@
                         })
                         .catch(function (error) {
                             vm.saveMessage = 'Error saving widget'
-                        });
+                        })
                 }
             },
             addMaterial: function(material) {
-                const list = this.searchResult.data;
-                const index = list.indexOf(material);
+                const list = this.searchResult.data
+                const index = list.indexOf(material)
                 if (index > -1) {
-                    this.widgetContent.push(list[index]);
-                    list.splice(index, 1);
+                    this.widgetContent.push(list[index])
+                    list.splice(index, 1)
                 }
             },
             removeMaterial: function(material) {
-                const list = this.widgetContent;
-                const index = list.indexOf(material);
+                const list = this.widgetContent
+                const index = list.indexOf(material)
                 if (index > -1) {
                     if (null === this.searchResult) {
                         this.searchResult = {data: []}
                     }
-                    this.searchResult.data.push(list[index]);
-                    list.splice(index, 1);
+                    this.searchResult.data.push(list[index])
+                    list.splice(index, 1)
                 }
             },
             addAllMaterials: function() {
@@ -309,18 +309,18 @@
                     this.searchResult = {data: []}
                 }
                 this.searchResult.data = this.searchResult.data.concat(this.widgetContent)
-                this.widgetContent = [];
+                this.widgetContent = []
             },
             selectSize: function() {
-                this.selectedOption = '';
+                this.selectedOption = ''
             },
             debouncedSearch: function() {
-                this._debouncedSearch();
+                this._debouncedSearch()
             },
             doSearch: function() {
-                const searchUrl = '/widget/search';
-                let searchMessage = null;
-                let params = null;
+                const searchUrl = '/widget/search'
+                let searchMessage = null
+                let params = null
                 switch (this.contentSearch) {
                 case 'search':
                     if (!this.search.url) {
@@ -334,7 +334,7 @@
 
                 case 'manuel':
                     if (!this.search.query || this.search.query.length < 3) {
-                        return;
+                        return
                     }
                     searchMessage = 'Searching for "'+this.search.query+'" …'
 
@@ -344,34 +344,35 @@
 
                 var vm = this
                 if (null !== params) {
-                    vm.searchState = 'searching';
-                    vm.searchError = null;
+                    vm.searchState = 'searching'
+                    vm.searchError = null
                     if (null !== cancelSearch) {
-                        cancelSearch();
+                        cancelSearch()
                     }
                     if (null !== searchMessage) {
                         this.searchMessage = searchMessage
                     }
-                    axios.get(searchUrl, {
-                        cancelToken: new CancelToken(function executor(c) {
-                            // An executor function receives a cancel function as a parameter
-                            cancelSearch = c;
-                        }),
-                        params: params
-                    })
-                    .then(result => {
-                        vm.searchResult = result.data;
-                        vm.searchState = null;
-                        vm.searchMessage = null;
-                        vm.searchError = null;
-                    })
-                    .catch(error => {
-                        if (axios.isCancel(error)) {
-                            return;
-                        }
-                        vm.searchError = error;
-                        vm.searchState = null;
-                    });
+                    axios
+                        .get(searchUrl, {
+                            cancelToken: new CancelToken(function executor(c) {
+                                // An executor function receives a cancel function as a parameter
+                                cancelSearch = c
+                            }),
+                            params: params
+                        })
+                        .then(result => {
+                            vm.searchResult = result.data
+                            vm.searchState = null
+                            vm.searchMessage = null
+                            vm.searchError = null
+                        })
+                        .catch(error => {
+                            if (axios.isCancel(error)) {
+                                return
+                            }
+                            vm.searchError = error
+                            vm.searchState = null
+                        })
                 }
             }
         }

@@ -50,11 +50,11 @@
         computed: {
             authors: function() {
                 if (this.data.creators.length > 0) {
-                    return this.data.creators;
+                    return this.data.creators
                 } else if (this.data.contributors.length > 0) {
-                    return this.data.contributors;
+                    return this.data.contributors
                 }
-                return null;
+                return null
             }
         }
     }

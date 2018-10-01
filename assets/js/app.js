@@ -54,5 +54,5 @@ if (null !== container) {
         el: container,
         i18n,
         components: {App, Topbar, Widget, Material}
-    });
+    })
 }

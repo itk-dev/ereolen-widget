@@ -27,7 +27,7 @@
 </template>
 
 <script>
-   export default {
-       name: 'TopBar'
-   }
+    export default {
+        name: 'TopBar'
+    }
 </script>

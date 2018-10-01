@@ -8,23 +8,36 @@ module.exports = {
     ],
     rules: {
         // @see https://eslint.org/docs/rules/
-        'brace-style': ['error', '1tbs'],
-        'space-before-blocks': ['error', 'always'],
-        'object-curly-spacing': ['error', 'never'],
         'array-bracket-spacing': ['error', 'never'],
-        'func-call-spacing': ['error', 'never'],
-        'comma-style': ['error', 'last'],
+        'brace-style': ['error', '1tbs'],
+        'comma-dangle': ['error', 'never'],
         'comma-spacing': 'error',
-        'quotes': ['error', 'single'],
+        'comma-style': ['error', 'last'],
+        'func-call-spacing': ['error', 'never'],
+        'indent': ['error', 4, { MemberExpression: 0 }],
         'key-spacing': ['error'],
+        'object-curly-spacing': ['error', 'never'],
+        'quotes': ['error', 'single'],
+        'semi': ['error', 'never'],
+        'space-before-blocks': ['error', 'always'],
         // @see https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
+        'vue/attributes-order': false,
         'vue/html-indent': ['error', 4, {}],
-        'vue/v-bind-style': 'longform',
-        'vue/v-on-style': 'longform',
-        'vue/no-v-html': false,
         'vue/max-attributes-per-line': false,
-        'vue/attributes-order': false
+        'vue/no-v-html': false,
+        'vue/script-indent': ['error', 4, { baseIndent: 1 }],
+        'vue/v-bind-style': 'longform',
+        'vue/v-on-style': 'longform'
     },
+    overrides: [
+        // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/script-indent.md#important-note
+        {
+            files: ['*.vue'],
+            rules: {
+                indent: 'off'
+            }
+        }
+    ],
     env: {
         node: true
     }
