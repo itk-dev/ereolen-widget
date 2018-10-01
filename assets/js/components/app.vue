@@ -231,14 +231,16 @@
                 const list = this.widgetContent;
                 const index = list.indexOf(material);
                 if (index > -1) {
+                    this.searchResult.data.push(list[index]);
                     list.splice(index, 1);
                 }
             },
             addAllMaterials: function() {
                 this.widgetContent = this.widgetContent.concat(this.searchResult.data)
-                this.searchResult = null
+                this.searchResult.data = []
             },
             removeAllMaterials: function() {
+                this.searchResult.data = this.searchResult.data.concat(this.widgetContent)
                 this.widgetContent = [];
             },
             selectSize:function() {
