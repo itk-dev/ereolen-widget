@@ -39,7 +39,7 @@
                                     <div class="input-group-prepend">
                                         <div class="input-group-text"><v-icon name="search" /></div>
                                     </div>
-                                    <input type="text" class="form-control" name="contentSearchManual" id="contentSearchManual" placeholder="Skriv bogens forfatter, titel, isbn eller forlag" v-model="search.query">
+                                    <input type="text" class="form-control" name="contentSearchManual" id="contentSearchManual" placeholder="Skriv bogens forfatter, titel, isbn eller forlag" v-model="search.query" v-on:keyup.enter="debouncedSearch">
                                 </div>
                             </div>
                             <div class="form-group" v-if="contentSearch === 'search'">
@@ -48,7 +48,7 @@
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">URL</div>
                                     </div>
-                                    <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" placeholder="F.eks. : https://ereolen.dk/search/ting/jussi%20adler" v-model="search.url">
+                                    <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" placeholder="F.eks. : https://ereolen.dk/search/ting/jussi%20adler" v-model="search.url" v-on:keyup.enter="debouncedSearch">
                                 </div>
                                 <small id="contentSearchSearchHelp" class="form-text text-muted">Lav først en søgning på <a href="//ereolen.dk">eReolen.dk</a> og kopier url'en i adresselinjen. Indsæt derefter url'en her.</small>
                             </div>

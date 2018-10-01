@@ -15,8 +15,10 @@ module.exports = {
         'comma-style': ['error', 'last'],
         'comma-spacing': 'error',
         'quotes': ['error', 'single'],
+        // @see https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
         'vue/html-indent': ['error', 4, {}],
         'vue/v-bind-style': 'longform',
+        'vue/v-on-style': 'longform',
         'vue/max-attributes-per-line': false,
         'vue/attributes-order': false
     },
