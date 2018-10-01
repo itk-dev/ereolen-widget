@@ -170,23 +170,23 @@
                 contentSearch: 'manuel',
                 contentSearchManual: '',
                 widgetThemes: [
-                    { label: 'Lys', class: 'light' },
-                    { label: 'Mørk', class: 'dark' }
+                    {label: 'Lys', class: 'light'},
+                    {label: 'Mørk', class: 'dark'}
                 ],
                 widgetTheme: 0,
                 widgetSizes: [
-                    { label: 'Rektangulær', width: '250', height: '250' },
-                    { label: 'Banner', width: '468', height: '60' },
-                    { label: 'Skyskraber', width: '120', height: '600' },
-                    { label: 'Bred skyskraber', width: '160', height: '600' },
-                    { label: 'Lille kvadrat', width: '200', height: '200' },
-                    { label: 'Kvadrat', width: '250', height: '250' },
-                    { label: 'Mellemstor rektangel', width: '300', height: '250' },
-                    { label: 'Stor rektangel', width: '336', height: '280' },
-                    { label: 'Halvside', width: '300', height: '600' },
-                    { label: 'Mobilbanner', width: '320', height: '50' },
-                    { label: 'Mobilbanner 2', width: '320', height: '100' },
-                    { label: 'Stort leaderboard', width: '970', height: '90' }
+                    {label: 'Rektangulær', width: '250', height: '250'},
+                    {label: 'Banner', width: '468', height: '60'},
+                    {label: 'Skyskraber', width: '120', height: '600'},
+                    {label: 'Bred skyskraber', width: '160', height: '600'},
+                    {label: 'Lille kvadrat', width: '200', height: '200'},
+                    {label: 'Kvadrat', width: '250', height: '250'},
+                    {label: 'Mellemstor rektangel', width: '300', height: '250'},
+                    {label: 'Stor rektangel', width: '336', height: '280'},
+                    {label: 'Halvside', width: '300', height: '600'},
+                    {label: 'Mobilbanner', width: '320', height: '50'},
+                    {label: 'Mobilbanner 2', width: '320', height: '100'},
+                    {label: 'Stort leaderboard', width: '970', height: '90'}
                 ],
                 widgetSize: 0,
                 selectedOption: '',

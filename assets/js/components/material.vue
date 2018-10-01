@@ -8,7 +8,7 @@
             </div>
             <div class="result-title">
                 <p><strong>{{ title }}</strong></p>
-                <p>Af: <span v-if="data.contributors" v-for="(contributor, index) in data.contributors" v-bind:key="data.contributors.index">{{ contributor }}<span v-if="index < data.contributors.length - 1">, </span></span></p>
+                <p v-if="data.contributors">Af: <span v-for="(contributor, index) in data.contributors" v-bind:key="contributor">{{ contributor }}<span v-if="index < data.contributors.length - 1">, </span></span></p>
             </div>
         </div>
     </div>
