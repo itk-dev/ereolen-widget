@@ -51,16 +51,6 @@ class WidgetController extends AbstractController
      */
     public function search(Request $request)
     {
-        $json = '{"meta":{"page":1,"count":4},"links":{"self":"http:\/\/127.0.0.1:8000\/widget\/search?query=jussi%20adler"},"data":[{"id":"870970-basis:51348788","title":"Liv for liv","cover":"https:\/\/stg.ereolen.dk\/sites\/default\/files\/ting\/covers\/ODcwOTcwLWJhc2lzOjUxMzQ4Nzg4.jpg","abstract":false,"ac_source":"eReolen","classification":"","contributors":["Jussi Adler-Olsen"],"creators":[],"date":"2011","description":"Downloades i EPUB-format","extent":"233 sider","isPartOf":[],"isbn":["9788740002140"],"language":"Dansk","localId":"isbn_9788740002140","ownerId":"870970","relations":[[],[]],"serieDescription":"","serieNumber":null,"serieTitle":[],"subjects":["krimi"],"type":"Ebog","url":false},{"id":"870970-basis:52397979","title":"Over gr\u00e6nsen","cover":"https:\/\/stg.ereolen.dk\/sites\/default\/files\/ting\/covers\/ODcwOTcwLWJhc2lzOjUyMzk3OTc5.jpg","abstract":false,"ac_source":"eReolen","classification":"","contributors":["Jussi Adler-Olsen"],"creators":[],"date":"2016","description":"Downloades i EPUB-format","extent":false,"isPartOf":[],"isbn":["9788740033960"],"language":"Dansk","localId":"isbn_9788740033960","ownerId":"870970","relations":[],"serieDescription":"","serieNumber":null,"serieTitle":[],"subjects":["krimi"],"type":"Ebog","url":false},{"id":"870970-basis:52445086","title":"Over gr\u00e6nsen","cover":"https:\/\/stg.ereolen.dk\/sites\/default\/files\/ting\/covers\/ODcwOTcwLWJhc2lzOjUyNDQ1MDg2.jpg","abstract":false,"ac_source":"Netlydbog","classification":"","contributors":["Dan Schlosser","Jussi Adler-Olsen"],"creators":[],"date":"2016","description":"Downloades i MP3-format","extent":"5 t., 39 min.","isPartOf":[],"isbn":["9788740033946"],"language":"Dansk","localId":"isbn_9788740033946","ownerId":"870970","relations":[[],[]],"serieDescription":"","serieNumber":null,"serieTitle":[],"subjects":["krimi"],"type":"Lydbog (net)","url":false},{"id":"870970-basis:51269705","title":"Liv for liv","cover":"https:\/\/stg.ereolen.dk\/sites\/default\/files\/ting\/covers\/ODcwOTcwLWJhc2lzOjUxMjY5NzA1.jpg","abstract":false,"ac_source":"Netlydbog","classification":"","contributors":["Lars Junker Thiesgaard","Jussi Adler-Olsen"],"creators":[],"date":"2013","description":"Downloades i MP3-format","extent":"7 t., 10 min.","isPartOf":[],"isbn":["9788740009811"],"language":"Dansk","localId":"isbn_9788740009811","ownerId":"870970","relations":[[],[]],"serieDescription":"","serieNumber":null,"serieTitle":[],"subjects":["krimi"],"type":"Lydbog (net)","url":false}]}';
-        $data = json_decode($json, true);
-
-        foreach ($data['data'] as &$item) {
-            $item['url'] = 'https://ereolen.dk/ting/object/' . $item['id'];
-            $item['coverUrl'] = str_replace('/sites/default/files/ting/covers/', '/sites/default/files/styles/ereol_cover_base/public/ting/covers/', $item['cover']);
-        }
-
-        return new JsonResponse($data, 200, [], false);
-
         $baseUrl = $this->parameterBag->get('search_ereol_url');
         $cacheTtl = (int) $this->parameterBag->get('search_cache_ttl');
         $query = $request->query->all();
