@@ -1,13 +1,14 @@
 <template>
-    <div class="col-3 col-lg-2" @click="action(data)">
+    <div class="col-3 col-lg-2 mb-1" @click="action(data)">
         <div class="result">
-            <img v-bind:src="cover" v-bind:alt="title" class="img-fluid">
-            <pre>icon: {{ icon }}</pre>
-            <div class="action" v-bind:class="action">
+            <img v-bind:src="cover" v-bind:alt="title" class="result-image img-fluid">
+            <!-- #TODO: Show material type (Audiobook/ebook) -->
+            <div class="result-action">
                 <v-icon v-bind:name="icon" />
             </div>
-            <div class="title">
-                <p>{{ title }}</p>
+            <div class="result-title">
+                <p><strong>{{ title }}</strong></p>
+                <p>Af: <span v-if="data.contributors" v-for="(contributor, index) in data.contributors" v-bind:key="data.contributors.index">{{ contributor }}<span v-if="index < data.contributors.length - 1">, </span></span></p>
             </div>
         </div>
     </div>
@@ -48,7 +49,3 @@
         }
     }
 </script>
-
-<style>
-
-</style>

@@ -2,6 +2,9 @@
     <div class="er-widget theme-light" v-bind:style="cssProps">
         <h1 class="er-widget-title">{{ title }}</h1>
         <ul class="materials">
+            <li v-for="material in widgetContent" v-bind:key="material.id">
+
+            </li>
             <li class="material-item">
                 <a class="material-item-link active" href="https://ereolen.dk/ting/object/870970-basis%3A54769598"><img src="https://ereolen.dk/sites/default/files/styles/ereol_cover_base/public/ting/covers/ODcwOTcwLWJhc2lzOjU0NzY5NTk4.jpg?itok=75FnfW5A" alt="Hilmar Wulff: Ondt vejr (Ved Søren Elung Jensen)" title="Hilmar Wulff: Ondt vejr (Ved Søren Elung Jensen)"></a>
             </li>
@@ -68,7 +71,8 @@
         list-style: none;
         margin: 0 0 0 .5rem;
         padding: 0;
-        width: 1000px;
+        width: 100%;
+        overflow-x: scroll;
     }
     .er-widget ul.materials li{
         margin: 0;

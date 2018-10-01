@@ -31,7 +31,3 @@
        name: 'TopBar'
    }
 </script>
-
-<style>
-
-</style>

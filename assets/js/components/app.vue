@@ -14,6 +14,7 @@
                         <div class="row justify-content-start">
                             <div class="col-auto">
                                 <div class="form-check">
+                                    <!-- #TODO: Show itk-spinner while searching  -->
                                     <label class="form-check-label">
                                         <input type="radio" class="form-check-input" name="content" id="" value="manuel" checked v-model="contentSearch">
                                         Tilføj manuelt
@@ -107,6 +108,7 @@
                 <fieldset>
                     <h3>Preview</h3>
                     <div class="widget-preview bg-white">
+                        <!-- #TODO: Show itk-spinner while updating  -->
                         <widget v-bind:height="widgetSizes[widgetSize].height" v-bind:width="widgetSizes[widgetSize].width" v-bind:title="widgetTitle" v-if="widgetTitle.length != 0" />
                         <div class="widget-preview default" v-if="widgetTitle.length === 0">
                             Preview opdateres når du har valgt materialer.
@@ -127,6 +129,7 @@
                                             </span>
                                         </div>
                                         <div class="col-auto ml-auto">
+                                            <!-- #TODO: Add functionality to copy code on click -->
                                             <a href="#" class="code-preview-header-copy">
                                                 <v-icon name="copy" />Kopier
                                             </a>
@@ -135,7 +138,9 @@
                                 </div>
                                 <div class="code-preview-content">
                                     <pre><code>
-                                            &lt;iframe src="https://widget.ereolen.dk/follow/1/?uri=ereolen:artist:6sFIWsNpZYqfjUpaCgueju&size={{ widgetSizes[widgetSize].width }}x{{ widgetSizes[widgetSize].height }}&theme={{ widgetThemes[widgetTheme].class }}" width="{{ widgetSizes[widgetSize].width }}" height="{{ widgetSizes[widgetSize].height }}" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"&gt;&lt;/iframe&gt;
+                                        <!-- #TODO: Use real url -->
+                                        <!-- #TODO: Use real content  -->
+                                        &lt;iframe src="https://widget.ereolen.dk/follow/1/?uri=ereolen:artist:6sFIWsNpZYqfjUpaCgueju&size={{ widgetSizes[widgetSize].width }}x{{ widgetSizes[widgetSize].height }}&theme={{ widgetThemes[widgetTheme].class }}" width="{{ widgetSizes[widgetSize].width }}" height="{{ widgetSizes[widgetSize].height }}" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"&gt;&lt;/iframe&gt;
                                     </code></pre>
                                 </div>
                             </div>
@@ -302,7 +307,3 @@
         }
     }
 </script>
-
-<style>
-
-</style>
