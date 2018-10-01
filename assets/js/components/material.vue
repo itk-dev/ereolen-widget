@@ -8,7 +8,7 @@
             </div>
             <div class="result-title">
                 <p><strong>{{ title }}</strong></p>
-                <p v-if="authors">Af: <span v-for="(author, index) in authors" v-bind:key="author">{{ author }}<span v-if="index < authors.length - 1">, </span></span></p>
+                <p v-if="authors">Af: <span v-for="(author, index) in authors" v-bind:key="index">{{ author }}<span v-if="index < authors.length - 1">, </span></span></p>
             </div>
         </div>
     </div>
@@ -49,10 +49,10 @@
         },
         computed: {
             authors: function() {
-                if (this.data.contributors.length > 0) {
-                    return this.data.contributors;
-                } else if (this.data.creators.length > 0) {
+                if (this.data.creators.length > 0) {
                     return this.data.creators;
+                } else if (this.data.contributors.length > 0) {
+                    return this.data.contributors;
                 }
                 return null;
             }
