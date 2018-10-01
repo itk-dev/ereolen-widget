@@ -62,11 +62,11 @@
                                 <material v-for="material in searchResult.data" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="plus" v-bind:action="addMaterial" />
                             </div>
                         </div>
-                        <div class="col-sm-12">
-                            <label>Tilfjøede bøger: <strong>Tryk på bøgerne for at fjerne</strong></label><a href="#" class="btn btn-danger btn-sm text-light ml-2" @click="removeAllMaterials">Fjern alle</a>
-                            <div class="row content-search-results added">
-                                <material v-for="material in widgetContent" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="minus" v-bind:action="removeMaterial" />
-                            </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label>Tilfjøede bøger: <strong>Tryk på bøgerne for at fjerne</strong></label><a href="#" class="btn btn-danger btn-sm text-light ml-2" @click="removeAllMaterials">Fjern alle</a>
+                        <div class="row content-search-results added">
+                            <material v-for="material in widgetContent" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="minus" v-bind:action="removeMaterial" />
                         </div>
                     </div>
 
@@ -146,6 +146,13 @@
                         </div>
                     </div>
                 </fieldset>
+
+                <div v-if="saveMessage" class="alert" v-bind:class="{'alert-info': true}">{{ saveMessage }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" v-on:click="saveMessage = null">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <button type="button" class="btn btn-primary" v-on:click="saveWidget" v-bind:disabled="!isValid()">{{ widget ? 'Update widget' : 'Save widget' }}</button>
             </form>
         </div>
     </div>
@@ -202,7 +209,10 @@
                 // Any errors reported while searching.
                 searchError: null,
                 // The search result after a succesful search.
-                searchResult: null
+                searchResult: null,
+                // The actual widget (stored in database)
+                widget: null,
+                saveMessage: null
             }
         },
         watch: {
@@ -211,13 +221,63 @@
             'search.url': 'debouncedSearch'
         },
         created: function() {
+            // Load widget data.
+            try {
+                const el = document.getElementById('app-widget-data')
+                const data = JSON.parse(el.textContent)
+                this.widget = data
+                this.widgetTitle = this.widget.title
+                this.widgetContent = this.widget.content
+            } catch (e) {
+              // continue regardless of error
+            }
+
             this._debouncedSearch = debounce(this.doSearch, 500)
             const search = queryString.parse(location.hash)
             if ('query' in search) {
                 this.search.query = search['query']
             }
         },
-        methods:{
+        methods: {
+            isValid: function() {
+                return this.widgetTitle && this.widgetContent && this.widgetContent.length > 0
+            },
+            saveWidget: function() {
+                if (!this.isValid()) {
+                    return
+                }
+                const vm = this;
+                const data = {
+                    title: this.widgetTitle,
+                    content: this.widgetContent
+                }
+                if (this.widget) {
+                    // Update
+                    const saveUrl = '/api/widgets/'+this.widget.id
+                    axios.put(saveUrl, data)
+                        .then(function (response) {
+                            vm.saveMessage = 'Widget saved'
+                            vm.widget = response.data
+                        })
+                        .catch(function (error) {
+                            vm.saveMessage = 'Error saving widget'
+                        });
+                } else {
+                    // Create
+                    const saveUrl = '/api/widgets'
+                    axios.post(saveUrl, data)
+                        .then(function (response) {
+                            vm.saveMessage = 'Widget saved'
+                            if (!vm.widget) {
+                                location.href = '/widget/'+response.data.id+'/edit'
+                            }
+                            vm.widget = response.data
+                        })
+                        .catch(function (error) {
+                            vm.saveMessage = 'Error saving widget'
+                        });
+                }
+            },
             addMaterial: function(material) {
                 const list = this.searchResult.data;
                 const index = list.indexOf(material);
@@ -230,19 +290,28 @@
                 const list = this.widgetContent;
                 const index = list.indexOf(material);
                 if (index > -1) {
+                    if (null === this.searchResult) {
+                        this.searchResult = {data: []}
+                    }
                     this.searchResult.data.push(list[index]);
                     list.splice(index, 1);
                 }
             },
             addAllMaterials: function() {
+                if (null === this.searchResult) {
+                    this.searchResult = {data: []}
+                }
                 this.widgetContent = this.widgetContent.concat(this.searchResult.data)
                 this.searchResult.data = []
             },
             removeAllMaterials: function() {
+                if (null === this.searchResult) {
+                    this.searchResult = {data: []}
+                }
                 this.searchResult.data = this.searchResult.data.concat(this.widgetContent)
                 this.widgetContent = [];
             },
-            selectSize:function() {
+            selectSize: function() {
                 this.selectedOption = '';
             },
             debouncedSearch: function() {

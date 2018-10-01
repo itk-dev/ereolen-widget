@@ -118,6 +118,14 @@ class WidgetController extends AbstractController
     }
 
     /**
+     * @Route("/{id}/edit", name="widget_edit")
+     */
+    public function edit(Request $request, Widget $widget)
+    {
+        return $this->render('default/index.html.twig', ['widget' => $widget]);
+    }
+
+    /**
      * @Route("/{id}/redirect", name="widget_redirect")
      */
     public function doRedirect(Request $request, Widget $widget)

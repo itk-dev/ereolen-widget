@@ -7,6 +7,7 @@ module.exports = {
         'plugin:vue/recommended'
     ],
     rules: {
+        // @see https://eslint.org/docs/rules/
         'brace-style': ['error', '1tbs'],
         'space-before-blocks': ['error', 'always'],
         'object-curly-spacing': ['error', 'never'],
@@ -15,6 +16,7 @@ module.exports = {
         'comma-style': ['error', 'last'],
         'comma-spacing': 'error',
         'quotes': ['error', 'single'],
+        'key-spacing': ['error'],
         // @see https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
         'vue/html-indent': ['error', 4, {}],
         'vue/v-bind-style': 'longform',

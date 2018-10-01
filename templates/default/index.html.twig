@@ -1,8 +1,19 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Byg din eReolen widget{% endblock %}
- 
+
 {% block body %}
+    {% if widget|default(null) %}
+        <script type="application/json" id="app-widget-data">
+            {{ {
+                id: widget.id,
+                title: widget.title,
+                content: widget.content,
+                createdAt: widget.createdAt,
+                updatedAt: widget.updatedAt
+                }|json_encode|raw }}
+        </script>
+    {% endif %}
     <div class="container-fluid">
         <topbar></topbar>
         <app></app>
