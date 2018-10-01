@@ -1,5 +1,5 @@
 <template>
-    <div class="col-3 col-lg-2 mb-1" @click="action(data)">
+    <div class="col-3 col-lg-2 mb-3" @click="action(data)">
         <div class="result">
             <img v-bind:src="cover" v-bind:alt="title" class="result-image img-fluid">
             <!-- #TODO: Show material type (Audiobook/ebook) -->

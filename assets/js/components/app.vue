@@ -57,18 +57,17 @@
 
                     <div class="row content-search" v-if="contentSearch === 'manuel' && searchResult && searchResult.data.length != 0">
                         <div class="col-sm-12">
-                            <label>Søgeresultat: <strong>Tryk på bøgerne for at tilføje</strong></label> <a href="#" class="btn btn-success btn-sm text-light ml-2" @click="addAllMaterials">Tilføj alle</a>
+                            <label>Søgeresultat: <strong>Tryk på bøgerne for at tilføje</strong></label><a href="#" class="btn btn-success btn-sm text-light ml-2" @click="addAllMaterials">Tilføj alle</a>
                             <div class="row content-search-results">
                                 <material v-for="material in searchResult.data" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="plus" v-bind:action="addMaterial" />
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row content-search-results added">
                         <div class="col-sm-12">
-                            <label>Tilfjøede bøger: <strong>Tryk på bøgerne for at fjerne</strong></label> <span href="#" class="btn btn-danger btn-sm text-light ml-2" @click="removeAllMaterials">Fjern alle</span>
+                            <label>Tilfjøede bøger: <strong>Tryk på bøgerne for at fjerne</strong></label><a href="#" class="btn btn-danger btn-sm text-light ml-2" @click="removeAllMaterials">Fjern alle</a>
+                            <div class="row content-search-results added">
+                                <material v-for="material in widgetContent" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="minus" v-bind:action="removeMaterial" />
+                            </div>
                         </div>
-                        <material v-for="material in widgetContent" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="minus" v-bind:action="removeMaterial" />
                     </div>
 
                     <div class="row">
