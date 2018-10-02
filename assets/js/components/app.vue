@@ -10,6 +10,16 @@
             <form>
                 <fieldset>
                     <h3>{{ $t('Widget content') }}</h3>
+
+                    <div v-if="messages.length > 0">
+                        <div v-for="message in messages" class="alert" v-bind:class="['alert-'+message.type]" v-bind:key="message.id">
+                            {{ message.text }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" v-on:click="dismissMessage(message)">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <div class="row justify-content-start">
                             <div class="col-auto">
@@ -142,11 +152,6 @@
                     </div>
                 </fieldset>
 
-                <div v-if="saveMessage" class="alert" v-bind:class="{'alert-info': true}" style="position: absolute; top: 0; left: 0; right: 0">{{ saveMessage }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" v-on:click="saveMessage = null">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
                 <div v-if="copySucceeded === true" class="alert alert-fixed-bottom" v-bind:class="{'alert-info': true}">
                     {{ $t('Copied') }}
                 </div>
@@ -204,6 +209,9 @@
         {label: 'eReolen GO', url: 'https://www.ereolengo.dk', logo: 'https://ereolengo.dk/sites/all/themes/wille/svg/logo.svg'}
     ]
 
+    // Dismiss messages afthe amount of milliseconds.
+    const messageDismissDelay = 2000
+
     export default {
         name: 'App',
         data() {
@@ -235,14 +243,16 @@
                 searchResult: null,
                 // The actual widget (stored in database)
                 widget: null,
-                saveMessage: null,
-                copySucceeded: null
+                copySucceeded: null,
+                // User messages (alerts)
+                messages: []
             }
         },
         computed: {
             embedCode() {
+                const url = this.$config.widgetEmbedUrl.replace('{id}', this.widget.id)
                 return {
-                    code: '&lt;iframe src="https://widget.ereolen.dk/follow/1/?uri=ereolen:artist:6sFIWsNpZYqfjUpaCgueju&size=' + this.widgetSize.width + 'x' + this.widgetSize.height + '&theme=' + this.widgetTheme.class + '" width="' + this.widgetSize.width + '" height="' + this.widgetSize.height + '" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"&gt;&lt;/iframe&gt;'
+                    code: '<iframe src="'+url+'" width="' + this.widgetSize.width + '" height="' + this.widgetSize.height + '" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"></iframe>'
                 }
             }
         },
@@ -273,12 +283,29 @@
             })
         },
         methods: {
+            addMessage: function(text, type = 'info') {
+                const id = Date.now()+Math.random()
+                const message = {text: text, type: type, id: id}
+                this.messages.push(message)
+                if (messageDismissDelay > 0) {
+                    var vm = this
+                    setTimeout(function() {
+                        vm.dismissMessage(message)
+                    }, messageDismissDelay)
+                }
+            },
+            dismissMessage: function(message) {
+                const index = this.messages.indexOf(message)
+                if (index > -1) {
+                    this.messages.splice(index, 1)
+                }
+            },
             doCopyEmbedCode: function () {
                 const vm = this
                 this.$copyText(this.embedCode.code).then(function (e) {
-                    vm.copySucceeded = true
+                    vm.addMessage('Embed code copied', 'success')
                 }, function (e) {
-                    vm.copySucceeded = false
+                    vm.addMessage('Error copying embed code', 'error')
                 })
             },
             isValid: function() {
@@ -307,6 +334,7 @@
                         }
                     })
                 }
+                this.addMessage('Widget loaded')
             },
             getWidgetData: function() {
                 return {
@@ -329,23 +357,23 @@
                     const saveUrl = '/api/widgets/'+this.widget.id
                     axios.put(saveUrl, data)
                         .then(function (response) {
-                            vm.saveMessage = 'Widget saved'
+                            vm.addMessage('Widget saved')
                             vm.widget = response.data
                         })
                         .catch(function (error) {
-                            vm.saveMessage = 'Error saving widget'
+                            vm.addMessage('Error saving widget', 'error')
                         })
                 } else {
                     // Create
                     const saveUrl = '/api/widgets'
                     axios.post(saveUrl, data)
                         .then(function (response) {
-                            vm.saveMessage = 'Widget created'
+                            vm.addMessage('Widget created')
                             vm.widget = response.data
                             history.replaceState({}, 'Widget created', '/widget/'+vm.widget.id+'/edit')
                         })
                         .catch(function (error) {
-                            vm.saveMessage = 'Error creating widget'
+                            vm.addMessage('Error creating widget', 'error')
                         })
                 }
             },

@@ -126,6 +126,14 @@ class WidgetController extends AbstractController
     }
 
     /**
+     * @Route("/{id}/embed", name="widget_embed")
+     */
+    public function embed(Request $request, Widget $widget)
+    {
+        return $this->render('widget/embed.html.twig', ['widget' => $widget]);
+    }
+
+    /**
      * @Route("/{id}/redirect", name="widget_redirect")
      */
     public function doRedirect(Request $request, Widget $widget)

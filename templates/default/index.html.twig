@@ -14,7 +14,13 @@
                 }|json_encode|raw }}
         </script>
     {% endif %}
-    {% set configuration = {} %}
+    {# Get url with {id} placeholder. #}
+    {% set widgetEmbedUrl = absolute_url(path('widget_embed', {'id': '{id}'})|replace({('{id}'|url_encode): '{id}'})) %}
+    {% set configuration = {
+        widgetEmbedUrl: widgetEmbedUrl
+        } %}
+
+
     <div id="app" data-configuration="{{ configuration|json_encode }}">
         <div class="container-fluid">
             <topbar></topbar>
