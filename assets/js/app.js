@@ -38,7 +38,7 @@ Vue.component('v-icon', Icon)
 Vue.component('widget', Widget)
 Vue.component('material', Material)
 
-Vue.use(VueClipboard);
+Vue.use(VueClipboard)
 
 const container = document.getElementById('app')
 

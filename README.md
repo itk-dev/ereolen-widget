@@ -84,7 +84,7 @@ yarn install
 Build for production:
 
 ```sh
-yarn run build
+yarn build
 ```
 
 `git add` and `commit` changes in `public/build`.
@@ -92,19 +92,19 @@ yarn run build
 During development:
 
 ```sh
-yarn run watch
+yarn watch
 ```
 
 ## Coding standards
 
 ```sh
-yarn run check-coding-standards
+yarn check-coding-standards
 ```
 
 ```sh
-yarn run check-coding-standards-js
+yarn check-coding-standards-js
 ```
 
 ```sh
-yarn run check-coding-standards-scss
+yarn check-coding-standards-scss
 ```

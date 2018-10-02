@@ -50,7 +50,7 @@
                                     </div>
                                     <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" v-bind:placeholder="$t('Example: https://ereolen.dk/search/ting/jussi%20adler')" v-model="search.url" v-on:keyup.enter="debouncedSearch">
                                 </div>
-                                <small id="contentSearchSearchHelp" class="form-text text-muted" v-html="$t('Perform a search on eReolen and copy the url in the address bar. Then paste it here.', {ereolen_url: '//ereolen.dk', ereolen_name: 'eReolen'})" />
+                                <small id="contentSearchSearchHelp" class="form-text text-muted" v-html="$t('Perform a search on eReolen and copy the url in the address bar. Then paste it here.', {ereolen_url: widgetContext.url, ereolen_name: widgetContext.label})" />
                             </div>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                                 <material v-for="material in searchResult.data" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="plus" v-bind:action="addMaterial" />
                             </div>
                         </div>
-                        <div class="col-sm-12" v-if="searchResult && widgetContent.length > 0">
+                        <div class="col-sm-12" v-if="widgetContent.length > 0">
                             <label>{{ $t('Materials in the carousel') }}:: <strong>{{ $t('Click on a material to remove it from the carousel') }}</strong></label><a href="#" class="btn btn-danger btn-sm text-light ml-2" @click="removeAllMaterials">{{ $t('Remove all materials from carousel') }}</a>
                             <div class="row content-search-results added">
                                 <material v-for="material in widgetContent" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="minus" v-bind:action="removeMaterial" />
@@ -85,17 +85,17 @@
                             <div class="form-group">
                                 <label for="widget_theme">{{ $t('Widget color') }}</label>
                                 <select class="form-control" name="widget_theme" id="widget_theme" v-model="widgetTheme">
-                                    <option v-for="(option,index) in widgetThemes" v-bind:value="index" v-bind:key="option.id">
-                                        {{ $t(option.label) }}
+                                    <option v-for="theme in widgetThemes" v-bind:value="theme" v-bind:key="theme.label">
+                                        {{ $t(theme.label) }}
                                     </option>
                                 </select>
                             </div>
 
                             <div class="form-group">
                                 <label for="widget_size">{{ $t('Widget size') }}</label>
-                                <select class="form-control" name="widget_size" id="widget_size" v-model="widgetSize" @change="selectSize">
-                                    <option v-for="(option,index) in widgetSizes" v-bind:value="index" v-bind:key="option.id">
-                                        {{ option.label }} {{ option.width }}x{{ option.height }}
+                                <select class="form-control" name="widget_size" id="widget_size" v-model="widgetSize">
+                                    <option v-for="size in widgetSizes" v-bind:value="size" v-bind:key="size.label">
+                                        {{ size.label }} {{ size.width }}x{{ size.height }}
                                     </option>
                                 </select>
                             </div>
@@ -106,7 +106,7 @@
                     <h3>{{ $t('Widget preview') }}</h3>
                     <div class="widget-preview bg-white">
                         <!-- #TODO: Show itk-spinner while updating  -->
-                        <widget v-bind:height="widgetSizes[widgetSize].height" v-bind:width="widgetSizes[widgetSize].width" v-bind:title="widgetTitle" v-bind:data="widgetContent" /> <!-- v-if="widgetContent.length &gt; 0"   -->
+                        <widget v-bind:size="widgetSize" v-bind:title="widgetTitle" v-bind:data="widgetContent" /> <!-- v-if="widgetContent.length &gt; 0"   -->
                         <!-- <div class="widget-preview default" v-else>
                             {{ $t('Preview will update when you add or remove materials') }}
                         </div> -->
@@ -126,9 +126,7 @@
                                             </span>
                                         </div>
                                         <div class="col-auto ml-auto">
-                                            <!-- #TODO: Add functionality to copy code on click -->
-                                            <button type="button" class="code-preview-header-copy" v-clipboard:copy="embedCode.code" v-clipboard:success="handleCopyStatus(true)"
-      v-clipboard:error="handleCopyStatus(false)">
+                                            <button type="button" class="code-preview-header-copy" v-on:click="doCopyEmbedCode">
                                                 <v-icon name="copy" />{{ $t('Copy') }}
                                             </button>
                                         </div>
@@ -136,8 +134,6 @@
                                 </div>
                                 <div class="code-preview-content">
                                     <pre><code>
-                                        <!-- #TODO: Use real url -->
-                                        <!-- #TODO: Use real content  -->
                                         {{ embedCode.code }}
                                     </code></pre>
                                 </div>
@@ -146,7 +142,7 @@
                     </div>
                 </fieldset>
 
-                <div v-if="saveMessage" class="alert" v-bind:class="{'alert-info': true}">{{ saveMessage }}
+                <div v-if="saveMessage" class="alert" v-bind:class="{'alert-info': true}" style="position: absolute; top: 0; left: 0; right: 0">{{ saveMessage }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" v-on:click="saveMessage = null">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -155,9 +151,8 @@
                     {{ $t('Copied') }}
                 </div>
                 <div v-if="copySucceeded === false" class="alert alert-fixed-bottom" v-bind:class="{'alert-warning': true}">
-                    {{ $t('Press CTRL+C to copy.') }}
+                    {{ $t('Press Ctrl+C to copy.') }}
                 </div>
-                <button type="button" class="btn btn-primary" v-on:click="saveWidget" v-bind:disabled="!isValid()">{{ widget ? $t('Update widget') : $t('Save widget') }}</button>
             </form>
         </div>
     </div>
@@ -184,40 +179,46 @@
     const CancelToken = axios.CancelToken
     let cancelSearch = null
 
+    const widgetThemes = [
+        {label: 'theme.light', class: 'light'},
+        {label: 'theme.dark', class: 'dark'}
+    ]
+
+    const widgetSizes = [
+        {label: 'Rektangulær', width: 250, height: 250},
+        {label: 'Banner', width: 468, height: 60},
+        {label: 'Skyskraber', width: 120, height: 600},
+        {label: 'Bred skyskraber', width: 160, height: 600},
+        {label: 'Lille kvadrat', width: 200, height: 200},
+        {label: 'Kvadrat', width: 250, height: 250},
+        {label: 'Mellemstor rektangel', width: 300, height: 250},
+        {label: 'Stor rektangel', width: 336, height: 280},
+        {label: 'Halvside', width: 300, height: 600},
+        {label: 'Mobilbanner', width: 320, height: 50},
+        {label: 'Mobilbanner 2', width: 320, height: 100},
+        {label: 'Stort leaderboard', width: 970, height: 90}
+    ]
+
+    const widgetContexts = [
+        {label: 'eReolen', url: 'https://www.ereolen.dk', logo: 'https://ereolen.dk/sites/all/themes/orwell/svg/eReolen_Logo.svg'},
+        {label: 'eReolen GO', url: 'https://www.ereolengo.dk', logo: 'https://ereolengo.dk/sites/all/themes/wille/svg/logo.svg'}
+    ]
+
     export default {
         name: 'App',
         data() {
             return {
-                widgetContext: [
-                    { label: 'eReolen', url: 'https://www.ereolen.dk', logo: 'https://ereolen.dk/sites/all/themes/orwell/svg/eReolen_Logo.svg' },
-                    { label: 'eReolen GO', url: 'https://www.ereolengo.dk', logo: 'https://ereolengo.dk/sites/all/themes/wille/svg/logo.svg' }
-                ],
+                widgetContexts: widgetContexts,
+                widgetContext: widgetContexts[0],
                 // The selected materials
                 widgetContent: [],
                 widgetTitle: '',
                 contentSearch: 'manuel',
                 contentSearchManual: '',
-                widgetThemes: [
-                    {label: 'theme.light', class: 'light'},
-                    {label: 'theme.dark', class: 'dark'}
-                ],
-                widgetTheme: 0,
-                widgetSizes: [
-                    {label: 'Rektangulær', width: 250, height: 250},
-                    {label: 'Banner', width: 468, height: 60},
-                    {label: 'Skyskraber', width: 120, height: 600},
-                    {label: 'Bred skyskraber', width: 160, height: 600},
-                    {label: 'Lille kvadrat', width: 200, height: 200},
-                    {label: 'Kvadrat', width: 250, height: 250},
-                    {label: 'Mellemstor rektangel', width: 300, height: 250},
-                    {label: 'Stor rektangel', width: 336, height: 280},
-                    {label: 'Halvside', width: 300, height: 600},
-                    {label: 'Mobilbanner', width: 320, height: 50},
-                    {label: 'Mobilbanner 2', width: 320, height: 100},
-                    {label: 'Stort leaderboard', width: 970, height: 90}
-                ],
-                widgetSize: 0,
-                selectedOption: '',
+                widgetThemes: widgetThemes,
+                widgetTheme: widgetThemes[0],
+                widgetSizes: widgetSizes,
+                widgetSize: widgetSizes[0],
                 // The search query.
                 search: {
                     // "Manuel" search
@@ -238,11 +239,6 @@
                 copySucceeded: null
             }
         },
-        watch: {
-            contentSearch: 'debouncedSearch',
-            'search.query': 'debouncedSearch',
-            'search.url': 'debouncedSearch'
-        },
         computed: {
             embedCode() {
                 return {
@@ -255,31 +251,78 @@
             try {
                 const el = document.getElementById('app-widget-data')
                 const data = JSON.parse(el.textContent)
-                this.widget = data
-                this.widgetTitle = this.widget.title
-                this.widgetContent = this.widget.content
+                this.loadWidgetData(data)
             } catch (e) {
                 // continue regardless of error
             }
 
-            this._debouncedSearch = debounce(this.doSearch, 500)
+            this.debouncedSearch = debounce(this.doSearch, 500)
+            this.debouncedSave = debounce(this.doSave, 500)
             const search = queryString.parse(location.hash)
             if ('query' in search) {
                 this.search.query = search['query']
             }
+
+            // @see https://github.com/vuejs/vue/issues/844#issuecomment-390498696
+            this.$watch((vm) => (vm.contentSearch, vm.search.query, vm.search.url, Date.now()), function() {
+                this.debouncedSearch()
+            })
+
+            this.$watch((vm) => (vm.widgetTitle, vm.widgetContent, vm.widgetTheme, vm.widgetSize, Date.now()), function () {
+                this.debouncedSave()
+            })
         },
         methods: {
+            doCopyEmbedCode: function () {
+                const vm = this
+                this.$copyText(this.embedCode.code).then(function (e) {
+                    vm.copySucceeded = true
+                }, function (e) {
+                    vm.copySucceeded = false
+                })
+            },
             isValid: function() {
                 return this.widgetTitle && this.widgetContent && this.widgetContent.length > 0
             },
-            saveWidget: function() {
+            loadWidgetData: function(data) {
+                const widget = data
+                const content = data.content
+
+                this.widget = widget
+                this.widgetTitle = widget.title
+                this.widgetContent = content.widgetContent
+                this.widgetTheme = this.widgetThemes[0]
+                if (content.theme) {
+                    this.widgetThemes.forEach((theme) => {
+                        if (theme.label === content.theme.label) {
+                            this.widgetTheme = theme
+                        }
+                    })
+                }
+                this.widgetSize = this.widgetSizes[0]
+                if (content.size) {
+                    this.widgetSizes.forEach((size) => {
+                        if (size.label === content.size.label) {
+                            this.widgetSize = size
+                        }
+                    })
+                }
+            },
+            getWidgetData: function() {
+                return {
+                    theme: this.widgetTheme,
+                    size: this.widgetSize,
+                    widgetContent: this.widgetContent
+                }
+            },
+            doSave: function() {
                 if (!this.isValid()) {
                     return
                 }
                 const vm = this
                 const data = {
                     title: this.widgetTitle,
-                    content: this.widgetContent
+                    content: this.getWidgetData()
                 }
                 if (this.widget) {
                     // Update
@@ -297,14 +340,12 @@
                     const saveUrl = '/api/widgets'
                     axios.post(saveUrl, data)
                         .then(function (response) {
-                            vm.saveMessage = 'Widget saved'
-                            if (!vm.widget) {
-                                location.href = '/widget/'+response.data.id+'/edit'
-                            }
+                            vm.saveMessage = 'Widget created'
                             vm.widget = response.data
+                            history.replaceState({}, 'Widget created', '/widget/'+vm.widget.id+'/edit')
                         })
                         .catch(function (error) {
-                            vm.saveMessage = 'Error saving widget'
+                            vm.saveMessage = 'Error creating widget'
                         })
                 }
             },
@@ -341,12 +382,9 @@
                 this.searchResult.data = this.searchResult.data.concat(this.widgetContent)
                 this.widgetContent = []
             },
-            selectSize: function() {
-                this.selectedOption = ''
-            },
-            debouncedSearch: function() {
-                this._debouncedSearch()
-            },
+            // debouncedSearch: function() {
+            //     this._debouncedSearch()
+            // },
             doSearch: function() {
                 const searchUrl = '/widget/search'
                 let searchMessage = null
@@ -404,9 +442,6 @@
                             vm.searchState = null
                         })
                 }
-            },
-            handleCopyStatus: function(status) {
-                this.copySucceeded = status
             }
         }
     }

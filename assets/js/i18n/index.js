@@ -38,7 +38,7 @@ const messages = {
         'Widget size': 'Størrelse',
         'Widget title': 'Titel',
         'Copied': 'Kopieret',
-        'Press CTRL+C to copy.': 'Brug CRTL+C for at kopiere',
+        'Press Ctrl+C to copy.': 'Brug Ctrl+C for at kopiere',
         theme: {
             dark: 'Mørk',
             light: 'Lys'
