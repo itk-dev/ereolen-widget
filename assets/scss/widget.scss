@@ -1,0 +1,76 @@
+/*
+* Styles only used for the vue widget component.
+*/
+
+:root {
+    /* stylelint-disable */
+    --color-white: #fff;
+    --color-danger: #b81b40;
+    --theme-light-bg-color: #f0f0f0;
+    --theme-light-text-color: #212121;
+    --theme-dark-bg-color: #212121;
+    --theme-dark-text-color: var(--color-white);
+    --border-color: #666;
+    --text-color-gray-500: #666;
+    /* stylelint-enable */
+}
+.er-widget {
+    width: var(--widget-width);
+    height: var(--widget-height);
+    overflow: hidden;
+    position: relative;
+}
+.er-widget.theme-light {
+    background-color: var(--theme-light-bg-color);
+    color: var(--theme-light-text-color);
+}
+.er-widget.theme-dark {
+    background-color: var(--theme-dark-bg-color);
+    color: var(--theme-dark-text-color);
+}
+.er-widget .er-widget-title {
+    margin: .5rem;
+    font-size: 1.5rem;
+}
+.er-widget ul.materials {
+    list-style: none;
+    margin: 0 0 0 .5rem;
+    padding: 0;
+    width: 100%;
+    overflow-x: scroll;
+}
+.er-widget ul.materials li {
+    margin: 0;
+    display: inline-block;
+}
+.er-widget ul.materials li a {
+    display: block;
+}
+.er-widget ul.materials li a img {
+    width: 100px;
+    max-height: 100%;
+}
+.er-widget-backlink {
+    border: 1px solid var(--border-color);
+    border-radius: 2px;
+    padding: 5px 10px;
+    color: var(--text-color-gray-500);
+    background-color: transparent;
+    transition: color .2s ease-in, border-color .2s ease-in, background-color .2s ease-in;
+    position: absolute;
+    left: .5rem;
+    bottom: .5rem;
+}
+.er-widget-backlink:hover {
+    border: 1px solid var(--color-danger);
+    color: var(--color-white);
+    background-color: var(--color-danger);
+    text-decoration: none;
+    transition: color .4s ease-out, border-color .4s ease-out, background-color .4s ease-out;
+}
+.er-widget-logo {
+    height: 1.2rem;
+    position: absolute;
+    right: .5rem;
+    bottom: .5rem;
+}

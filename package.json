@@ -45,5 +45,8 @@
         "apply-coding-standards-eslint": "eslint --config .eslintrc.js 'assets/**/*.{js,vue}' --fix",
         "apply-coding-standards-js": "npm run apply-coding-standards-eslint",
         "apply-coding-standards": "npm run apply-coding-standards-scss; npm run apply-coding-standards-js"
+    },
+    "dependencies": {
+        "vue-clipboard2": "^0.2.1"
     }
 }

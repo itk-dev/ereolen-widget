@@ -106,10 +106,10 @@
                     <h3>{{ $t('Widget preview') }}</h3>
                     <div class="widget-preview bg-white">
                         <!-- #TODO: Show itk-spinner while updating  -->
-                        <widget v-bind:height="widgetSizes[widgetSize].height" v-bind:width="widgetSizes[widgetSize].width" v-bind:title="widgetTitle" v-bind:widget-content="widgetContent" v-if="widgetContent.length &gt; 0"  v-bind:data="widgetContent" />
-                        <div class="widget-preview default" v-else>
+                        <widget v-bind:height="widgetSizes[widgetSize].height" v-bind:width="widgetSizes[widgetSize].width" v-bind:title="widgetTitle" v-bind:data="widgetContent" /> <!-- v-if="widgetContent.length &gt; 0"   -->
+                        <!-- <div class="widget-preview default" v-else>
                             {{ $t('Preview will update when you add or remove materials') }}
-                        </div>
+                        </div> -->
                     </div>
                 </fieldset>
                 <fieldset>
@@ -127,9 +127,10 @@
                                         </div>
                                         <div class="col-auto ml-auto">
                                             <!-- #TODO: Add functionality to copy code on click -->
-                                            <a href="#" class="code-preview-header-copy">
+                                            <button class="code-preview-header-copy" v-clipboard:copy="embedCode.code" v-clipboard:success="handleCopyStatus(true)"
+      v-clipboard:error="handleCopyStatus(false)">
                                                 <v-icon name="copy" />{{ $t('Copy') }}
-                                            </a>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -137,7 +138,7 @@
                                     <pre><code>
                                         <!-- #TODO: Use real url -->
                                         <!-- #TODO: Use real content  -->
-                                        &lt;iframe src="https://widget.ereolen.dk/follow/1/?uri=ereolen:artist:6sFIWsNpZYqfjUpaCgueju&size={{ widgetSizes[widgetSize].width }}x{{ widgetSizes[widgetSize].height }}&theme={{ widgetThemes[widgetTheme].class }}" width="{{ widgetSizes[widgetSize].width }}" height="{{ widgetSizes[widgetSize].height }}" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"&gt;&lt;/iframe&gt;
+                                        {{ embedCode.code }}
                                     </code></pre>
                                 </div>
                             </div>
@@ -149,6 +150,12 @@
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" v-on:click="saveMessage = null">
                         <span aria-hidden="true">&times;</span>
                     </button>
+                </div>
+                <div v-if="copySucceeded === true" class="alert alert-fixed-bottom" v-bind:class="{'alert-info': true}">
+                    {{ $t('Copied') }}
+                </div>
+                <div v-if="copySucceeded === false" class="alert alert-fixed-bottom" v-bind:class="{'alert-warning': true}">
+                    {{ $t('Press CTRL+C to copy.') }}
                 </div>
                 <button type="button" class="btn btn-primary" v-on:click="saveWidget" v-bind:disabled="!isValid()">{{ widget ? $t('Update widget') : $t('Save widget') }}</button>
             </form>
@@ -181,6 +188,10 @@
         name: 'App',
         data() {
             return {
+                widgetContext: [
+                    { label: 'eReolen', url: 'https://www.ereolen.dk', logo: 'https://ereolen.dk/sites/all/themes/orwell/svg/eReolen_Logo.svg' },
+                    { label: 'eReolen GO', url: 'https://www.ereolengo.dk', logo: 'https://ereolengo.dk/sites/all/themes/wille/svg/logo.svg' }
+                ],
                 // The selected materials
                 widgetContent: [],
                 widgetTitle: '',
@@ -223,13 +234,21 @@
                 searchResult: null,
                 // The actual widget (stored in database)
                 widget: null,
-                saveMessage: null
+                saveMessage: null,
+                copySucceeded: null
             }
         },
         watch: {
             contentSearch: 'debouncedSearch',
             'search.query': 'debouncedSearch',
             'search.url': 'debouncedSearch'
+        },
+        computed: {
+            embedCode() {
+                return {
+                    code: '&lt;iframe src="https://widget.ereolen.dk/follow/1/?uri=ereolen:artist:6sFIWsNpZYqfjUpaCgueju&size=' + this.widgetSize.width + 'x' + this.widgetSize.height + '&theme=' + this.widgetTheme.class + '" width="' + this.widgetSize.width + '" height="' + this.widgetSize.height + '" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"&gt;&lt;/iframe&gt;'
+                }
+            }
         },
         created: function() {
             // Load widget data.
@@ -385,6 +404,9 @@
                             vm.searchState = null
                         })
                 }
+            },
+            handleCopyStatus: function(status) {
+                this.copySucceeded = status
             }
         }
     }

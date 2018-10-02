@@ -8,6 +8,7 @@ import App from './components/app'
 import Topbar from './components/topbar'
 import Widget from './components/widget'
 import Material from './components/material'
+import VueClipboard from 'vue-clipboard2'
 
 /**
 * Import vue-awesome fontawesome-icons (https://github.com/Justineo/vue-awesome)[https://github.com/Justineo/vue-awesome]
@@ -22,6 +23,8 @@ import 'vue-awesome/icons/bars'
 import 'vue-awesome/icons/search'
 import 'vue-awesome/icons/plus'
 import 'vue-awesome/icons/minus'
+import 'vue-awesome/icons/angle-left'
+import 'vue-awesome/icons/angle-right'
 
 /**
 * Require the scss for the app.
@@ -34,6 +37,8 @@ require('../scss/app.scss')
 Vue.component('v-icon', Icon)
 Vue.component('widget', Widget)
 Vue.component('material', Material)
+
+Vue.use(VueClipboard);
 
 const container = document.getElementById('app')
 
@@ -54,6 +59,6 @@ if (null !== container) {
         el: container,
         config,
         i18n,
-        components: {App, Topbar, Widget, Material}
+        components: {App, Topbar, Widget, Material, VueClipboard}
     })
 }
