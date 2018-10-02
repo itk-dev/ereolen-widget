@@ -52,6 +52,7 @@ if (null !== container) {
      */
     new Vue({
         el: container,
+        config,
         i18n,
         components: {App, Topbar, Widget, Material}
     })

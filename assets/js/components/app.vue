@@ -157,6 +157,19 @@
 </template>
 
 <script>
+    import Vue from 'vue'
+
+    Vue.mixin({
+        beforeCreate () {
+            const options = this.$options
+            if (options.config) {
+                this.$config = options.config
+            } else if (options.parent && options.parent.$config) {
+                this.$config = options.parent.$config
+            }
+        }
+    })
+
     const axios = require('axios')
     const debounce = require('debounce')
     const queryString = require('query-string')
