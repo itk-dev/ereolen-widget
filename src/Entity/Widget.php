@@ -13,12 +13,15 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Traits\BlameableEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Loggable\Loggable;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\WidgetRepository")
+ * @Gedmo\Loggable
  * @ApiResource(
  *     normalizationContext={"groups"={"widget_read"}},
  *     denormalizationContext={"groups"={"widget_write"}},
@@ -33,7 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     attributes={"order"={"title"}}
  * )
  */
-class Widget
+class Widget implements Loggable
 {
     use BlameableEntity;
     use TimestampableEntity;
@@ -48,6 +51,7 @@ class Widget
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Gedmo\Versioned
      * @Groups({"widget_read", "widget_write"})
      * @Assert\NotBlank()
      */
@@ -55,8 +59,9 @@ class Widget
 
     /**
      * @ORM\Column(type="json")
+     * @Gedmo\Versioned
      * @Groups({"widget_read", "widget_write"})
-     * @Assert\NotBlank()
+     * @ Assert\NotBlank()
      */
     private $content = [];
 

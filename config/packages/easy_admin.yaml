@@ -2,18 +2,28 @@ easy_admin:
     entities:
         Widget:
             class: App\Entity\Widget
-            role_prefix: ROLE_ADMIN_WIDGET
+            disabled_actions: ['delete', 'edit']
             list:
-                actions: ['show']
+                role: ROLE_ADMIN
+                actions:
+                    - name: widget_edit
+                      type: route
+                      label: Edit
+                    - name: admin_loggable_entity
+                      type: route
+                      label: Revisions
+
                 fields:
                     - property: title
                     - property: createdBy
                     - property: createdAt
             form:
+                role: ROLE_ADMIN
                 fields:
                     - property: title
 
             show:
+                role: ROLE_ADMIN
                 fields:
                     - property: title
                     - property: statistics
@@ -21,8 +31,8 @@ easy_admin:
 
         User:
             class: App\Entity\User
-            controller: App\Controller\Admin\UserController
             role_prefix: ROLE_ADMIN_USER
+            disabled_actions: ['delete']
             list:
                 fields:
                     - property: email

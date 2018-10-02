@@ -1,0 +1,17 @@
+{% block body %}
+    <fieldset class="changes">
+        <legend>Changes</legend>
+
+        <dl>
+            {% for change in changes %}
+                <dt>{{ change.action }} at {{ change.loggedAt|date('c') }} (version: {{ change.version }})
+                    <form method="POST" action="{{ path('admin_loggable_entity_revert', {entity: entityType, id: entity.id, version: change.version}) }}">
+                        <input type="hidden" name="_method" value="PUT"/>
+                        <button type="submit">Revert</button>
+                    </form>
+                </dt>
+                <dd><pre>{{ change.data|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre></dd>
+            {% endfor %}
+        </dl>
+    </fieldset>
+{% endblock %}

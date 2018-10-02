@@ -8,13 +8,13 @@
  * This source file is subject to the MIT license.
  */
 
-namespace App\Controller\Admin;
+namespace App\Controller;
 
-use AlterPHP\EasyAdminExtensionBundle\Controller\AdminController;
+use AlterPHP\EasyAdminExtensionBundle\Controller\AdminController as BaseAdminController;
 use App\Entity\User;
 use FOS\UserBundle\Model\UserManagerInterface;
 
-class UserController extends AdminController
+class AdminController extends BaseAdminController
 {
     /** @var \FOS\UserBundle\Model\UserManagerInterface */
     private $userManager;
@@ -24,12 +24,12 @@ class UserController extends AdminController
         $this->userManager = $userManager;
     }
 
-    public function createNewEntity()
+    public function createNewUserEntity()
     {
         return $this->userManager->createUser();
     }
 
-    public function persistEntity($user)
+    public function persistUserEntity(User $user)
     {
         // @TODO: Move this to custom UserManager.
         $user->setPlainPassword(uniqid('', true));
