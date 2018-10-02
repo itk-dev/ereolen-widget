@@ -127,7 +127,7 @@
                                         </div>
                                         <div class="col-auto ml-auto">
                                             <!-- #TODO: Add functionality to copy code on click -->
-                                            <button class="code-preview-header-copy" v-clipboard:copy="embedCode.code" v-clipboard:success="handleCopyStatus(true)"
+                                            <button type="button" class="code-preview-header-copy" v-clipboard:copy="embedCode.code" v-clipboard:success="handleCopyStatus(true)"
       v-clipboard:error="handleCopyStatus(false)">
                                                 <v-icon name="copy" />{{ $t('Copy') }}
                                             </button>
