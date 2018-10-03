@@ -121,7 +121,7 @@
                             {{ $t('Preview will update when you add or remove materials') }}
                         </div> -->
 
-                        <iframe v-if="embedUrl" v-bind:src="embedUrl" v-bind:width="widgetConfiguration.size.width" v-bind:height="widgetConfiguration.size.height" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"></iframe>
+                        <iframe v-if="embedUrl" v-bind:src="embedUrl" v-bind:width="widgetConfiguration.size.width" v-bind:height="widgetConfiguration.size.height" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true" />
                     </div>
                 </fieldset>
                 <fieldset>
@@ -259,7 +259,7 @@
         },
         computed: {
             embedUrl() {
-                return (this.widget && this.widget.id) ? this.$config.widgetEmbedUrl.replace('{id}', this.widget.id) : null;
+                return (this.widget && this.widget.id) ? this.$config.widgetEmbedUrl.replace('{id}', this.widget.id) : null
             },
             embedCode() {
                 const url = this.embedUrl
@@ -324,7 +324,9 @@
                 })
             },
             isValid: function() {
-                return this.widgetTitle && this.widgetContent && this.widgetContent.length > 0
+                return this.widgetTitle
+                    && ((SearchTypes.MANUAL === this.search.type && this.widgetContent && this.widgetContent.length > 0)
+                    || (SearchTypes.URL === this.search.type && (this.search.url)))
             },
             // Load data from api.
             loadWidgetData: function(data) {
@@ -364,7 +366,7 @@
                         size: this.widgetConfiguration.size,
                         search: this.search
                     },
-                    content: this.widgetContent
+                    content: this.widgetContent || []
                 }
             },
             doSave: function() {
