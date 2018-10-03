@@ -120,6 +120,8 @@
                         <!-- <div class="widget-preview default" v-else>
                             {{ $t('Preview will update when you add or remove materials') }}
                         </div> -->
+
+                        <iframe v-if="embedUrl" v-bind:src="embedUrl" v-bind:width="widgetConfiguration.size.width" v-bind:height="widgetConfiguration.size.height" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"></iframe>
                     </div>
                 </fieldset>
                 <fieldset>
@@ -263,8 +265,11 @@
             }
         },
         computed: {
+            embedUrl() {
+                return this.$config.widgetEmbedUrl.replace('{id}', this.widget.id)
+            },
             embedCode() {
-                const url = this.$config.widgetEmbedUrl.replace('{id}', this.widget.id)
+                const url = this.embedUrl
                 return {
                     code: '<iframe src="'+url+'" width="' + this.widgetConfiguration.size.width + '" height="' + this.widgetConfiguration.size.height + '" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"></iframe>'
                 }
