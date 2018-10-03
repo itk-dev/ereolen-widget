@@ -32,7 +32,7 @@
             },
             cover: {
                 type: String,
-                required: true
+                default: null
             },
             url: {
                 type: String,

@@ -288,11 +288,11 @@
             }
 
             // @see https://github.com/vuejs/vue/issues/844#issuecomment-390498696
-            this.$watch((vm) => (vm.search.type, vm.search.query, vm.search.url, Date.now()), function() {
+            this.$watch((vm) => (vm.search.type, vm.search.query, Date.now()), function() {
                 this.debouncedSearch()
             })
 
-            this.$watch((vm) => (vm.widgetTitle, vm.widgetConfiguration.theme, vm.widgetConfiguration.size, vm.widgetContent, Date.now()), function () {
+            this.$watch((vm) => (vm.widgetTitle, vm.search.type, vm.search.url, vm.widgetConfiguration.theme, vm.widgetConfiguration.size, vm.widgetContent, Date.now()), function () {
                 this.debouncedSave()
             })
         },
@@ -328,11 +328,15 @@
             isValid: function() {
                 return this.widgetTitle && this.widgetContent && this.widgetContent.length > 0
             },
+            // Load data from api.
             loadWidgetData: function(data) {
                 const widget = data
                 const configuration = data.configuration
 
                 this.widget = widget
+                if (configuration.search) {
+                    this.search = configuration.search
+                }
                 this.widgetTitle = widget.title
                 this.widgetContent = data.content
                 this.widgetConfiguration.theme = this.widgetThemes[0]
@@ -359,7 +363,8 @@
                     title: this.widgetTitle,
                     configuration: {
                         theme: this.widgetConfiguration.theme,
-                        size: this.widgetConfiguration.size
+                        size: this.widgetConfiguration.size,
+                        search: this.search
                     },
                     content: this.widgetContent
                 }
