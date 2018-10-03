@@ -246,18 +246,17 @@
                 messages: [],
 
                 // The actual widget (stored in database)
-                // {
-                //     id
-                //     title
-                //     configuration
-                //     content
-                // }
+                //  {
+                //   id
+                //   title
+                //   configuration
+                //   content
+                //  }
                 widget: null,
                 widgetTitle: null,
                 widgetConfiguration: {
                     theme: widgetThemes[0],
-                    size: widgetSizes[0],
-
+                    size: widgetSizes[0]
                 },
                 // The selected materials
                 widgetContent: []
@@ -331,23 +330,23 @@
             },
             loadWidgetData: function(data) {
                 const widget = data
-                const content = data.content
+                const configuration = data.configuration
 
                 this.widget = widget
                 this.widgetTitle = widget.title
-                this.widgetContent = content.widgetContent
+                this.widgetContent = data.content
                 this.widgetConfiguration.theme = this.widgetThemes[0]
-                if (content.theme) {
+                if (configuration.theme) {
                     this.widgetThemes.forEach((theme) => {
-                        if (theme.label === content.theme.label) {
+                        if (theme.label === configuration.theme.label) {
                             this.widgetConfiguration.theme = theme
                         }
                     })
                 }
                 this.widgetSize = this.widgetSizes[0]
-                if (content.size) {
+                if (configuration.size) {
                     this.widgetSizes.forEach((size) => {
-                        if (size.label === content.size.label) {
+                        if (size.label === configuration.size.label) {
                             this.widgetSize = size
                         }
                     })
