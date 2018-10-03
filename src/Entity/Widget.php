@@ -61,7 +61,15 @@ class Widget implements Loggable
      * @ORM\Column(type="json")
      * @Gedmo\Versioned
      * @Groups({"widget_read", "widget_write"})
-     * @ Assert\NotBlank()
+     * @Assert\NotBlank()
+     */
+    private $configuration = [];
+
+    /**
+     * @ORM\Column(type="json")
+     * @Gedmo\Versioned
+     * @Groups({"widget_read", "widget_write"})
+     * @Assert\NotBlank()
      */
     private $content = [];
 
@@ -90,6 +98,18 @@ class Widget implements Loggable
     public function setContent(array $content): self
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getConfiguration(): ?array
+    {
+        return $this->configuration;
+    }
+
+    public function setConfiguration(array $configuration): self
+    {
+        $this->configuration = $configuration;
 
         return $this;
     }

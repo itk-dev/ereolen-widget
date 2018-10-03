@@ -26,7 +26,7 @@
                                 <div class="form-check">
                                     <!-- #TODO: Show itk-spinner while searching  -->
                                     <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" name="content" id="" value="manuel" checked v-model="contentSearch">
+                                        <input type="radio" class="form-check-input" name="content" v-bind:value="SearchTypes.MANUAL" checked v-model="search.type">
                                         {{ $t('Add manually') }}
                                     </label>
                                 </div>
@@ -34,7 +34,7 @@
                             <div class="col-auto">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" name="content" id="" value="search" v-model="contentSearch">
+                                        <input type="radio" class="form-check-input" name="content" v-bind:value="SearchTypes.URL" v-model="search.type">
                                         {{ $t('Use search from eReolen') }}
                                     </label>
                                 </div>
@@ -43,7 +43,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-10 col-lg-8">
-                            <div class="form-group" v-if="contentSearch === 'manuel'">
+                            <div class="form-group" v-if="search.type === SearchTypes.MANUAL">
                                 <label for="contentSearchManual">{{ $t('Search for materials you want to show in the carousel') }}</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
@@ -52,7 +52,7 @@
                                     <input type="text" class="form-control" name="contentSearchManual" id="contentSearchManual" v-bind:placeholder="$t('Enter author, title, isbn or publisher')" v-model="search.query" v-on:keyup.enter="debouncedSearch">
                                 </div>
                             </div>
-                            <div class="form-group" v-if="contentSearch === 'search'">
+                            <div class="form-group" v-if="search.type === SearchTypes.URL">
                                 <label for="contentSearchSearch">{{ $t('Insert url from eReolen') }}</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
@@ -64,7 +64,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row content-search" v-if="contentSearch === 'manuel'">
+                    <div class="row content-search" v-if="search.type === SearchTypes.MANUAL">
                         <div class="col-sm-12" v-if="searchResult && searchResult.data && searchResult.data.length > 0">
                             <label>{{ $t('Search result') }}:: <strong>{{ $t('Click on a material to add it to the carousel') }}</strong></label><a href="#" class="btn btn-success btn-sm text-light ml-2" @click="addAllMaterials">{{ $t('Add all materials to carousel') }}</a>
                             <div class="row content-search-results">
@@ -94,7 +94,7 @@
                         <div class="col-sm-10 col-lg-8">
                             <div class="form-group">
                                 <label for="widget_theme">{{ $t('Widget color') }}</label>
-                                <select class="form-control" name="widget_theme" id="widget_theme" v-model="widgetTheme">
+                                <select class="form-control" name="widget_theme" id="widget_theme" v-model="widgetConfiguration.theme">
                                     <option v-for="theme in widgetThemes" v-bind:value="theme" v-bind:key="theme.label">
                                         {{ $t(theme.label) }}
                                     </option>
@@ -103,7 +103,7 @@
 
                             <div class="form-group">
                                 <label for="widget_size">{{ $t('Widget size') }}</label>
-                                <select class="form-control" name="widget_size" id="widget_size" v-model="widgetSize">
+                                <select class="form-control" name="widget_size" id="widget_size" v-model="widgetConfiguration.size">
                                     <option v-for="size in widgetSizes" v-bind:value="size" v-bind:key="size.label">
                                         {{ size.label }} {{ size.width }}x{{ size.height }}
                                     </option>
@@ -116,7 +116,7 @@
                     <h3>{{ $t('Widget preview') }}</h3>
                     <div class="widget-preview bg-white">
                         <!-- #TODO: Show itk-spinner while updating  -->
-                        <widget v-bind:size="widgetSize" v-bind:title="widgetTitle" v-bind:data="widgetContent" /> <!-- v-if="widgetContent.length &gt; 0"   -->
+                        <widget v-bind:size="widgetConfiguration.size" v-bind:title="widgetTitle" v-bind:data="widgetContent" /> <!-- v-if="widgetContent.length &gt; 0"   -->
                         <!-- <div class="widget-preview default" v-else>
                             {{ $t('Preview will update when you add or remove materials') }}
                         </div> -->
@@ -177,6 +177,10 @@
         }
     })
 
+    const SearchTypes = {
+        MANUAL: 'manual',
+        URL: 'url'
+    }
     const axios = require('axios')
     const debounce = require('debounce')
     const queryString = require('query-string')
@@ -217,20 +221,15 @@
         name: 'App',
         data() {
             return {
+                SearchTypes: SearchTypes,
+                widgetThemes: widgetThemes,
+                widgetSizes: widgetSizes,
                 widgetContexts: widgetContexts,
                 widgetContext: widgetContexts[0],
-                // The selected materials
-                widgetContent: [],
-                widgetTitle: '',
-                contentSearch: 'manuel',
-                contentSearchManual: '',
-                widgetThemes: widgetThemes,
-                widgetTheme: widgetThemes[0],
-                widgetSizes: widgetSizes,
-                widgetSize: widgetSizes[0],
                 // The search query.
                 search: {
-                    // "Manuel" search
+                    type: SearchTypes.MANUAL,
+                    // "Manual" search
                     query: null,
                     // Search by ereolen.dk url
                     url: null
@@ -242,18 +241,33 @@
                 searchError: null,
                 // The search result after a succesful search.
                 searchResult: null,
-                // The actual widget (stored in database)
-                widget: null,
                 copySucceeded: null,
                 // User messages (alerts)
-                messages: []
+                messages: [],
+
+                // The actual widget (stored in database)
+                // {
+                //     id
+                //     title
+                //     configuration
+                //     content
+                // }
+                widget: null,
+                widgetTitle: null,
+                widgetConfiguration: {
+                    theme: widgetThemes[0],
+                    size: widgetSizes[0],
+
+                },
+                // The selected materials
+                widgetContent: []
             }
         },
         computed: {
             embedCode() {
                 const url = this.$config.widgetEmbedUrl.replace('{id}', this.widget.id)
                 return {
-                    code: '<iframe src="'+url+'" width="' + this.widgetSize.width + '" height="' + this.widgetSize.height + '" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"></iframe>'
+                    code: '<iframe src="'+url+'" width="' + this.widgetConfiguration.size.width + '" height="' + this.widgetConfiguration.size.height + '" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"></iframe>'
                 }
             }
         },
@@ -275,16 +289,19 @@
             }
 
             // @see https://github.com/vuejs/vue/issues/844#issuecomment-390498696
-            this.$watch((vm) => (vm.contentSearch, vm.search.query, vm.search.url, Date.now()), function() {
+            this.$watch((vm) => (vm.search.type, vm.search.query, vm.search.url, Date.now()), function() {
                 this.debouncedSearch()
             })
 
-            this.$watch((vm) => (vm.widgetTitle, vm.widgetContent, vm.widgetTheme, vm.widgetSize, Date.now()), function () {
+            this.$watch((vm) => (vm.widgetTitle, vm.widgetConfiguration.theme, vm.widgetConfiguration.size, vm.widgetContent, Date.now()), function () {
                 this.debouncedSave()
             })
         },
         methods: {
             addMessage: function(text, type = 'info') {
+                if ('error' === type) {
+                    type = 'danger'
+                }
                 const id = Date.now()+Math.random()
                 const message = {text: text, type: type, id: id}
                 this.messages.push(message)
@@ -319,11 +336,11 @@
                 this.widget = widget
                 this.widgetTitle = widget.title
                 this.widgetContent = content.widgetContent
-                this.widgetTheme = this.widgetThemes[0]
+                this.widgetConfiguration.theme = this.widgetThemes[0]
                 if (content.theme) {
                     this.widgetThemes.forEach((theme) => {
                         if (theme.label === content.theme.label) {
-                            this.widgetTheme = theme
+                            this.widgetConfiguration.theme = theme
                         }
                     })
                 }
@@ -337,11 +354,15 @@
                 }
                 this.addMessage('Widget loaded')
             },
+            // Get data to send to api.
             getWidgetData: function() {
                 return {
-                    theme: this.widgetTheme,
-                    size: this.widgetSize,
-                    widgetContent: this.widgetContent
+                    title: this.widgetTitle,
+                    configuration: {
+                        theme: this.widgetConfiguration.theme,
+                        size: this.widgetConfiguration.size
+                    },
+                    content: this.widgetContent
                 }
             },
             doSave: function() {
@@ -353,11 +374,8 @@
                 }
 
                 const vm = this
-                const data = {
-                    title: this.widgetTitle,
-                    content: this.getWidgetData()
-                }
-                if (this.widget) {
+                const data = this.getWidgetData()
+                if (this.widget && this.widget.id) {
                     // Update
                     const saveUrl = '/api/widgets/'+this.widget.id
                     axios({
@@ -435,8 +453,8 @@
                 const searchUrl = '/widget/search'
                 let searchMessage = null
                 let params = null
-                switch (this.contentSearch) {
-                case 'search':
+                switch (this.search.type) {
+                case SearchTypes.URL:
                     if (!this.search.url) {
                         return
                     }
@@ -446,7 +464,7 @@
                     params = {url: this.search.url}
                     break
 
-                case 'manuel':
+                case SearchTypes.MANUAL:
                     if (!this.search.query || this.search.query.length < 3) {
                         return
                     }
