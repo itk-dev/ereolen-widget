@@ -266,7 +266,7 @@
         },
         computed: {
             embedUrl() {
-                return (this.widget && thisthis.widget.id) ? this.$config.widgetEmbedUrl.replace('{id}', this.widget.id) : null;
+                return (this.widget && this.widget.id) ? this.$config.widgetEmbedUrl.replace('{id}', this.widget.id) : null;
             },
             embedCode() {
                 const url = this.embedUrl
