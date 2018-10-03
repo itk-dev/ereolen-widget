@@ -69,7 +69,6 @@ class Widget implements Loggable
      * @ORM\Column(type="json")
      * @Gedmo\Versioned
      * @Groups({"widget_read", "widget_write"})
-     * @Assert\NotBlank()
      */
     private $content = [];
 
