@@ -1,1 +1,19 @@
-{{ dump() }}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{% block title %}eReolen widget!{% endblock %}</title>
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('build/widget.css') }}">
+        {% endblock %}
+    </head>
+    <body>
+        <div id="widget">
+            <Widget v-bind:title="{{ widget.title|json_encode }}" v-bind:size="{{ widget.configuration.size|json_encode }}" v-bind:data="{{ widget.content|json_encode }}"></Widget>
+        </div>
+        {% block javascripts %}
+            <script src="{{ asset('build/widget.js') }}"></script>
+        {% endblock %}
+    </body>
+</html>

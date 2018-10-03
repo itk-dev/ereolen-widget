@@ -11,12 +11,10 @@
 namespace App\Controller;
 
 use App\Entity\Widget;
+use App\Service\EreolenSearch;
+use App\Service\SearchException;
 use App\Service\WidgetStatisticsService;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -28,19 +26,15 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
  */
 class WidgetController extends AbstractController
 {
-    /** @var \Psr\Cache\CacheItemPoolInterface */
-    private $cacheItemPool;
-
-    /** @var array */
-    private $parameterBag;
+    /** @var \App\Service\EreolenSearch */
+    private $search;
 
     /** @var \App\Service\WidgetStatisticsService */
     private $statistics;
 
-    public function __construct(CacheItemPoolInterface $cacheItemPool, ParameterBagInterface $parameterBag, WidgetStatisticsService $statistics)
+    public function __construct(EreolenSearch $search, WidgetStatisticsService $statistics)
     {
-        $this->cacheItemPool = $cacheItemPool;
-        $this->parameterBag = $parameterBag;
+        $this->search = $search;
         $this->statistics = $statistics;
     }
 
@@ -51,60 +45,28 @@ class WidgetController extends AbstractController
      */
     public function search(Request $request)
     {
-        $baseUrl = $this->parameterBag->get('search_ereol_url');
-        $cacheTtl = (int) $this->parameterBag->get('search_cache_ttl');
         $query = $request->query->all();
-        $cacheKey = 'app_widget_search_'.md5(json_encode($query));
-        $cachedItem = $this->cacheItemPool->getItem($cacheKey);
-        $data = null;
 
-        if ($cachedItem->isHit()) {
-            $data = $cachedItem->get();
-        } else {
-            try {
-                $client = new Client([
-                    'base_uri' => $baseUrl,
-                ]);
-                $response = $client->get('widget/search', [
-                    'query' => $request->query->all(),
-                ]);
+        try {
+            $result = $this->search->search($query);
 
-                // Change url in "links" to point to proxy.
-                $result = json_decode((string) $response->getBody(), true);
-                if (isset($result['links'])) {
-                    $result['links'] = array_map(function ($url) {
-                        $info = parse_url($url);
-                        parse_str($info['query'] ?? '', $query);
+            if (isset($result['links'])) {
+                $result['links'] = array_map(function ($url) {
+                    $info = parse_url($url);
+                    parse_str($info['query'] ?? '', $query);
 
-                        return $this->generateUrl('widget_search', $query, UrlGenerator::ABSOLUTE_URL);
-                    }, $result['links']);
-                }
-
-                $data = [
-                    json_encode($result),
-                    $response->getStatusCode(),
-                    [],
-                    true,
-                ];
-                $cachedItem->set($data)->expiresAfter($cacheTtl);
-                $this->cacheItemPool->save($cachedItem);
-            } catch (ClientException $exception) {
-                $response = $exception->getResponse();
-
-                return new JsonResponse(
-                    (string) $response->getBody(),
-                    $response->getStatusCode(),
-                    [],
-                    true
-                );
+                    return $this->generateUrl(
+                        'widget_search',
+                        $query,
+                        UrlGenerator::ABSOLUTE_URL
+                    );
+                }, $result['links']);
             }
-        }
 
-        if (empty($data)) {
-            throw new BadRequestHttpException();
+            return new JsonResponse($result);
+        } catch (SearchException $exception) {
+            throw new BadRequestHttpException($exception->getMessage());
         }
-
-        return new JsonResponse(...$data);
     }
 
     /**
@@ -130,6 +92,20 @@ class WidgetController extends AbstractController
      */
     public function embed(Request $request, Widget $widget)
     {
+        $this->statistics->addRequest($widget, $request);
+
+        $configuration = $widget->getConfiguration();
+
+        if (isset($configuration['search']['type'], $configuration['search']['url']) && 'url' === $configuration['search']['type']) {
+            try {
+                $result = $this->search->search(['url' => $configuration['search']['url']]);
+                if (isset($result['data'])) {
+                    $widget->setContent($result['data']);
+                }
+            } catch (SearchException $exception) {
+            }
+        }
+
         return $this->render('widget/embed.html.twig', ['widget' => $widget]);
     }
 
