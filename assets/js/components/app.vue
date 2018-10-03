@@ -255,7 +255,7 @@
                 //   content
                 //  }
                 widget: null,
-                widgetTitle: null,
+                widgetTitle: '',
                 widgetConfiguration: {
                     theme: widgetThemes[0],
                     size: widgetSizes[0]
@@ -266,7 +266,7 @@
         },
         computed: {
             embedUrl() {
-                return this.$config.widgetEmbedUrl.replace('{id}', this.widget.id)
+                return (this.widget && thisthis.widget.id) ? this.$config.widgetEmbedUrl.replace('{id}', this.widget.id) : null;
             },
             embedCode() {
                 const url = this.embedUrl
