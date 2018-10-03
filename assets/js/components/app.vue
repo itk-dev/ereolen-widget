@@ -65,7 +65,7 @@
                         </div>
                     </div>
                     <div class="row content-search" v-if="contentSearch === 'manuel'">
-                        <div class="col-sm-12" v-if="searchResult && searchResult.data.length > 0">
+                        <div class="col-sm-12" v-if="searchResult && searchResult.data && searchResult.data.length > 0">
                             <label>{{ $t('Search result') }}:: <strong>{{ $t('Click on a material to add it to the carousel') }}</strong></label><a href="#" class="btn btn-success btn-sm text-light ml-2" @click="addAllMaterials">{{ $t('Add all materials to carousel') }}</a>
                             <div class="row content-search-results">
                                 <material v-for="material in searchResult.data" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="plus" v-bind:action="addMaterial" />
@@ -183,6 +183,7 @@
 
     const CancelToken = axios.CancelToken
     let cancelSearch = null
+    let cancelSave = null
 
     const widgetThemes = [
         {label: 'theme.light', class: 'light'},
@@ -347,6 +348,10 @@
                 if (!this.isValid()) {
                     return
                 }
+                if (null !== cancelSave) {
+                    cancelSave()
+                }
+
                 const vm = this
                 const data = {
                     title: this.widgetTitle,
@@ -355,7 +360,15 @@
                 if (this.widget) {
                     // Update
                     const saveUrl = '/api/widgets/'+this.widget.id
-                    axios.put(saveUrl, data)
+                    axios({
+                        url: saveUrl,
+                        method: 'PUT',
+                        data: data,
+                        cancelToken: new CancelToken(function executor(c) {
+                            // An executor function receives a cancel function as a parameter
+                            cancelSave = c
+                        })
+                    })
                         .then(function (response) {
                             vm.addMessage('Widget saved')
                             vm.widget = response.data
@@ -366,7 +379,15 @@
                 } else {
                     // Create
                     const saveUrl = '/api/widgets'
-                    axios.post(saveUrl, data)
+                    axios({
+                        url: saveUrl,
+                        method: 'POST',
+                        data: data,
+                        cancelToken: new CancelToken(function executor(c) {
+                            // An executor function receives a cancel function as a parameter
+                            cancelSave = c
+                        })
+                    })
                         .then(function (response) {
                             vm.addMessage('Widget created')
                             vm.widget = response.data
@@ -410,9 +431,6 @@
                 this.searchResult.data = this.searchResult.data.concat(this.widgetContent)
                 this.widgetContent = []
             },
-            // debouncedSearch: function() {
-            //     this._debouncedSearch()
-            // },
             doSearch: function() {
                 const searchUrl = '/widget/search'
                 let searchMessage = null
@@ -448,14 +466,14 @@
                     if (null !== searchMessage) {
                         this.searchMessage = searchMessage
                     }
-                    axios
-                        .get(searchUrl, {
-                            cancelToken: new CancelToken(function executor(c) {
-                                // An executor function receives a cancel function as a parameter
-                                cancelSearch = c
-                            }),
-                            params: params
+                    axios({
+                        url: searchUrl,
+                        params: params,
+                        cancelToken: new CancelToken(function executor(c) {
+                            // An executor function receives a cancel function as a parameter
+                            cancelSearch = c
                         })
+                    })
                         .then(result => {
                             vm.searchResult = result.data
                             vm.searchState = null
