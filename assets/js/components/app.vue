@@ -12,7 +12,7 @@
                     <h3>{{ $t('Widget content') }}</h3>
 
                     <div v-if="messages.length > 0">
-                        <div v-for="message in messages" class="alert" v-bind:class="['alert-'+message.type]" v-bind:key="message.id">
+                        <div v-for="message in messages" class="alert alert-fixed-bottom" v-bind:class="['alert-'+message.type]" v-bind:key="message.id">
                             {{ message.text }}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close" v-on:click="dismissMessage(message)">
                                 <span aria-hidden="true">&times;</span>
@@ -153,13 +153,6 @@
                         </div>
                     </div>
                 </fieldset>
-
-                <div v-if="copySucceeded === true" class="alert alert-fixed-bottom" v-bind:class="{'alert-info': true}">
-                    {{ $t('Copied') }}
-                </div>
-                <div v-if="copySucceeded === false" class="alert alert-fixed-bottom" v-bind:class="{'alert-warning': true}">
-                    {{ $t('Press Ctrl+C to copy.') }}
-                </div>
             </form>
         </div>
     </div>
