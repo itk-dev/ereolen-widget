@@ -101,3 +101,20 @@ html, body {
 h1 {
     font-weight: 200;
 }
+
+/*
+** Itk-spinner positioning
+*/
+.itk-spinner {
+    z-index: 4;
+    &.fixed-on-input {
+        position: absolute;
+        right: 1rem;
+        top: .4rem;
+    }
+    &.fixed-on-preview {
+        position: absolute;
+        left: 1rem;
+        top: .4rem;
+    }
+}

@@ -9,6 +9,7 @@ import Topbar from './components/topbar'
 import Widget from './components/widget'
 import Material from './components/material'
 import VueClipboard from 'vue-clipboard2'
+import ItkSpinner from './components/itk-spinner'
 
 /**
 * Import vue-awesome fontawesome-icons (https://github.com/Justineo/vue-awesome)[https://github.com/Justineo/vue-awesome]
@@ -37,6 +38,7 @@ require('../scss/app.scss')
 Vue.component('v-icon', Icon)
 Vue.component('widget', Widget)
 Vue.component('material', Material)
+Vue.component('itk-spinner', ItkSpinner)
 
 Vue.use(VueClipboard)
 
@@ -59,6 +61,6 @@ if (null !== container) {
         el: container,
         config,
         i18n,
-        components: {App, Topbar, Widget, Material, VueClipboard}
+        components: {App, Topbar, Widget, Material, VueClipboard, ItkSpinner}
     })
 }

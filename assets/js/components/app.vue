@@ -19,12 +19,10 @@
                             </button>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <div class="row justify-content-start">
                             <div class="col-auto">
                                 <div class="form-check">
-                                    <!-- #TODO: Show itk-spinner while searching  -->
                                     <label class="form-check-label">
                                         <input type="radio" class="form-check-input" name="content" v-bind:value="SearchTypes.MANUAL" checked v-model="search.type">
                                         {{ $t('Add manually') }}
@@ -50,6 +48,9 @@
                                         <div class="input-group-text"><v-icon name="search" /></div>
                                     </div>
                                     <input type="text" class="form-control" name="contentSearchManual" id="contentSearchManual" v-bind:placeholder="$t('Enter author, title, isbn or publisher')" v-model="search.query" v-on:keyup.enter="debouncedSearch">
+                                    <div class="input-group-append">
+                                        <itk-spinner v-show="searchState" class="itk-spinner fixed-on-input"></itk-spinner>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group" v-if="search.type === SearchTypes.URL">
@@ -100,7 +101,6 @@
                                     </option>
                                 </select>
                             </div>
-
                             <div class="form-group">
                                 <label for="widget_size">{{ $t('Widget size') }}</label>
                                 <select class="form-control" name="widget_size" id="widget_size" v-model="widgetConfiguration.size">
@@ -115,13 +115,12 @@
                 <fieldset>
                     <h3>{{ $t('Widget preview') }}</h3>
                     <div class="widget-preview bg-white">
-                        <!-- #TODO: Show itk-spinner while updating  -->
-                        <widget v-bind:size="widgetConfiguration.size" v-bind:title="widgetTitle" v-bind:data="widgetContent" /> <!-- v-if="widgetContent.length &gt; 0"   -->
-                        <!-- <div class="widget-preview default" v-else>
+                        <itk-spinner v-if="saveState" class="itk-spinner fixed-on-preview"></itk-spinner>
+                        <widget v-bind:size="widgetConfiguration.size" v-bind:theme="widgetConfiguration.theme.class" v-bind:title="widgetTitle" v-bind:data="widgetContent" v-if="widgetContent.length &gt; 0"/>
+                        <div class="widget-preview default" v-else>
                             {{ $t('Preview will update when you add or remove materials') }}
-                        </div> -->
-
-                        <iframe v-if="embedUrl" v-bind:src="embedUrl" v-bind:width="widgetConfiguration.size.width" v-bind:height="widgetConfiguration.size.height" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true" />
+                        </div>
+                        <iframe v-if="embedUrl" v-bind:src="embedUrl" v-bind:width="widgetConfiguration.size.width" v-bind:height="widgetConfiguration.size.height" v-bind:theme="widgetConfiguration.theme.class" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true" />
                     </div>
                 </fieldset>
                 <fieldset>
@@ -185,8 +184,8 @@
     let cancelSave = null
 
     const widgetThemes = [
-        {label: 'theme.light', class: 'light'},
-        {label: 'theme.dark', class: 'dark'}
+        {label: 'theme.light', class: 'theme-light'},
+        {label: 'theme.dark', class: 'theme-dark'}
     ]
 
     const widgetSizes = [
@@ -229,6 +228,7 @@
                     // Search by ereolen.dk url
                     url: null
                 },
+                saveState: null,
                 searchState: null,
                 // User message, e.g. "Searching for James Hetfield …"
                 searchMessage: null,
@@ -379,6 +379,7 @@
 
                 const vm = this
                 const data = this.getWidgetData()
+                this.saveState = 'Saving'
                 if (this.widget && this.widget.id) {
                     // Update
                     const saveUrl = '/api/widgets/'+this.widget.id
@@ -397,6 +398,9 @@
                         })
                         .catch(function (error) {
                             vm.addMessage('Error saving widget', 'error')
+                        })
+                        .then(function (){
+                            vm.saveState = null
                         })
                 } else {
                     // Create
@@ -417,6 +421,9 @@
                         })
                         .catch(function (error) {
                             vm.addMessage('Error creating widget', 'error')
+                        })
+                        .then(function (){
+                            vm.saveState = null
                         })
                 }
             },
