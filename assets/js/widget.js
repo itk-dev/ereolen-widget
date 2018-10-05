@@ -22,7 +22,7 @@ import 'vue-awesome/icons/angle-right'
 /**
 * Require the scss for the app.
 */
-require('../scss/widget.scss')
+
 
 /**
 * Add the Icon component globally

@@ -2,75 +2,184 @@
 * Styles only used for the vue widget component.
 */
 
-:root {
-    /* stylelint-disable */
-    --color-white: #fff;
-    --color-danger: #b81b40;
-    --theme-light-bg-color: #f0f0f0;
-    --theme-light-text-color: #212121;
-    --theme-dark-bg-color: #212121;
-    --theme-dark-text-color: var(--color-white);
-    --border-color: #666;
-    --text-color-gray-500: #666;
-    /* stylelint-enable */
+/* stylelint-disable */
+$color-white: #fff;
+$color-danger: #b81b40;
+$theme-light-bg-color: #f0f0f0;
+$theme-light-text-color: #212121;
+$theme-dark-bg-color: #212121;
+$theme-dark-text-color: $color-white;
+$border-color: #b4b4b4;
+$text-color-gray-500: #505050;
+$spacer: 1rem;
+/* stylelint-enable */
+
+body, html, #widget {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
 }
+
 .er-widget {
-    width: var(--widget-width);
-    height: var(--widget-height);
+    height: 100%;
+    width: 100%;
     overflow: hidden;
     position: relative;
+    font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: $spacer;
+    display: flex;
+    flex-wrap: wrap;
+    &-top, &-main, &-bottom {
+        flex: 0 1 100%;
+        display: flex;
+    }
+    &-top {
+        align-self: flex-start;
+        flex-grow: 0;
+        flex-wrap: wrap;
+        padding: $spacer/2;
+    }
+    &-main {
+        flex-wrap: wrap;
+        flex-grow: 2;
+    }
+    &-bottom {
+        align-self: flex-end;
+        align-items: center;
+        flex-grow: 1;
+        padding: $spacer/2;
+    }
+    &-title {
+        flex: 0 1 80%;
+        align-self: flex-start;
+        font-size: 1.5rem;
+        font-weight: 100;
+        margin: 0;
+        padding: 0;
+    }
+    .er-btns {
+        z-index: 10;
+        flex: 0 1 20%;
+        align-self: flex-end;
+    }
+    .er-btn {
+        border: 1px solid $border-color;
+        display: block;
+        float: left;
+        color: $text-color-gray-500;
+        transition: opacity .2s ease-out;
+        opacity: 1;
+        width: $spacer;
+        height: $spacer;
+        text-align: center;
+        line-height: .5;   
+        &-left {
+            margin-right: $spacer/4;
+        }
+        &[disabled] {
+            transition: opacity .2s ease-out;
+            opacity: .5;
+        }
+    }
+    ul.materials {
+        flex: 0 1 100%;
+        list-style: none;
+        margin: 0 0 0 .5rem;
+        padding: 0;
+        transition: transform .4s cubic-bezier(.36,.41,.64,.86);
+        li {
+            margin: 0;
+            display: inline-block;
+            a {
+                display: block;
+                box-shadow: none;
+                transition: box-shadow .2s cubic-bezier(.36,.41,.64,.86);
+                &:hover {
+                    transition: box-shadow .4s cubic-bezier(.36,.41,.64,.86);
+                     box-shadow: 0 .04rem .16rem rgba(0,0,0,.26);
+                }
+            }
+        }
+
+    }
+    &-backlink {
+        flex: 0 1 50%;
+        border: 1px solid $border-color;
+        border-radius: 2px;
+        padding: 5px 10px;
+        margin-right: $spacer;
+        color: $text-color-gray-500;
+        text-align: center;
+        background-color: transparent;
+        transition: color .2s ease-in, border-color .2s ease-in, background-color .2s ease-in;
+        text-decoration: none;
+        &:hover {
+            border: 1px solid $color-danger;
+            color: $color-white;
+            background-color: $color-danger;
+            transition: color .4s ease-out, border-color .4s ease-out, background-color .4s ease-out;
+            text-decoration: none;
+        }
+    }
+    &-logo {
+        flex-basis: 0 1 50%;
+        &-image {
+            max-width: 100%;
+            height: 1rem;
+        }
+    }
+    &.theme-light {
+        background-color: $theme-light-bg-color;
+        color: $theme-light-text-color;
+        .er-btn {
+            background-color: $theme-light-bg-color;
+            color: $theme-light-text-color;
+        }
+    }
+    &.theme-dark {
+        background-color: $theme-dark-bg-color;
+        color: $theme-dark-text-color;
+        .er-btn {
+            background-color: $theme-dark-bg-color;
+            color: $theme-dark-text-color;
+        }
+    }
+    &.landscape {
+        flex-direction: row;
+        ul.materials {
+            li {
+                a {
+                    margin-right: $spacer/2;
+                    img {
+                        max-width: 100%;
+                        height: 100%;
+                    }
+                }
+            }
+        }
+    }
+    &.portrait {
+        flex-direction: column;
+        ul.materials {
+            li {
+                a {
+                    margin-bottom: $spacer;
+                    img {
+                        width: 100%;
+                        max-height: 100%;
+                    }
+                }
+            }
+        }
+    }
 }
-.er-widget.theme-light {
-    background-color: var(--theme-light-bg-color);
-    color: var(--theme-light-text-color);
-}
-.er-widget.theme-dark {
-    background-color: var(--theme-dark-bg-color);
-    color: var(--theme-dark-text-color);
-}
-.er-widget .er-widget-title {
-    margin: .5rem;
-    font-size: 1.5rem;
-}
-.er-widget ul.materials {
-    list-style: none;
-    margin: 0 0 0 .5rem;
-    padding: 0;
-    width: 100%;
-    overflow-x: scroll;
-}
-.er-widget ul.materials li {
-    margin: 0;
-    display: inline-block;
-}
-.er-widget ul.materials li a {
-    display: block;
-}
-.er-widget ul.materials li a img {
-    width: 100px;
-    max-height: 100%;
-}
-.er-widget-backlink {
-    border: 1px solid var(--border-color);
-    border-radius: 2px;
-    padding: 5px 10px;
-    color: var(--text-color-gray-500);
-    background-color: transparent;
-    transition: color .2s ease-in, border-color .2s ease-in, background-color .2s ease-in;
-    position: absolute;
-    left: .5rem;
-    bottom: .5rem;
-}
-.er-widget-backlink:hover {
-    border: 1px solid var(--color-danger);
-    color: var(--color-white);
-    background-color: var(--color-danger);
-    text-decoration: none;
-    transition: color .4s ease-out, border-color .4s ease-out, background-color .4s ease-out;
-}
-.er-widget-logo {
-    height: 1.2rem;
-    position: absolute;
-    right: .5rem;
-    bottom: .5rem;
+
+@keyframes carousel {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }

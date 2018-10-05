@@ -10,7 +10,6 @@
             <form>
                 <fieldset>
                     <h3>{{ $t('Widget content') }}</h3>
-
                     <div v-if="messages.length > 0">
                         <div v-for="message in messages" class="alert alert-fixed-bottom" v-bind:class="['alert-'+message.type]" v-bind:key="message.id">
                             {{ message.text }}
@@ -116,11 +115,12 @@
                     <h3>{{ $t('Widget preview') }}</h3>
                     <div class="widget-preview bg-white">
                         <itk-spinner v-if="saveState" class="itk-spinner fixed-on-preview"></itk-spinner>
-                        <widget v-bind:size="widgetConfiguration.size" v-bind:theme="widgetConfiguration.theme.class" v-bind:title="widgetTitle" v-bind:data="widgetContent" v-if="widgetContent.length &gt; 0"/>
-                        <div class="widget-preview default" v-else>
+                        <widget v-bind:size="widgetConfiguration.size" v-bind:theme="widgetConfiguration.theme" v-bind:title="widgetTitle" v-bind:data="widgetContent"/>
+
+                        <!-- <iframe v-if="embedUrl" v-bind:src="embedUrl" v-bind:width="widgetConfiguration.size.width" v-bind:height="widgetConfiguration.size.height" v-bind:theme="widgetConfiguration.theme.class" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true" /> -->
+                        <!-- <div class="widget-preview default" v-else>
                             {{ $t('Preview will update when you add or remove materials') }}
-                        </div>
-                        <iframe v-if="embedUrl" v-bind:src="embedUrl" v-bind:width="widgetConfiguration.size.width" v-bind:height="widgetConfiguration.size.height" v-bind:theme="widgetConfiguration.theme.class" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true" />
+                        </div> -->
                     </div>
                 </fieldset>
                 <fieldset>

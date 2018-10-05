@@ -1,9 +1,10 @@
 .alert-fixed-bottom {
+    margin: 0;
     position: fixed;
-    bottom: $spacer;
+    top: $spacer;
+    right: $spacer;
+    min-width: 20vw;
     max-width: 80vw;
     opacity: .9;
     z-index: 10;
-    margin-left: auto;
-    margin-right: auto;
 }
