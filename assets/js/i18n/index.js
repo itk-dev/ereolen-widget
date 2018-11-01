@@ -38,7 +38,9 @@ const messages = {
         'Widget size': 'Størrelse',
         'Widget title': 'Titel',
         'Copied': 'Kopieret',
+        'Embed code copied': 'Koden er kopieret',
         'Press Ctrl+C to copy.': 'Brug Ctrl+C for at kopiere',
+        'Fx New titles': 'F.eks.: Nyeste titler',
         theme: {
             dark: 'Mørk',
             light: 'Lys'

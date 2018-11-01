@@ -2,6 +2,10 @@
 * Styles only used for the vue widget component.
 */
 
+/*
+** Define colors
+*/
+
 /* stylelint-disable */
 $color-white: #fff;
 $color-danger: #b81b40;
@@ -11,8 +15,54 @@ $theme-dark-bg-color: #212121;
 $theme-dark-text-color: $color-white;
 $border-color: #b4b4b4;
 $text-color-gray-500: #505050;
-$spacer: 1rem;
 /* stylelint-enable */
+
+/*
+** Define sizes
+*/
+
+$spacer: 1rem;
+
+/*
+** Define themes
+*/
+
+$themes: (
+  light: (
+    backgroundColor: $theme-light-bg-color,
+    textColor: $theme-light-text-color,
+    btnColor: $color-danger
+  ),
+  dark: (
+    backgroundColor: $theme-dark-bg-color,
+    textColor: $theme-dark-text-color,
+    btnColor: $color-danger
+  ),
+);
+
+/*
+** Define mixins
+*/
+
+@mixin themify($themes: $themes) {
+  @each $theme, $map in $themes {
+
+    .theme-#{$theme} & {
+      $theme-map: () !global;
+      @each $key, $submap in $map {
+        $value: map-get(map-get($themes, $theme), '#{$key}');
+        $theme-map: map-merge($theme-map, ($key: $value)) !global;
+      }
+
+      @content;
+      $theme-map: null !global;
+    }
+
+  }
+}
+@function themed($key) {
+  @return map-get($theme-map, $key);
+}
 
 body, html, #widget {
     margin: 0;
@@ -28,8 +78,13 @@ body, html, #widget {
     position: relative;
     font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     font-size: $spacer;
+    line-height: 1.5;
     display: flex;
     flex-wrap: wrap;
+    @include themify($themes) {
+        background-color: themed('backgroundColor');
+        color: themed('textColor');
+    }
     &-top, &-main, &-bottom {
         flex: 0 1 100%;
         display: flex;
@@ -43,6 +98,7 @@ body, html, #widget {
     &-main {
         flex-wrap: wrap;
         flex-grow: 2;
+        overflow: hidden;
     }
     &-bottom {
         align-self: flex-end;
@@ -51,53 +107,78 @@ body, html, #widget {
         padding: $spacer/2;
     }
     &-title {
-        flex: 0 1 80%;
+        flex: 1 1 100%;
         align-self: flex-start;
         font-size: 1.5rem;
         font-weight: 100;
         margin: 0;
         padding: 0;
     }
-    .er-btns {
-        z-index: 10;
-        flex: 0 1 20%;
-        align-self: flex-end;
-    }
     .er-btn {
-        border: 1px solid $border-color;
         display: block;
-        float: left;
-        color: $text-color-gray-500;
+        position: absolute;
         transition: opacity .2s ease-out;
         opacity: 1;
-        width: $spacer;
-        height: $spacer;
+        width: $spacer*1.8;
+        height: $spacer*1.8;
         text-align: center;
-        line-height: .5;   
+        // line-height: 2rem;
+        .fa-icon {
+            vertical-align: middle;
+        }
+        z-index: 3;
+        @include themify($themes) {
+            background-color: themed('backgroundColor');
+            color: themed('btnColor');
+        }
+        transition: background-color .2s ease-in, color .2s ease-in;
+        &:hover {
+            background-color: $color-danger;
+            color: $color-white;
+            transition: background-color .4s ease-out, color .4s ease-out;
+        }
+        &-left, &-right {
+            top: calc(50% - 1rem );
+            box-shadow: 0 4px 16px rgba(0,0,0,.16)
+        }
         &-left {
-            margin-right: $spacer/4;
+            left: -1px;
+        }
+        &-right {
+            right: -1px;
         }
         &[disabled] {
             transition: opacity .2s ease-out;
             opacity: .5;
+            cursor: not-allowed;
+            &:hover {
+                @include themify($themes) {
+                    background-color: themed('backgroundColor');
+                    color: themed('btnColor');
+                }
+            }
         }
     }
     ul.materials {
-        flex: 0 1 100%;
+        flex: 0 0 auto;
         list-style: none;
         margin: 0 0 0 .5rem;
         padding: 0;
-        transition: transform .4s cubic-bezier(.36,.41,.64,.86);
+        transition: transform .7s ease-in-out;
         li {
             margin: 0;
             display: inline-block;
             a {
                 display: block;
-                box-shadow: none;
-                transition: box-shadow .2s cubic-bezier(.36,.41,.64,.86);
+                img{
+                    box-shadow: none;
+                    transition: box-shadow .2s ease-in;
+                }
                 &:hover {
-                    transition: box-shadow .4s cubic-bezier(.36,.41,.64,.86);
-                     box-shadow: 0 .04rem .16rem rgba(0,0,0,.26);
+                    img {
+                        transition: box-shadow .4s ease-out;
+                        box-shadow: 0 .04rem .16rem rgba(0,0,0,.26);
+                    }
                 }
             }
         }
@@ -124,29 +205,13 @@ body, html, #widget {
     }
     &-logo {
         flex-basis: 0 1 50%;
+        margin-left: auto;
         &-image {
             max-width: 100%;
             height: 1rem;
         }
     }
-    &.theme-light {
-        background-color: $theme-light-bg-color;
-        color: $theme-light-text-color;
-        .er-btn {
-            background-color: $theme-light-bg-color;
-            color: $theme-light-text-color;
-        }
-    }
-    &.theme-dark {
-        background-color: $theme-dark-bg-color;
-        color: $theme-dark-text-color;
-        .er-btn {
-            background-color: $theme-dark-bg-color;
-            color: $theme-dark-text-color;
-        }
-    }
     &.landscape {
-        flex-direction: row;
         ul.materials {
             li {
                 a {
@@ -160,17 +225,124 @@ body, html, #widget {
         }
     }
     &.portrait {
-        flex-direction: column;
         ul.materials {
             li {
                 a {
-                    margin-bottom: $spacer;
+                    margin-bottom: $spacer/2;
                     img {
                         width: 100%;
                         max-height: 100%;
                     }
                 }
             }
+        }
+    }
+    /*
+    ** Small rectangle
+    */
+    .wsize200x200 & {
+        &-backlink {
+            font-size: .8rem;
+        }            
+    }
+    /*
+    ** Vertical
+    */
+    .wsize120x600 &, .wsize160x600 &, .wsize300x600 & {
+        flex-direction: column;
+        .er-btn {
+            &-left, &-right {
+                svg {
+                    transform: rotate(90deg);
+                }
+            }
+        }
+        &-top {
+            flex: 0 0 auto;
+        }
+        &-title {
+            text-align: center;
+        }
+        &-main {
+            flex: 1 0 70%;
+            position: relative;
+            &:before, &:after {
+                content: "";
+                width: 100%;
+                height: $spacer/2;;
+                position: absolute;
+                display: block;
+                z-index: 3;
+            }
+            &:before {
+                top: 0;
+                left: 0;
+                background: linear-gradient(to bottom, rgba(240,240,240,1) 0%,rgba(240,240,240,0) 100%); 
+            }
+            &:after {
+                bottom: 0;
+                left: 0;
+                background: linear-gradient(to bottom, rgba(240,240,240,0) 0%,rgba(240,240,240,1) 100%); 
+            }
+            ul.materials {
+                width: 100%;
+                text-align: center;
+                margin: 0;
+                padding-top: $spacer/2;
+                li {
+                    display: block;
+                }
+            }
+        }
+        &-bottom {
+            flex: 1 0 auto;
+            flex-direction: column;
+            align-self: auto;
+        }
+        &-backlink {
+            flex: none;
+            font-size: .8rem;
+            margin-right: 0;
+            margin-bottom: $spacer/2;
+        }
+        &-logo {
+            flex: 1 0 auto;
+            margin-left: 0;
+        }
+    }
+    /*
+    ** Horizontal & Mobile
+    */
+    .wsize468x60 &, .wsize970x90 &, .wsize320x50 &, .wsize320x100 & {
+        &-top {
+            display: none;
+        }
+        &-main {
+            flex: 1 0 100%;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+        &-bottom {
+            position: absolute;
+            bottom: 0;
+            right: $spacer*2;
+            padding: 0;
+        }
+        &-backlink {
+            display: none;
+        }
+        &-logo {
+            img {
+                height: .5rem;
+            }
+        }
+    }
+    .wsize320x100 & {
+        &-bottom {
+            position: absolute;
+            bottom: 0;
+            right: $spacer/4;
+            padding: 0;
         }
     }
 }
@@ -183,3 +355,4 @@ body, html, #widget {
         opacity: 1;
     }
 }
+

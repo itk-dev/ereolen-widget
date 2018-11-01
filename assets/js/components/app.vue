@@ -82,7 +82,7 @@
                         <div class="col-sm-10 col-lg-8">
                             <div class="form-group">
                                 <label for="widgetTitle">{{ $t('Widget title') }}</label>
-                                <input type="text" class="form-control" name="widgetTitle" id="widgetTitle" aria-describedby="widgetTitleHelp" placeholder="Skriv bogens forfatter, titel, isbn eller forlag" v-model="widgetTitle">
+                                <input type="text" class="form-control" name="widgetTitle" id="widgetTitle" aria-describedby="widgetTitleHelp" v-bind:placeholder="$t('Fx New titles')" v-model="widgetTitle">
                                 <small id="widgetTitleHelp" class="form-text text-muted">{{ $t('The widget title is displayed as a heading in the widgeten') }}</small>
                             </div>
                         </div>
@@ -189,18 +189,17 @@
     ]
 
     const widgetSizes = [
-        {label: 'Rektangulær', width: 250, height: 250},
-        {label: 'Banner', width: 468, height: 60},
-        {label: 'Skyskraber', width: 120, height: 600},
-        {label: 'Bred skyskraber', width: 160, height: 600},
         {label: 'Lille kvadrat', width: 200, height: 200},
         {label: 'Kvadrat', width: 250, height: 250},
         {label: 'Mellemstor rektangel', width: 300, height: 250},
         {label: 'Stor rektangel', width: 336, height: 280},
+        {label: 'Skyskraber', width: 120, height: 600},
+        {label: 'Bred skyskraber', width: 160, height: 600},
         {label: 'Halvside', width: 300, height: 600},
+        {label: 'Banner', width: 468, height: 60},
+        {label: 'Stort leaderboard', width: 970, height: 90},
         {label: 'Mobilbanner', width: 320, height: 50},
-        {label: 'Mobilbanner 2', width: 320, height: 100},
-        {label: 'Stort leaderboard', width: 970, height: 90}
+        {label: 'Mobilbanner 2', width: 320, height: 100}
     ]
 
     const widgetContexts = [
