@@ -171,6 +171,11 @@
         }
     })
 
+    const Contexts = {
+        EREOLEN: 'ereolen',
+        EREOLEN_GO: 'ereolengo'
+    }
+
     const SearchTypes = {
         MANUAL: 'manual',
         URL: 'url'
@@ -214,6 +219,7 @@
         name: 'App',
         data() {
             return {
+                Contexts: Contexts,
                 SearchTypes: SearchTypes,
                 widgetThemes: widgetThemes,
                 widgetSizes: widgetSizes,
@@ -275,6 +281,13 @@
                 this.loadWidgetData(data)
             } catch (e) {
                 // continue regardless of error
+            }
+
+            this.context = Contexts.EREOLEN
+            for (var key in Contexts) {
+                if (Contexts[key] === this.$config.context) {
+                    this.context = value
+                }
             }
 
             this.debouncedSearch = debounce(this.doSearch, 500)
