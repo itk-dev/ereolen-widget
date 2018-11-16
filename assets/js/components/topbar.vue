@@ -11,13 +11,13 @@
                 <div class="collapse navbar-collapse" id="topbarRight">
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Byg widget</a>
+                            <a class="nav-link active" href="#">{{ $t('Build widget') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Vejlednigner</a>
+                            <a class="nav-link" href="#">{{ $t('How to') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Om brug af widgets</a>
+                            <a class="nav-link" href="#">{{ $t('About widgets') }}</a>
                         </li>
                     </ul>
                 </div>
