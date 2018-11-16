@@ -10,7 +10,9 @@
 
 namespace App\Controller;
 
+use App\Service\WidgetContextService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends AbstractController
@@ -18,8 +20,11 @@ class DefaultController extends AbstractController
     /**
      * @Route("/", name="default")
      */
-    public function index()
+    public function index(Request $request, WidgetContextService $contextService)
     {
-        return $this->render('default/index.html.twig');
+        return $this->render('default/index.html.twig', [
+            'context' => $contextService->getContext(),
+            'contexts' => $contextService->getContexts(),
+        ]);
     }
 }

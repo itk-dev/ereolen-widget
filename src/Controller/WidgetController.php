@@ -13,6 +13,7 @@ namespace App\Controller;
 use App\Entity\Widget;
 use App\Service\EreolenSearch;
 use App\Service\SearchException;
+use App\Service\WidgetContextService;
 use App\Service\WidgetStatisticsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,14 +27,18 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
  */
 class WidgetController extends AbstractController
 {
+    /** @var \App\Service\WidgetContextService */
+    private $contextService;
+
     /** @var \App\Service\EreolenSearch */
     private $search;
 
     /** @var \App\Service\WidgetStatisticsService */
     private $statistics;
 
-    public function __construct(EreolenSearch $search, WidgetStatisticsService $statistics)
+    public function __construct(WidgetContextService $contextService, EreolenSearch $search, WidgetStatisticsService $statistics)
     {
+        $this->contextService = $contextService;
         $this->search = $search;
         $this->statistics = $statistics;
     }
@@ -48,7 +53,8 @@ class WidgetController extends AbstractController
         $query = $request->query->all();
 
         try {
-            $result = $this->search->search($query);
+            $context = $this->contextService->getContext();
+            $result = $this->search->search($query, $context);
 
             if (isset($result['links'])) {
                 $result['links'] = array_map(function ($url) {

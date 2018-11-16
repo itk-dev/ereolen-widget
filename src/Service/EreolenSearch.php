@@ -38,9 +38,9 @@ class EreolenSearch
      *
      * @return null|array
      */
-    public function search(array $query)
+    public function search(array $query, array $context = null)
     {
-        $baseUrl = $this->parameterBag->get('search_ereol_url');
+        $url = $context['ereol_widget_search_url'] ?? $this->parameterBag->get('ereol_widget_search_url');
         $cacheTtl = (int) $this->parameterBag->get('search_cache_ttl');
         $cacheKey = 'app_widget_search_'.md5(json_encode($query));
         $cachedItem = $this->cacheItemPool->getItem($cacheKey);
@@ -50,10 +50,8 @@ class EreolenSearch
             $data = $cachedItem->get();
         } else {
             try {
-                $client = new Client([
-                    'base_uri' => $baseUrl,
-                ]);
-                $response = $client->get('widget/search', [
+                $client = new Client();
+                $response = $client->get($url, [
                     'query' => $query,
                 ]);
 

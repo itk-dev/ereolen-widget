@@ -122,7 +122,7 @@
                     <h3>{{ $t('Widget preview') }}</h3>
                     <div class="widget-preview bg-white">
                         <itk-spinner v-if="saveState" class="itk-spinner fixed-on-preview"></itk-spinner>
-                        <widget v-bind:size="widgetConfiguration.size" v-bind:theme="widgetConfiguration.theme" v-bind:title="widgetTitle" v-bind:data="widgetContent"/>
+                        <widget v-bind:size="widgetConfiguration.size" v-bind:theme="widgetConfiguration.theme" v-bind:title="widgetTitle" v-bind:data="widgetContent" v-bind:context="widgetContext"/>
 
                         <!-- <iframe v-if="embedUrl" v-bind:src="embedUrl" v-bind:width="widgetConfiguration.size.width" v-bind:height="widgetConfiguration.size.height" v-bind:theme="widgetConfiguration.theme.class" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true" /> -->
                         <!-- <div class="widget-preview default" v-else>
@@ -178,11 +178,6 @@
         }
     })
 
-    const Contexts = {
-        EREOLEN: 'ereolen',
-        EREOLEN_GO: 'ereolengo'
-    }
-
     const SearchTypes = {
         MANUAL: 'manual',
         URL: 'url'
@@ -214,11 +209,6 @@
         {label: 'Mobilbanner 2', width: 320, height: 100}
     ]
 
-    const widgetContexts = [
-        {label: 'eReolen', url: 'https://www.ereolen.dk', searchLink: '<a href="https://ereolen.dk/search/ting" target="_blank">eReolen</a>', logo: 'https://ereolen.dk/sites/all/themes/orwell/svg/eReolen_Logo.svg', searchUrl: 'https://www.ereolen.dk/search/ting'},
-        {label: 'eReolen GO', url: 'https://www.ereolengo.dk', searchLink: '<a href="https://ereolengo.dk/search/ting" target="_blank">eReolen GO</a>', logo: 'https://ereolengo.dk/sites/all/themes/wille/svg/logo.svg', searchUrl: 'https://www.ereolengo.dk/search/ting'}
-    ]
-
     // Dismiss messages afthe amount of milliseconds.
     const messageDismissDelay = 2000
 
@@ -226,12 +216,10 @@
         name: 'App',
         data() {
             return {
-                Contexts: Contexts,
                 SearchTypes: SearchTypes,
                 widgetThemes: widgetThemes,
                 widgetSizes: widgetSizes,
-                widgetContexts: widgetContexts,
-                widgetContext: widgetContexts[0],
+                widgetContext: this.$config.context,
                 // The search query.
                 search: {
                     type: SearchTypes.MANUAL,
@@ -288,13 +276,6 @@
                 this.loadWidgetData(data)
             } catch (e) {
                 // continue regardless of error
-            }
-
-            this.context = Contexts.EREOLEN
-            for (var key in Contexts) {
-                if (Contexts[key] === this.$config.context) {
-                    this.context = value
-                }
             }
 
             this.debouncedSearch = debounce(this.doSearch, 500)
@@ -480,7 +461,7 @@
                 this.widgetContent = []
             },
             doSearch: function() {
-                const searchUrl = '/widget/search'
+                const searchUrl = this.$config.searchUrl
                 let searchMessage = null
                 let params = null
                 switch (this.search.type) {

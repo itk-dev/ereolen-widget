@@ -8,7 +8,7 @@ parameters:
     env(SEARCH_CACHE_TTL): 3600
     email_sender_address: '%env(EMAIL_SENDER_ADDRESS)%'
     email_sender_name: '%env(EMAIL_SENDER_NAME)%'
-    search_ereol_url: '%env(SEARCH_EREOL_URL)%'
+    ereol_widget_search_url: '%env(ereol_widget_search_url)%'
     search_cache_ttl: '%env(SEARCH_CACHE_TTL)%'
 
 services:

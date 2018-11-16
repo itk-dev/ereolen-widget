@@ -21,8 +21,8 @@
                 </ul>
             </div>
             <div class="er-widget-bottom">
-                <a class="er-widget-backlink" href="https://ereolen.dk/">Se flere titler</a>
-                <a href="https://ereolen.dk/" class="er-widget-logo" ><img src="https://ereolen.dk/sites/all/themes/orwell/svg/eReolen_Logo.svg" class="er-widget-logo-image"  alt="eReolen"></a>
+                <a class="er-widget-backlink" v-bind:href="context.url">Se flere titler</a>
+                <a v-bind:href="context.logo" class="er-widget-logo" ><img v-bind:src="context.logo" class="er-widget-logo-image" v-bind:alt="context.label"></a>
             </div>
             <div class="er-btns" v-if="widgetDirection === 'landscape' && materialContainerWidth > size.width || widgetDirection === 'portrait' && materialContainerWidth > size.height">
                 <button class="er-btn er-btn-left" href="#" role="button" v-on:click.prevent="moveCarousel(-1)" v-bind:disabled="atHeadOfList"><v-icon name="angle-left" /></button>
@@ -54,6 +54,11 @@
                 default: () => ({
                     class: 'theme-light'
                 })
+            },
+            context: {
+                url: 'https://ereolen.dk/',
+                logo: 'https://ereolen.dk/sites/all/themes/orwell/svg/eReolen_Logo.svg',
+                label: 'eReolen'
             }
         },
         data () {

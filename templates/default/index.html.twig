@@ -3,6 +3,7 @@
 {% block title %}Byg din eReolen widget{% endblock %}
 
 {% block body %}
+    {% if context %}
     {% if widget|default(null) %}
         <script type="application/json" id="app-widget-data">
             {{ {
@@ -10,6 +11,7 @@
                 title: widget.title,
                 configuration: widget.configuration,
                 content: widget.content,
+                context: widget.context,
                 createdAt: widget.createdAt,
                 updatedAt: widget.updatedAt
                 }|json_encode|raw }}
@@ -18,7 +20,9 @@
     {# Get url with {id} placeholder. #}
     {% set widgetEmbedUrl = absolute_url(path('widget_embed', {'id': '{id}'})|replace({('{id}'|url_encode): '{id}'})) %}
     {% set configuration = {
-        widgetEmbedUrl: widgetEmbedUrl
+        widgetEmbedUrl: widgetEmbedUrl,
+        searchUrl: path('widget_search', {context: context.name}),
+        context: context
         } %}
 
 
@@ -28,6 +32,11 @@
             <app></app>
         </div>
     </div>
+    {% else %}
+        {% for key, context in contexts %}
+        <a class="btn btn-primary" href="{{ path('default', {context: key}) }}">{{  context.label }}</a>
+        {% endfor %}
+    {%  endif %}
 {% endblock %}
 
 {% block stylesheets %}
