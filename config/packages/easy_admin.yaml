@@ -6,6 +6,8 @@ easy_admin:
             list:
                 role: ROLE_ADMIN
                 actions:
+                    - name: show
+                      label: Show
                     - name: widget_edit
                       type: route
                       label: Edit
