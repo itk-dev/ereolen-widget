@@ -1,18 +1,18 @@
 <template>
     <div class="spinner" v-bind:style="cssProps">
-        <div class="bounce1"></div>
-        <div class="bounce2"></div>
-        <div class="bounce3"></div>
+        <div class="bounce1" />
+        <div class="bounce2" />
+        <div class="bounce3" />
     </div>
 </template>
 
 <script>
     export default {
-        name: 'itkSpinner',
+        name: 'ItkSpinner',
         computed: {
             cssProps() {
                 return {
-                    '--spinner-size': '2.5rem',
+                    '--spinner-size': '2.5rem'
                 }
             }
         }

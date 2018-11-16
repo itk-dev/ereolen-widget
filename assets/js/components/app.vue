@@ -53,7 +53,7 @@
                                     </div>
                                     <input type="text" class="form-control" name="contentSearchManual" id="contentSearchManual" v-bind:placeholder="$t('Enter author, title, isbn or publisher')" v-model="search.query" v-on:keyup.enter="debouncedSearch">
                                     <div class="input-group-append">
-                                        <itk-spinner v-show="searchState" class="itk-spinner fixed-on-input"></itk-spinner>
+                                        <itk-spinner v-show="searchState" class="itk-spinner fixed-on-input" />
                                     </div>
                                 </div>
                                 <small id="widgetContentSearchManualHelp" class="form-text text-muted">{{ $t('The search will return up to 10 results. If the material you are searching for does not appear then please try to add another keyword.') }}</small>
@@ -66,7 +66,7 @@
                                     </div>
                                     <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" v-bind:placeholder="$t('Example: {ereolen_searchUrl}/dennis', {ereolen_searchUrl: widgetContext.searchUrl})" v-model="search.url" v-on:keyup.enter="debouncedSearch">
                                 </div>
-                                <small id="contentSearchSearchHelp" class="form-text text-muted" v-html="$t('Perform a search on {ereolen_searchLink} and copy the url in the address bar. Then paste it here.', {ereolen_searchLink: widgetContext.searchLink})"></small>
+                                <small id="contentSearchSearchHelp" class="form-text text-muted" v-html="$t('Perform a search on {ereolen_searchLink} and copy the url in the address bar. Then paste it here.', {ereolen_searchLink: widgetContext.searchLink})" />
                             </div>
                         </div>
                     </div>
@@ -121,13 +121,8 @@
                 <fieldset>
                     <h3>{{ $t('Widget preview') }}</h3>
                     <div class="widget-preview bg-white">
-                        <itk-spinner v-if="saveState" class="itk-spinner fixed-on-preview"></itk-spinner>
-                        <widget v-bind:size="widgetConfiguration.size" v-bind:theme="widgetConfiguration.theme" v-bind:title="widgetTitle" v-bind:data="widgetContent" v-bind:context="widgetContext"/>
-
-                        <!-- <iframe v-if="embedUrl" v-bind:src="embedUrl" v-bind:width="widgetConfiguration.size.width" v-bind:height="widgetConfiguration.size.height" v-bind:theme="widgetConfiguration.theme.class" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true" /> -->
-                        <!-- <div class="widget-preview default" v-else>
-                            {{ $t('Preview will update when you add or remove materials') }}
-                        </div> -->
+                        <itk-spinner v-if="saveState" class="itk-spinner fixed-on-preview" />
+                        <widget v-bind:size="widgetConfiguration.size" v-bind:theme="widgetConfiguration.theme" v-bind:title="widgetTitle" v-bind:data="widgetContent" v-bind:context="widgetContext" />
                     </div>
                 </fieldset>
                 <fieldset>
@@ -399,7 +394,7 @@
                         .catch(function (error) {
                             vm.addMessage('Error saving widget', 'error')
                         })
-                        .then(function (){
+                        .then(function () {
                             vm.saveState = null
                         })
                 } else {
@@ -422,7 +417,7 @@
                         .catch(function (error) {
                             vm.addMessage('Error creating widget', 'error')
                         })
-                        .then(function (){
+                        .then(function () {
                             vm.saveState = null
                         })
                 }
