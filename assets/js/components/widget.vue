@@ -25,8 +25,8 @@
                 <a href="https://ereolen.dk/" class="er-widget-logo" ><img src="https://ereolen.dk/sites/all/themes/orwell/svg/eReolen_Logo.svg" class="er-widget-logo-image"  alt="eReolen"></a>
             </div>
             <div class="er-btns" v-if="materialContainerWidth > size.width">
-                <a class="er-btn er-btn-left" href="#" role="button" v-on:click.stop="moveCarousel(-1)" v-bind:disabled="atHeadOfList"><v-icon name="angle-left" /></a>
-                <a class="er-btn er-btn-right" href="#" role="button" v-on:click.stop="moveCarousel(1)" v-bind:disabled="atEndOfList"><v-icon name="angle-right" /></a>
+                <button class="er-btn er-btn-left" href="#" role="button" v-on:click.prevent="moveCarousel(-1)" v-bind:disabled="atHeadOfList"><v-icon name="angle-left" /></button>
+                <button class="er-btn er-btn-right" href="#" role="button" v-on:click.prevent="moveCarousel(1)" v-bind:disabled="atEndOfList"><v-icon name="angle-right" /></button>
             </div>
         </div>
     </div>
@@ -70,7 +70,7 @@
                 return (this.size.width >= this.size.height) ? 'landscape' : 'portrait'
             },
             materialDimensions: function() {
-                
+
                 if (this.size.width >= this.size.height) {
                     var tmpSize = (this.size.width / this.windowSize.landscape);
                     if (tmpSize < this.size.height) {
@@ -100,14 +100,10 @@
         },
         methods: {
             moveCarousel: function(direction) {
-                console.log(this.data.length);
-                // Find a more elegant way to express the :style. consider using props to make it truly generic
                 if (direction === 1 && !this.atEndOfList) {
                     this.currentOffset -= this.paginationFactor
-                    console.log(this.currentOffset);
                 } else if (direction === -1 && !this.atHeadOfList) {
                     this.currentOffset += this.paginationFactor
-                    console.log(this.currentOffset);
                 }
             }
         }
