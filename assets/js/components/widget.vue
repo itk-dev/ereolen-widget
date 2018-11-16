@@ -24,7 +24,7 @@
                 <a class="er-widget-backlink" href="https://ereolen.dk/">Se flere titler</a>
                 <a href="https://ereolen.dk/" class="er-widget-logo" ><img src="https://ereolen.dk/sites/all/themes/orwell/svg/eReolen_Logo.svg" class="er-widget-logo-image"  alt="eReolen"></a>
             </div>
-            <div class="er-btns" v-if="materialContainerWidth > size.width">
+            <div class="er-btns" v-if="widgetDirection === 'landscape' && materialContainerWidth > size.width || widgetDirection === 'portrait' && materialContainerWidth > size.height ">
                 <button class="er-btn er-btn-left" href="#" role="button" v-on:click.prevent="moveCarousel(-1)" v-bind:disabled="atHeadOfList"><v-icon name="angle-left" /></button>
                 <button class="er-btn er-btn-right" href="#" role="button" v-on:click.prevent="moveCarousel(1)" v-bind:disabled="atEndOfList"><v-icon name="angle-right" /></button>
             </div>
