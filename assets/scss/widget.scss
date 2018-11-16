@@ -28,16 +28,16 @@ $spacer: 1rem;
 */
 
 $themes: (
-  light: (
-    backgroundColor: $theme-light-bg-color,
-    textColor: $theme-light-text-color,
-    btnColor: $color-danger
-  ),
-  dark: (
-    backgroundColor: $theme-dark-bg-color,
-    textColor: $theme-dark-text-color,
-    btnColor: $color-danger
-  ),
+    light: (
+        backgroundColor: $theme-light-bg-color,
+        textColor: $theme-light-text-color,
+        btnColor: $color-danger
+    ),
+    dark: (
+        backgroundColor: $theme-dark-bg-color,
+        textColor: $theme-dark-text-color,
+        btnColor: $color-danger
+    ),
 );
 
 /*
@@ -45,23 +45,23 @@ $themes: (
 */
 
 @mixin themify($themes: $themes) {
-  @each $theme, $map in $themes {
+    @each $theme, $map in $themes {
 
-    .theme-#{$theme} & {
-      $theme-map: () !global;
-      @each $key, $submap in $map {
-        $value: map-get(map-get($themes, $theme), '#{$key}');
-        $theme-map: map-merge($theme-map, ($key: $value)) !global;
-      }
+        .theme-#{$theme} & {
+            $theme-map: () !global;
+            @each $key, $submap in $map {
+                $value: map-get(map-get($themes, $theme), "#{$key}");
+                $theme-map: map-merge($theme-map, ($key: $value)) !global;
+            }
 
-      @content;
-      $theme-map: null !global;
+            @content;
+            $theme-map: null !global;
+        }
+
     }
-
-  }
 }
 @function themed($key) {
-  @return map-get($theme-map, $key);
+    @return map-get($theme-map, $key);
 }
 
 body, html, #widget {
@@ -82,8 +82,8 @@ body, html, #widget {
     display: flex;
     flex-wrap: wrap;
     @include themify($themes) {
-        background-color: themed('backgroundColor');
-        color: themed('textColor');
+        background-color: themed("backgroundColor");
+        color: themed("textColor");
     }
     &-top, &-main, &-bottom {
         flex: 0 1 100%;
@@ -117,21 +117,21 @@ body, html, #widget {
     .er-btn {
         display: block;
         position: absolute;
-        transition: opacity .2s ease-out;
+        transition: opacity .2s ease-out, background-color .2s ease-in, color .2s ease-in;
         opacity: 1;
         width: $spacer*1.8;
         height: $spacer*1.8;
         text-align: center;
+        border: 0;
         // line-height: 2rem;
         .fa-icon {
             vertical-align: middle;
         }
         z-index: 3;
         @include themify($themes) {
-            background-color: themed('backgroundColor');
-            color: themed('btnColor');
+            background-color: themed("backgroundColor");
+            color: themed("btnColor");
         }
-        transition: background-color .2s ease-in, color .2s ease-in;
         &:hover {
             background-color: $color-danger;
             color: $color-white;
@@ -139,7 +139,7 @@ body, html, #widget {
         }
         &-left, &-right {
             top: calc(50% - 1rem );
-            box-shadow: 0 4px 16px rgba(0,0,0,.16)
+            box-shadow: 0 4px 16px rgba(0,0,0,.16);
         }
         &-left {
             left: -1px;
@@ -153,8 +153,8 @@ body, html, #widget {
             cursor: not-allowed;
             &:hover {
                 @include themify($themes) {
-                    background-color: themed('backgroundColor');
-                    color: themed('btnColor');
+                    background-color: themed("backgroundColor");
+                    color: themed("btnColor");
                 }
             }
         }
@@ -170,7 +170,7 @@ body, html, #widget {
             display: inline-block;
             a {
                 display: block;
-                img{
+                img {
                     box-shadow: none;
                     transition: box-shadow .2s ease-in;
                 }
@@ -243,7 +243,7 @@ body, html, #widget {
     .wsize200x200 & {
         &-backlink {
             font-size: .8rem;
-        }            
+        }
     }
     /*
     ** Vertical
@@ -269,7 +269,7 @@ body, html, #widget {
             &:before, &:after {
                 content: "";
                 width: 100%;
-                height: $spacer/2;;
+                height: $spacer/2;
                 position: absolute;
                 display: block;
                 z-index: 3;
@@ -277,12 +277,12 @@ body, html, #widget {
             &:before {
                 top: 0;
                 left: 0;
-                background: linear-gradient(to bottom, rgba(240,240,240,1) 0%,rgba(240,240,240,0) 100%); 
+                background: linear-gradient(to bottom, rgba(240,240,240,1) 0%,rgba(240,240,240,0) 100%);
             }
             &:after {
                 bottom: 0;
                 left: 0;
-                background: linear-gradient(to bottom, rgba(240,240,240,0) 0%,rgba(240,240,240,1) 100%); 
+                background: linear-gradient(to bottom, rgba(240,240,240,0) 0%,rgba(240,240,240,1) 100%);
             }
             ul.materials {
                 width: 100%;

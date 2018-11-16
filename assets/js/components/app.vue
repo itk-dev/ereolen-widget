@@ -19,6 +19,11 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <div class="row">
+                            <div class="col-auto">
+                                <p>{{ $t('Choose how to add content to the widget carousel') }}</p>
+                            </div>
+                        </div>
                         <div class="row justify-content-start">
                             <div class="col-auto">
                                 <div class="form-check">
@@ -51,16 +56,17 @@
                                         <itk-spinner v-show="searchState" class="itk-spinner fixed-on-input"></itk-spinner>
                                     </div>
                                 </div>
+                                <small id="widgetContentSearchManualHelp" class="form-text text-muted">{{ $t('The search will return up to 10 results. If the material you are searching for does not appear then please try to add another keyword.') }}</small>
                             </div>
                             <div class="form-group" v-if="search.type === SearchTypes.URL">
-                                <label for="contentSearchSearch">{{ $t('Insert url from eReolen') }}</label>
+                                <label for="contentSearchSearch" v-html="$t('Do a search on {ereolen_searchLink} and paste the url here', {ereolen_searchLink: widgetContext.searchLink})" />
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">{{ $t('URL') }}</div>
                                     </div>
-                                    <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" v-bind:placeholder="$t('Example: https://ereolen.dk/search/ting/jussi%20adler')" v-model="search.url" v-on:keyup.enter="debouncedSearch">
+                                    <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" v-bind:placeholder="$t('Example: {ereolen_searchUrl}/dennis', {ereolen_searchUrl: widgetContext.searchUrl})" v-model="search.url" v-on:keyup.enter="debouncedSearch">
                                 </div>
-                                <small id="contentSearchSearchHelp" class="form-text text-muted" v-html="$t('Perform a search on eReolen and copy the url in the address bar. Then paste it here.', {ereolen_url: widgetContext.url, ereolen_name: widgetContext.label})" />
+                                <small id="contentSearchSearchHelp" class="form-text text-muted" v-html="$t('Perform a search on {ereolen_searchLink} and copy the url in the address bar. Then paste it here.', {ereolen_searchLink: widgetContext.searchLink})"></small>
                             </div>
                         </div>
                     </div>
@@ -70,6 +76,7 @@
                             <div class="row content-search-results">
                                 <material v-for="material in searchResult.data" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="plus" v-bind:action="addMaterial" />
                             </div>
+
                         </div>
                         <div class="col-sm-12" v-if="widgetContent.length > 0">
                             <label>{{ $t('Materials in the carousel') }}: <strong>{{ $t('Click on a material to remove it from the carousel') }}</strong></label><a href="#" class="btn btn-danger btn-sm text-light ml-2" @click="removeAllMaterials">{{ $t('Remove all materials from carousel') }}</a>
@@ -208,8 +215,8 @@
     ]
 
     const widgetContexts = [
-        {label: 'eReolen', url: 'https://www.ereolen.dk', logo: 'https://ereolen.dk/sites/all/themes/orwell/svg/eReolen_Logo.svg'},
-        {label: 'eReolen GO', url: 'https://www.ereolengo.dk', logo: 'https://ereolengo.dk/sites/all/themes/wille/svg/logo.svg'}
+        {label: 'eReolen', url: 'https://www.ereolen.dk', searchLink: '<a href="https://ereolen.dk/search/ting" target="_blank">eReolen</a>', logo: 'https://ereolen.dk/sites/all/themes/orwell/svg/eReolen_Logo.svg', searchUrl: 'https://www.ereolen.dk/search/ting'},
+        {label: 'eReolen GO', url: 'https://www.ereolengo.dk', searchLink: '<a href="https://ereolengo.dk/search/ting" target="_blank">eReolen GO</a>', logo: 'https://ereolengo.dk/sites/all/themes/wille/svg/logo.svg', searchUrl: 'https://www.ereolengo.dk/search/ting'}
     ]
 
     // Dismiss messages afthe amount of milliseconds.
