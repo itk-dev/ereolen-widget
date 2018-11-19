@@ -4,9 +4,14 @@
         padding-top: $spacer;
         margin-bottom: $spacer*1;
         .result {
+            background-color: $gray-200;
             background-size: contain;
             background-position: top center;
             display: block;
+            min-height: 100%;
+            @include media-breakpoint-up(sm) {
+                min-height: 220px;
+            }
             height: 100%;
             position: relative;
             box-shadow: 0 0 0 rgba(0,0,0,0);
