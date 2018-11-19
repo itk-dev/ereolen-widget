@@ -56,8 +56,10 @@ class EreolenSearch
                 ]);
 
                 $data = json_decode((string) $response->getBody(), true);
-                $cachedItem->set($data)->expiresAfter($cacheTtl);
-                $this->cacheItemPool->save($cachedItem);
+                if (!empty($data)) {
+                    $cachedItem->set($data)->expiresAfter($cacheTtl);
+                    $this->cacheItemPool->save($cachedItem);
+                }
             } catch (ClientException $exception) {
                 throw new SearchException($exception->getMessage(), $exception->getCode(), $exception);
             }
