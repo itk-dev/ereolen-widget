@@ -107,6 +107,9 @@
         watch: {
             size: function (val) {
                 this.currentOffset = 0
+            },
+            data: function (val) {
+                this.currentOffset = 0
             }
         },
         methods: {

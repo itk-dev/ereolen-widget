@@ -65,24 +65,37 @@
                                         <div class="input-group-text">{{ $t('URL') }}</div>
                                     </div>
                                     <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" v-bind:placeholder="$t('Example: {ereolen_searchUrl}/dennis', {ereolen_searchUrl: widgetContext.searchUrl})" v-model="search.url" v-on:keyup.enter="debouncedSearch">
+                                    <div class="input-group-append">
+                                        <itk-spinner v-show="searchState" class="itk-spinner fixed-on-input" />
+                                    </div>
                                 </div>
                                 <small id="contentSearchSearchHelp" class="form-text text-muted" v-html="$t('Perform a search on {ereolen_searchLink} and copy the url in the address bar. Then paste it here.', {ereolen_searchLink: widgetContext.searchLink})" />
                             </div>
                         </div>
                     </div>
                     <div class="row content-search" v-if="search.type === SearchTypes.MANUAL">
+                        <div class="col-sm-12" v-show="searchState">
+                            <p v-html="searchMessage" />
+                        </div>
                         <div class="col-sm-12" v-if="searchResult && searchResult.data && searchResult.data.length > 0">
                             <label>{{ $t('Search result') }}: <strong>{{ $t('Click on a material to add it to the carousel') }}</strong></label><a href="#" class="btn btn-success btn-sm text-light ml-2" @click="addAllMaterials">{{ $t('Add all materials to carousel') }}</a>
                             <div class="row content-search-results">
-                                <material v-for="material in searchResult.data" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="plus" v-bind:action="addMaterial" />
+                                <material v-for="material in searchResult.data" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="plus" v-bind:action.prevent="addMaterial" />
                             </div>
-
                         </div>
                         <div class="col-sm-12" v-if="widgetContentManual.length > 0">
                             <label>{{ $t('Materials in the carousel') }}: <strong>{{ $t('Click on a material to remove it from the carousel') }}</strong></label><a href="#" class="btn btn-danger btn-sm text-light ml-2" @click="removeAllMaterials">{{ $t('Remove all materials from carousel') }}</a>
                             <div class="row content-search-results added">
-                                <material v-for="material in widgetContentManual" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="minus" v-bind:action="removeMaterial" />
+                                <material v-for="material in widgetContentManual" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="minus" v-bind:action.prevent="removeMaterial" />
                             </div>
+                        </div>
+                    </div>
+                    <div class="row content-search" v-if="search.type === SearchTypes.URL">
+                        <div class="col-sm-12" v-show="searchState">
+                            <p v-html="searchMessage" />
+                        </div>
+                        <div class="col-sm-12" v-if="widgetContentUrl.length > 0">
+                            <p>{{ $t('Search result loaded. Preview is updated.') }}</p>
                         </div>
                     </div>
                     <div class="row">
@@ -472,7 +485,7 @@
                         return
                     }
 
-                    searchMessage = 'Searching …'
+                    searchMessage = this.$t('Searching …')
 
                     params = {url: this.search.url}
                     break
@@ -481,8 +494,7 @@
                     if (!this.search.query || this.search.query.length < 3) {
                         return
                     }
-                    searchMessage = 'Searching for "'+this.search.query+'" …'
-
+                    searchMessage = this.$t('Searching for {ereolen_searchQuery}', {ereolen_searchQuery: this.search.query})
                     params = {query: this.search.query}
                     break
                 }

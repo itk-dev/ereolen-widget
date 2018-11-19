@@ -46,6 +46,9 @@ const messages = {
         'Build widget': 'Byg widget',
         'How to': 'Vejledninger',
         'About widgets': 'Om brug af widgets',
+        'Searching for {ereolen_searchQuery}': 'Søger efter {ereolen_searchQuery}',
+        'Searching …': 'Søger',
+        'Search result loaded. Preview is updated.': 'Søgeresultatet er hentet og forhåndsvisningen er opdateret.',
         theme: {
             dark: 'Mørk',
             light: 'Lys'
