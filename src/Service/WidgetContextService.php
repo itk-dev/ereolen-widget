@@ -47,6 +47,11 @@ class WidgetContextService
         $request = $this->requestStack->getCurrentRequest();
         $name = $request->get('context');
 
+        return $this->getContextByName($name);
+    }
+
+    public function getContextByName($name)
+    {
         return $this->contexts[$name] ?? null;
     }
 

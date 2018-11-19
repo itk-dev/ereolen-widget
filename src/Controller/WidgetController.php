@@ -81,8 +81,9 @@ class WidgetController extends AbstractController
     public function show(Request $request, Widget $widget)
     {
         $this->statistics->addRequest($widget, $request);
+        $context = $this->getWidgetContext($widget);
 
-        return $this->render('widget/show.html.twig', ['widget' => $widget]);
+        return $this->render('widget/show.html.twig', ['widget' => $widget, 'context' => $context]);
     }
 
     /**
@@ -90,7 +91,9 @@ class WidgetController extends AbstractController
      */
     public function edit(Request $request, Widget $widget)
     {
-        return $this->render('default/index.html.twig', ['widget' => $widget]);
+        $context = $this->getWidgetContext($widget);
+
+        return $this->render('default/index.html.twig', ['widget' => $widget, 'context' => $context]);
     }
 
     /**
@@ -112,7 +115,9 @@ class WidgetController extends AbstractController
             }
         }
 
-        return $this->render('widget/embed.html.twig', ['widget' => $widget]);
+        $context = $this->getWidgetContext($widget);
+
+        return $this->render('widget/embed.html.twig', ['widget' => $widget, 'context' => $context]);
     }
 
     /**
@@ -138,5 +143,10 @@ class WidgetController extends AbstractController
         $statistics = $this->statistics->getStatistics($widget);
 
         return new JsonResponse($statistics);
+    }
+
+    private function getWidgetContext(Widget $widget)
+    {
+        return $this->contextService->getContextByName($widget->getContext());
     }
 }

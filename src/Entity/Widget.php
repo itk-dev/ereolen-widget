@@ -112,4 +112,9 @@ class Widget implements Loggable
 
         return $this;
     }
+
+    public function getContext()
+    {
+        return $this->configuration['context'] ?? 'ereolen';
+    }
 }

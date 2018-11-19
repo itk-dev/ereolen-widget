@@ -78,10 +78,10 @@
                             </div>
 
                         </div>
-                        <div class="col-sm-12" v-if="widgetContent.length > 0">
+                        <div class="col-sm-12" v-if="widgetContentManual.length > 0">
                             <label>{{ $t('Materials in the carousel') }}: <strong>{{ $t('Click on a material to remove it from the carousel') }}</strong></label><a href="#" class="btn btn-danger btn-sm text-light ml-2" @click="removeAllMaterials">{{ $t('Remove all materials from carousel') }}</a>
                             <div class="row content-search-results added">
-                                <material v-for="material in widgetContent" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="minus" v-bind:action="removeMaterial" />
+                                <material v-for="material in widgetContentManual" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="minus" v-bind:action="removeMaterial" />
                             </div>
                         </div>
                     </div>
@@ -249,17 +249,22 @@
                     size: widgetSizes[0]
                 },
                 // The selected materials
-                widgetContent: []
+                widgetContentManual: [],
+                // Widget content from search by url.
+                widgetContentUrl: []
             }
         },
         computed: {
+            widgetContent() {
+                return SearchTypes.MANUAL === this.search.type ? this.widgetContentManual : this.widgetContentUrl
+            },
             embedUrl() {
                 return (this.widget && this.widget.id) ? this.$config.widgetEmbedUrl.replace('{id}', this.widget.id) : null
             },
             embedCode() {
                 const url = this.embedUrl
                 return {
-                    code: '<iframe src="'+widgetContext.url+'" width="' + this.widgetConfiguration.size.width + '" height="' + this.widgetConfiguration.size.height + '" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"></iframe>'
+                    code: '<iframe src="'+url+'" width="' + this.widgetConfiguration.size.width + '" height="' + this.widgetConfiguration.size.height + '" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"></iframe>'
                 }
             }
         },
@@ -281,7 +286,7 @@
             }
 
             // @see https://github.com/vuejs/vue/issues/844#issuecomment-390498696
-            this.$watch((vm) => (vm.search.type, vm.search.query, Date.now()), function() {
+            this.$watch((vm) => (vm.search.type, vm.search.query, vm.search.url, Date.now()), function() {
                 this.debouncedSearch()
             })
 
@@ -320,7 +325,7 @@
             },
             isValid: function() {
                 return this.widgetTitle
-                    && ((SearchTypes.MANUAL === this.search.type && this.widgetContent && this.widgetContent.length > 0)
+                    && ((SearchTypes.MANUAL === this.search.type && this.widgetContentManual && this.widgetContentManual.length > 0)
                     || (SearchTypes.URL === this.search.type && (this.search.url)))
             },
             // Load data from api.
@@ -333,7 +338,8 @@
                     this.search = configuration.search
                 }
                 this.widgetTitle = widget.title
-                this.widgetContent = data.content
+                this.widgetContentManual = SearchTypes.MANUAL === this.search.type ? data.content : []
+                this.widgetContentUrl = SearchTypes.URL === this.search.type ? data.content : []
                 this.widgetConfiguration.theme = this.widgetThemes[0]
                 if (configuration.theme) {
                     this.widgetThemes.forEach((theme) => {
@@ -359,9 +365,10 @@
                     configuration: {
                         theme: this.widgetConfiguration.theme,
                         size: this.widgetConfiguration.size,
-                        search: this.search
+                        search: this.search,
+                        context: this.widgetContext.name
                     },
-                    content: this.widgetContent || []
+                    content: this.widgetContent
                 }
             },
             doSave: function() {
@@ -426,12 +433,12 @@
                 const list = this.searchResult.data
                 const index = list.indexOf(material)
                 if (index > -1) {
-                    this.widgetContent.push(list[index])
+                    this.widgetContentManual = this.widgetContentManual.concat([list[index]])
                     list.splice(index, 1)
                 }
             },
             removeMaterial: function(material) {
-                const list = this.widgetContent
+                const list = this.widgetContentManual
                 const index = list.indexOf(material)
                 if (index > -1) {
                     if (null === this.searchResult) {
@@ -445,15 +452,15 @@
                 if (null === this.searchResult) {
                     this.searchResult = {data: []}
                 }
-                this.widgetContent = this.widgetContent.concat(this.searchResult.data)
+                this.widgetContentManual = this.widgetContentManual.concat(this.searchResult.data)
                 this.searchResult.data = []
             },
             removeAllMaterials: function() {
                 if (null === this.searchResult) {
                     this.searchResult = {data: []}
                 }
-                this.searchResult.data = this.searchResult.data.concat(this.widgetContent)
-                this.widgetContent = []
+                this.searchResult.data = this.searchResult.data.concat(this.widgetContentManual)
+                this.widgetContentManual = []
             },
             doSearch: function() {
                 const searchUrl = this.$config.searchUrl
@@ -499,7 +506,11 @@
                         })
                     })
                         .then(result => {
-                            vm.searchResult = result.data
+                            if (SearchTypes.URL === vm.search.type) {
+                                vm.widgetContentUrl = result.data.data || []
+                            } else {
+                                vm.searchResult = result.data
+                            }
                             vm.searchState = null
                             vm.searchMessage = null
                             vm.searchError = null
