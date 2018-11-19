@@ -259,6 +259,7 @@ body, html, #widget {
         }
         &-top {
             flex: 0 0 auto;
+            width: 100%;
         }
         &-title {
             text-align: center;
@@ -308,6 +309,13 @@ body, html, #widget {
         &-logo {
             flex: 1 0 auto;
             margin-left: 0;
+        }
+    }
+    .wsize300x600 & {
+        ul.materials {
+            display: grid;
+            grid-template-columns: 35% 35%;
+            justify-content: space-evenly;
         }
     }
     /*
