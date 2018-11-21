@@ -11,13 +11,13 @@
                 <div class="collapse navbar-collapse" id="topbarRight">
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">{{ $t('Build widget') }}</a>
+                            <a class="nav-link" v-bind:class="{ active: 'build' === page }" v-on:click="navigate('build')" href="#">{{ $t('Build widget') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">{{ $t('How to') }}</a>
+                            <a class="nav-link" v-bind:class="{ active: 'users_manual' === page }" v-on:click="navigate('users_manual')" href="#">{{ $t('How to') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">{{ $t('About widgets') }}</a>
+                            <a class="nav-link" v-bind:class="{ active: 'about_widgets' === page }" v-on:click="navigate('about_widgets')" href="#">{{ $t('About widgets') }}</a>
                         </li>
                     </ul>
                 </div>
@@ -28,6 +28,18 @@
 
 <script>
     export default {
-        name: 'TopBar'
+        name: 'TopBar',
+        data() {
+            return {
+                page: 'build'
+            }
+        },
+        methods: {
+            // @see https://flaviocopes.com/vue-components-communication/#using-an-event-bus-to-communicate-between-any-component
+            navigate(target) {
+                this.page = target
+                this.$root.$emit('navigate', target)
+            }
+        }
     }
 </script>

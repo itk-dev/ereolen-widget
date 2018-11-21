@@ -17,6 +17,14 @@
                 }|json_encode|raw }}
         </script>
     {% endif %}
+
+    <script type="application/json" id="app-pages">
+        {{ {
+            'users_manual': craue_setting('users_manual'),
+            'about_widgets': craue_setting('about_widgets')
+            }|json_encode|raw }}
+    </script>
+
     {# Get url with {id} placeholder. #}
     {% set widgetEmbedUrl = absolute_url(path('widget_embed', {'id': '{id}'})|replace({('{id}'|url_encode): '{id}'})) %}
     {% set configuration = {

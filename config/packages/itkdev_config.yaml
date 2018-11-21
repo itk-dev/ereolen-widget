@@ -10,3 +10,12 @@ services:
       - 'craue_config'
       - 0
       - '%kernel.cache_dir%'
+
+
+fos_ck_editor:
+    configs:
+        widget_builder:
+            toolbar:
+                - { name: 'styles', items: [ 'Format', 'Bold', 'Italic', 'RemoveFormat' ] }
+                - { name: 'lists', items: [ 'NumberedList', 'BulletedList' ] }
+                - { name: 'source', items: [ 'Source' ] }

@@ -6,168 +6,172 @@
             </nav>
         </div>
         <div class="col-sm-10 main pt-3 pb-3">
-            <h1>{{ $t('Build your carousel') }}</h1>
-            <form>
-                <fieldset>
-                    <h3>{{ $t('Widget content') }}</h3>
-                    <div v-if="messages.length > 0">
-                        <div v-for="message in messages" class="alert alert-fixed-bottom" v-bind:class="['alert-'+message.type]" v-bind:key="message.id">
-                            {{ message.text }}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" v-on:click="dismissMessage(message)">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+            <div v-if="'build' !== page" class="widget-page" v-html="pages[page]" />
+
+            <div v-else id="build" class="widget-builder">
+                <h1>{{ $t('Build your carousel') }}</h1>
+                <form>
+                    <fieldset>
+                        <h3>{{ $t('Widget content') }}</h3>
+                        <div v-if="messages.length > 0">
+                            <div v-for="message in messages" class="alert alert-fixed-bottom" v-bind:class="['alert-'+message.type]" v-bind:key="message.id">
+                                {{ message.text }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close" v-on:click="dismissMessage(message)">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-auto">
+                                    <p>{{ $t('Choose how to add content to the widget carousel') }}</p>
+                                </div>
+                            </div>
+                            <div class="row justify-content-start">
+                                <div class="col-auto">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="radio" class="form-check-input" name="content" v-bind:value="SearchTypes.MANUAL" checked v-model="search.type">
+                                            {{ $t('Add manually') }}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="radio" class="form-check-input" name="content" v-bind:value="SearchTypes.URL" v-model="search.type">
+                                            {{ $t('Use search from eReolen') }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
-                            <div class="col-auto">
-                                <p>{{ $t('Choose how to add content to the widget carousel') }}</p>
-                            </div>
-                        </div>
-                        <div class="row justify-content-start">
-                            <div class="col-auto">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" name="content" v-bind:value="SearchTypes.MANUAL" checked v-model="search.type">
-                                        {{ $t('Add manually') }}
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" name="content" v-bind:value="SearchTypes.URL" v-model="search.type">
-                                        {{ $t('Use search from eReolen') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-10 col-lg-8">
-                            <div class="form-group" v-if="search.type === SearchTypes.MANUAL">
-                                <label for="contentSearchManual">{{ $t('Search for materials you want to show in the carousel') }}</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text"><v-icon name="search" /></div>
-                                    </div>
-                                    <input type="text" class="form-control" name="contentSearchManual" id="contentSearchManual" v-bind:placeholder="$t('Enter author, title, isbn or publisher')" v-model="search.query" v-on:keyup.enter="debouncedSearch">
-                                    <div class="input-group-append">
-                                        <itk-spinner v-show="searchState" class="itk-spinner fixed-on-input" />
-                                    </div>
-                                </div>
-                                <small id="widgetContentSearchManualHelp" class="form-text text-muted">{{ $t('The search will return up to 10 results. If the material you are searching for does not appear then please try to add another keyword.') }}</small>
-                            </div>
-                            <div class="form-group" v-if="search.type === SearchTypes.URL">
-                                <label for="contentSearchSearch" v-html="$t('Do a search on {ereolen_searchLink} and paste the url here', {ereolen_searchLink: widgetContext.searchLink})" />
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text">{{ $t('URL') }}</div>
-                                    </div>
-                                    <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" v-bind:placeholder="$t('Example: {ereolen_searchUrl}/dennis', {ereolen_searchUrl: widgetContext.searchUrl})" v-model="search.url" v-on:keyup.enter="debouncedSearch">
-                                    <div class="input-group-append">
-                                        <itk-spinner v-show="searchState" class="itk-spinner fixed-on-input" />
-                                    </div>
-                                </div>
-                                <small id="contentSearchSearchHelp" class="form-text text-muted" v-html="$t('Perform a search on {ereolen_searchLink} and copy the url in the address bar. Then paste it here.', {ereolen_searchLink: widgetContext.searchLink})" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row content-search" v-if="search.type === SearchTypes.MANUAL">
-                        <div class="col-sm-12" v-show="searchState">
-                            <p v-html="searchMessage" />
-                        </div>
-                        <div class="col-sm-12" v-if="searchResult && searchResult.data && searchResult.data.length > 0">
-                            <label>{{ $t('Search result') }}: <strong>{{ $t('Click on a material to add it to the carousel') }}</strong></label><a href="#" class="btn btn-success btn-sm text-light ml-2" @click="addAllMaterials">{{ $t('Add all materials to carousel') }}</a>
-                            <div class="row content-search-results">
-                                <material v-for="material in searchResult.data" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="plus" v-bind:action.prevent="addMaterial" />
-                            </div>
-                        </div>
-                        <div class="col-sm-12" v-if="widgetContentManual.length > 0">
-                            <label>{{ $t('Materials in the carousel') }}: <strong>{{ $t('Click on a material to remove it from the carousel') }}</strong></label><a href="#" class="btn btn-danger btn-sm text-light ml-2" @click="removeAllMaterials">{{ $t('Remove all materials from carousel') }}</a>
-                            <div class="row content-search-results added">
-                                <material v-for="material in widgetContentManual" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="minus" v-bind:action.prevent="removeMaterial" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row content-search" v-if="search.type === SearchTypes.URL">
-                        <div class="col-sm-12" v-show="searchState">
-                            <p v-html="searchMessage" />
-                        </div>
-                        <div class="col-sm-12" v-if="widgetContentUrl.length > 0">
-                            <p>{{ $t('Search result loaded. Preview is updated.') }}</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-10 col-lg-8">
-                            <div class="form-group">
-                                <label for="widgetTitle">{{ $t('Widget title') }}</label>
-                                <input type="text" class="form-control" name="widgetTitle" id="widgetTitle" aria-describedby="widgetTitleHelp" v-bind:placeholder="$t('Fx New titles')" v-model="widgetTitle">
-                                <small id="widgetTitleHelp" class="form-text text-muted">{{ $t('The widget title is displayed as a heading in the widgeten') }}</small>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <h3>{{ $t('Widget display settings') }}</h3>
-                    <div class="row">
-                        <div class="col-sm-10 col-lg-8">
-                            <div class="form-group">
-                                <label for="widget_theme">{{ $t('Widget color') }}</label>
-                                <select class="form-control" name="widget_theme" id="widget_theme" v-model="widgetConfiguration.theme">
-                                    <option v-for="theme in widgetThemes" v-bind:value="theme" v-bind:key="theme.label">
-                                        {{ $t(theme.label) }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="widget_size">{{ $t('Widget size') }}</label>
-                                <select class="form-control" name="widget_size" id="widget_size" v-model="widgetConfiguration.size">
-                                    <option v-for="size in widgetSizes" v-bind:value="size" v-bind:key="size.label">
-                                        {{ size.label }} {{ size.width }}x{{ size.height }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <h3>{{ $t('Widget preview') }}</h3>
-                    <div class="widget-preview bg-white">
-                        <itk-spinner v-if="saveState" class="itk-spinner fixed-on-preview" />
-                        <widget v-bind:size="widgetConfiguration.size" v-bind:theme="widgetConfiguration.theme" v-bind:title="widgetTitle" v-bind:data="widgetContent" v-bind:context="widgetContext" />
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <div class="row">
-                        <div class="col-sm-10 col-lg-8">
-                            <h3>{{ $t('Widget embed code') }}</h3>
-                            <label>{{ $t('Insert this code on your website to display the widget.') }}</label>
-                            <div class="code-preview">
-                                <div class="code-preview-header">
-                                    <div class="row">
-                                        <div class="col-auto">
-                                            <span class="code-preview-header-title">
-                                                <v-icon name="code" />{{ $t('HTML') }}
-                                            </span>
+                            <div class="col-sm-10 col-lg-8">
+                                <div class="form-group" v-if="search.type === SearchTypes.MANUAL">
+                                    <label for="contentSearchManual">{{ $t('Search for materials you want to show in the carousel') }}</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text"><v-icon name="search" /></div>
                                         </div>
-                                        <div class="col-auto ml-auto">
-                                            <button type="button" class="code-preview-header-copy" v-on:click="doCopyEmbedCode">
-                                                <v-icon name="copy" />{{ $t('Copy') }}
-                                            </button>
+                                        <input type="text" class="form-control" name="contentSearchManual" id="contentSearchManual" v-bind:placeholder="$t('Enter author, title, isbn or publisher')" v-model="search.query" v-on:keyup.enter="debouncedSearch">
+                                        <div class="input-group-append">
+                                            <itk-spinner v-show="searchState" class="itk-spinner fixed-on-input" />
                                         </div>
                                     </div>
+                                    <small id="widgetContentSearchManualHelp" class="form-text text-muted">{{ $t('The search will return up to 10 results. If the material you are searching for does not appear then please try to add another keyword.') }}</small>
                                 </div>
-                                <div class="code-preview-content">
-                                    <pre><code>
-                                        {{ embedCode.code }}
-                                    </code></pre>
+                                <div class="form-group" v-if="search.type === SearchTypes.URL">
+                                    <label for="contentSearchSearch" v-html="$t('Do a search on {ereolen_searchLink} and paste the url here', {ereolen_searchLink: widgetContext.searchLink})" />
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">{{ $t('URL') }}</div>
+                                        </div>
+                                        <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" v-bind:placeholder="$t('Example: {ereolen_searchUrl}/dennis', {ereolen_searchUrl: widgetContext.searchUrl})" v-model="search.url" v-on:keyup.enter="debouncedSearch">
+                                        <div class="input-group-append">
+                                            <itk-spinner v-show="searchState" class="itk-spinner fixed-on-input" />
+                                        </div>
+                                    </div>
+                                    <small id="contentSearchSearchHelp" class="form-text text-muted" v-html="$t('Perform a search on {ereolen_searchLink} and copy the url in the address bar. Then paste it here.', {ereolen_searchLink: widgetContext.searchLink})" />
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </fieldset>
-            </form>
+                        <div class="row content-search" v-if="search.type === SearchTypes.MANUAL">
+                            <div class="col-sm-12" v-show="searchState">
+                                <p v-html="searchMessage" />
+                            </div>
+                            <div class="col-sm-12" v-if="searchResult && searchResult.data && searchResult.data.length > 0">
+                                <label>{{ $t('Search result') }}: <strong>{{ $t('Click on a material to add it to the carousel') }}</strong></label><a href="#" class="btn btn-success btn-sm text-light ml-2" @click="addAllMaterials">{{ $t('Add all materials to carousel') }}</a>
+                                <div class="row content-search-results">
+                                    <material v-for="material in searchResult.data" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="plus" v-bind:action.prevent="addMaterial" />
+                                </div>
+                            </div>
+                            <div class="col-sm-12" v-if="widgetContentManual.length > 0">
+                                <label>{{ $t('Materials in the carousel') }}: <strong>{{ $t('Click on a material to remove it from the carousel') }}</strong></label><a href="#" class="btn btn-danger btn-sm text-light ml-2" @click="removeAllMaterials">{{ $t('Remove all materials from carousel') }}</a>
+                                <div class="row content-search-results added">
+                                    <material v-for="material in widgetContentManual" v-bind:key="material.id" v-bind:data="material" v-bind:id="material.id" v-bind:title="material.title" v-bind:cover="material.cover" v-bind:url="material.url" icon="minus" v-bind:action.prevent="removeMaterial" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row content-search" v-if="search.type === SearchTypes.URL">
+                            <div class="col-sm-12" v-show="searchState">
+                                <p v-html="searchMessage" />
+                            </div>
+                            <div class="col-sm-12" v-if="widgetContentUrl.length > 0">
+                                <p>{{ $t('Search result loaded. Preview is updated.') }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-10 col-lg-8">
+                                <div class="form-group">
+                                    <label for="widgetTitle">{{ $t('Widget title') }}</label>
+                                    <input type="text" class="form-control" name="widgetTitle" id="widgetTitle" aria-describedby="widgetTitleHelp" v-bind:placeholder="$t('Fx New titles')" v-model="widgetTitle">
+                                    <small id="widgetTitleHelp" class="form-text text-muted">{{ $t('The widget title is displayed as a heading in the widgeten') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <h3>{{ $t('Widget display settings') }}</h3>
+                        <div class="row">
+                            <div class="col-sm-10 col-lg-8">
+                                <div class="form-group">
+                                    <label for="widget_theme">{{ $t('Widget color') }}</label>
+                                    <select class="form-control" name="widget_theme" id="widget_theme" v-model="widgetConfiguration.theme">
+                                        <option v-for="theme in widgetThemes" v-bind:value="theme" v-bind:key="theme.label">
+                                            {{ $t(theme.label) }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="widget_size">{{ $t('Widget size') }}</label>
+                                    <select class="form-control" name="widget_size" id="widget_size" v-model="widgetConfiguration.size">
+                                        <option v-for="size in widgetSizes" v-bind:value="size" v-bind:key="size.label">
+                                            {{ size.label }} {{ size.width }}x{{ size.height }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <h3>{{ $t('Widget preview') }}</h3>
+                        <div class="widget-preview bg-white">
+                            <itk-spinner v-if="saveState" class="itk-spinner fixed-on-preview" />
+                            <widget v-bind:size="widgetConfiguration.size" v-bind:theme="widgetConfiguration.theme" v-bind:title="widgetTitle" v-bind:data="widgetContent" v-bind:context="widgetContext" />
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-sm-10 col-lg-8">
+                                <h3>{{ $t('Widget embed code') }}</h3>
+                                <label>{{ $t('Insert this code on your website to display the widget.') }}</label>
+                                <div class="code-preview">
+                                    <div class="code-preview-header">
+                                        <div class="row">
+                                            <div class="col-auto">
+                                                <span class="code-preview-header-title">
+                                                    <v-icon name="code" />{{ $t('HTML') }}
+                                                </span>
+                                            </div>
+                                            <div class="col-auto ml-auto">
+                                                <button type="button" class="code-preview-header-copy" v-on:click="doCopyEmbedCode">
+                                                    <v-icon name="copy" />{{ $t('Copy') }}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="code-preview-content">
+                                        <pre><code>
+                                            {{ embedCode.code }}
+                                        </code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
         </div>
     </div>
 </template>
@@ -224,6 +228,9 @@
         name: 'App',
         data() {
             return {
+                pages: {},
+                // The page we're currently showing
+                page: 'build',
                 SearchTypes: SearchTypes,
                 widgetThemes: widgetThemes,
                 widgetSizes: widgetSizes,
@@ -281,12 +288,26 @@
                 }
             }
         },
+        mounted() {
+            // @see https://flaviocopes.com/vue-components-communication/#using-an-event-bus-to-communicate-between-any-component
+            this.$root.$on('navigate', (target) => {
+                this.page = target
+            })
+        },
         created: function() {
             // Load widget data.
             try {
                 const el = document.getElementById('app-widget-data')
                 const data = JSON.parse(el.textContent)
                 this.loadWidgetData(data)
+            } catch (e) {
+                // continue regardless of error
+            }
+
+            // Load pages
+            try {
+                const el = document.getElementById('app-pages')
+                this.pages = JSON.parse(el.textContent)
             } catch (e) {
                 // continue regardless of error
             }
