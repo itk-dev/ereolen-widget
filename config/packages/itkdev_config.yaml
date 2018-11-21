@@ -1,0 +1,12 @@
+craue_config:
+    entity_name: ItkDev\ConfigBundle\Entity\Setting
+
+# Optionally, enable caching for craue/config-bundle (cf. https://github.com/craue/CraueConfigBundle/#enable-caching-optional)
+services:
+  craue_config_cache_provider:
+    class: Symfony\Component\Cache\Adapter\FilesystemAdapter
+    public: false
+    arguments:
+      - 'craue_config'
+      - 0
+      - '%kernel.cache_dir%'
