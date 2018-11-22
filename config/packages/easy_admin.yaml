@@ -7,7 +7,7 @@ easy_admin:
     entities:
         Widget:
             class: App\Entity\Widget
-            disabled_actions: ['delete', 'edit']
+            disabled_actions: ['new', 'delete', 'edit']
             list:
                 role: ROLE_ADMIN
                 actions:
