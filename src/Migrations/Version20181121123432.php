@@ -33,7 +33,7 @@ final class Version20181121123432 extends AbstractMigration
             'name' => 'about_widgets',
             'type' => 'text',
             'form_type' => 'ckeditor',
-            'description' => "About widgets",
+            'description' => 'About widgets',
             'value' => '<h1>About widgets</h1><p>After building a widget …</p>',
         ]);
     }
