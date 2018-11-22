@@ -19,6 +19,7 @@ class WidgetContextService
     private $contexts = [
         'ereolen' => [
             'name' => 'ereolen',
+            'host' => 'widget.ereolen.dk',
             'label' => 'eReolen',
             'url' => 'https://www.ereolen.dk',
             'searchLink' => '<a href="https://ereolen.dk/search/ting" target="_blank">eReolen</a>',
@@ -28,6 +29,7 @@ class WidgetContextService
         ],
         'ereolengo' => [
             'name' => 'ereolengo',
+            'host' => 'widget.ereolengo.dk',
             'label' => 'eReolen GO',
             'url' => 'https://www.ereolengo.dk',
             'searchLink' => '<a href="https://ereolengo.dk/search/ting" target="_blank">eReolen GO</a>',
@@ -46,8 +48,20 @@ class WidgetContextService
     {
         $request = $this->requestStack->getCurrentRequest();
         $name = $request->get('context');
+        $context = $this->getContextByName($name);
+        if (null !== $context) {
+            return $context;
+        }
 
-        return $this->getContextByName($name);
+        $contexts = $this->getContexts();
+        $host = $request->getHost();
+        foreach ($contexts as $context) {
+            if ($host === $context['host']) {
+                return $context;
+            }
+        }
+
+        return null;
     }
 
     public function getContextByName($name)
