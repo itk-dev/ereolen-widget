@@ -7,14 +7,14 @@
             <div class="er-widget-main">
                 <ul v-if="widgetDirection === 'landscape'" class="materials" v-bind:style="'transform: translateX' + '(' + currentOffset + 'px' + '); width:' + materialContainerWidth + 'px'">
                     <li v-for="(material, index) in data" class="material-item" v-bind:key="index">
-                        <a class="material-item-link" v-bind:href="material.url">
+                        <a class="material-item-link" v-bind:href="material.url" target="_top">
                             <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title" v-bind:style="'height: ' + materialDimensions + 'px;'">
                         </a>
                     </li>
                 </ul>
                 <ul v-else class="materials" v-bind:style="'transform: translateY' + '(' + currentOffset + 'px' + '); width:' + size.width + 'px'">
                     <li v-for="(material, index) in data" class="material-item" v-bind:key="index">
-                        <a class="material-item-link" v-bind:href="material.url">
+                        <a class="material-item-link" v-bind:href="material.url" target="_top">
                             <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title" v-bind:style="'width: ' + materialDimensions + 'px;' + 'max-width:' + size.width + 'px'">
                         </a>
                     </li>

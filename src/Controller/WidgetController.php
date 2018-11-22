@@ -115,6 +115,17 @@ class WidgetController extends AbstractController
             }
         }
 
+        // Rewrite content urls to local redirect urls.
+        $content = $widget->getContent();
+        foreach ($content as &$item) {
+            $item['original_url'] = $item['url'];
+            $item['url'] = $this->generateUrl(
+                'widget_redirect',
+                ['id' => $widget->getId(), 'url' => $item['url']],
+                UrlGenerator::ABSOLUTE_URL
+            );
+        }
+        $widget->setContent($content);
         $context = $this->getWidgetContext($widget);
 
         return $this->render('widget/embed.html.twig', ['widget' => $widget, 'context' => $context]);
