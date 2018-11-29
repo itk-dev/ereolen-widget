@@ -10,7 +10,7 @@
     </head>
     <body>
         <div id="widget">
-            <Widget v-bind:title="{{ widget.title|json_encode }}" v-bind:size="{{ widget.configuration.size|json_encode }}" v-bind:data="{{ widget.content|json_encode }}"></Widget>
+            <Widget v-bind:title="{{ widget.title|json_encode }}" v-bind:size="{{ widget.configuration.size|json_encode }}" v-bind:data="{{ widget.content|json_encode }}" v-bind:context="{{ context.data|json_encode }}"></Widget>
         </div>
         {% block javascripts %}
             <script src="{{ asset('build/widget.js') }}"></script>
