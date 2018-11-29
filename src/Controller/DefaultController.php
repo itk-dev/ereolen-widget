@@ -22,8 +22,10 @@ class DefaultController extends AbstractController
      */
     public function index(Request $request, WidgetContextService $contextService)
     {
+        $context = $contextService->getContext();
+
         return $this->render('default/index.html.twig', [
-            'context' => $contextService->getContext(),
+            'context' => $context ? $context->getData() : null,
             'contexts' => $contextService->getContexts(),
         ]);
     }

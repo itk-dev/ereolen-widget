@@ -10,11 +10,16 @@
 
 namespace App\Service;
 
+use App\Repository\WidgetContextRepository;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class WidgetContextService
 {
+    /** @var \Symfony\Component\HttpFoundation\RequestStack */
     private $requestStack;
+
+    /** @var \App\Repository\WidgetContextRepository */
+    private $repository;
 
     private $contexts = [
         'ereolen' => [
@@ -35,12 +40,13 @@ class WidgetContextService
             'searchLink' => '<a href="https://ereolengo.dk/search/ting" target="_blank">eReolen GO</a>',
             'logo' => '/images/eReolenGo_Logo.svg',
             'searchUrl' => 'https://www.ereolengo.dk/search/ting',
-            'ereol_widget_search_url' => 'https://itk:itk@stg.ereolen.dk/widget/search',
+            'ereol_widget_search_url' => 'https://itk:itk@stg.ereolengo.dk/widget/search',
         ],
     ];
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(WidgetContextRepository $repository, RequestStack $requestStack)
     {
+        $this->repository = $repository;
         $this->requestStack = $requestStack;
     }
 
@@ -48,17 +54,15 @@ class WidgetContextService
     {
         $request = $this->requestStack->getCurrentRequest();
         $name = $request->get('context');
-        $context = $this->getContextByName($name);
+        $context = $this->repository->findOneByName($name);
         if (null !== $context) {
             return $context;
         }
 
-        $contexts = $this->getContexts();
         $host = $request->getHost();
-        foreach ($contexts as $context) {
-            if ($host === $context['host']) {
-                return $context;
-            }
+        $context = $this->repository->findOneByHost($host);
+        if (null !== $context) {
+            return $context;
         }
 
         return null;
@@ -66,11 +70,11 @@ class WidgetContextService
 
     public function getContextByName($name)
     {
-        return $this->contexts[$name] ?? null;
+        return $this->repository->findOneByName($name);
     }
 
     public function getContexts()
     {
-        return $this->contexts;
+        return $this->repository->findAll();
     }
 }

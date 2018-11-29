@@ -28,11 +28,10 @@
     {# Get url with {id} placeholder. #}
     {% set widgetEmbedUrl = absolute_url(path('widget_embed', {'id': '{id}'})|replace({('{id}'|url_encode): '{id}'})) %}
     {% set configuration = {
-        widgetEmbedUrl: widgetEmbedUrl,
-        searchUrl: path('widget_search', {context: context.name}),
+        widget_embed_url: widgetEmbedUrl,
+        search_url: path('widget_search', {context: context.name}),
         context: context
         } %}
-
 
     <div id="app" data-configuration="{{ configuration|json_encode }}">
         <div class="container-fluid">
@@ -41,8 +40,8 @@
         </div>
     </div>
     {% else %}
-        {% for key, context in contexts %}
-        <a class="btn btn-primary" href="{{ path('default', {context: key}) }}">{{  context.label }}</a>
+        {% for context in contexts %}
+        <a class="btn btn-primary" href="{{ path('default', {context: context.name}) }}">{{  context.label }}</a>
         {% endfor %}
     {%  endif %}
 {% endblock %}

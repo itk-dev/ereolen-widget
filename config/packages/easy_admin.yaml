@@ -36,6 +36,35 @@ easy_admin:
                     - property: statistics
                       template: statistics.html.twig
 
+        WidgetContext:
+            class: App\Entity\WidgetContext
+            disabled_actions: ['delete']
+            list:
+                role: ROLE_ADMIN
+                fields:
+                    - property: name
+                    - property: host
+
+            form:
+                role: ROLE_ADMIN
+                fields:
+                    - property: name
+                    - property: host
+                    - property: configuration
+                      type: App\Form\Type\YamlType
+                      help: |
+                          Example:
+                          <pre>
+                          name: 'ereolen'
+                          host: 'widget.ereolen.dk'
+                          label: 'eReolen'
+                          url: 'https://www.ereolen.dk'
+                          search_link: '<a href="https://ereolen.dk/search/ting" target="_blank">eReolen</a>'
+                          logo: '/images/eReolen_Logo.svg'
+                          search_url: 'https://www.ereolen.dk/search/ting'
+                          ereol_widget_search_url: 'https://itk:itk@stg.ereolen.dk/widget/search'
+                          </pre>
+
         User:
             class: App\Entity\User
             role_prefix: ROLE_ADMIN_USER

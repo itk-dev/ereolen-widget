@@ -62,17 +62,17 @@
                                     <small id="widgetContentSearchManualHelp" class="form-text text-muted">{{ $t('The search will return up to 10 results. If the material you are searching for does not appear then please try to add another keyword.') }}</small>
                                 </div>
                                 <div class="form-group" v-if="search.type === SearchTypes.URL">
-                                    <label for="contentSearchSearch" v-html="$t('Do a search on {ereolen_searchLink} and paste the url here', {ereolen_searchLink: widgetContext.searchLink})" />
+                                    <label for="contentSearchSearch" v-html="$t('Do a search on {ereolen_searchLink} and paste the url here', {ereolen_searchLink: widgetContext.search_link})" />
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">{{ $t('URL') }}</div>
                                         </div>
-                                        <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" v-bind:placeholder="$t('Example: {ereolen_searchUrl}/dennis', {ereolen_searchUrl: widgetContext.searchUrl})" v-model="search.url" v-on:keyup.enter="debouncedSearch">
+                                        <input type="text" class="form-control" name="contentSearchSearch" id="contentSearchSearch" aria-describedby="contentSearchSearchHelp" v-bind:placeholder="$t('Example: {ereolen_searchUrl}/dennis', {ereolen_searchUrl: widgetContext.search_url})" v-model="search.url" v-on:keyup.enter="debouncedSearch">
                                         <div class="input-group-append">
                                             <itk-spinner v-show="searchState" class="itk-spinner fixed-on-input" />
                                         </div>
                                     </div>
-                                    <small id="contentSearchSearchHelp" class="form-text text-muted" v-html="$t('Perform a search on {ereolen_searchLink} and copy the url in the address bar. Then paste it here.', {ereolen_searchLink: widgetContext.searchLink})" />
+                                    <small id="contentSearchSearchHelp" class="form-text text-muted" v-html="$t('Perform a search on {ereolen_searchLink} and copy the url in the address bar. Then paste it here.', {ereolen_searchLink: widgetContext.search_link})" />
                                 </div>
                             </div>
                         </div>
@@ -279,7 +279,7 @@
                 return SearchTypes.MANUAL === this.search.type ? this.widgetContentManual : this.widgetContentUrl
             },
             embedUrl() {
-                return (this.widget && this.widget.id) ? this.$config.widgetEmbedUrl.replace('{id}', this.widget.id) : null
+                return (this.widget && this.widget.id) ? this.$config.widget_embed_url.replace('{id}', this.widget.id) : null
             },
             embedCode() {
                 const url = this.embedUrl
@@ -497,7 +497,7 @@
                 this.widgetContentManual = []
             },
             doSearch: function() {
-                const searchUrl = this.$config.searchUrl
+                const searchUrl = this.$config.search_url
                 let searchMessage = null
                 let params = null
                 switch (this.search.type) {

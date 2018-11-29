@@ -10,6 +10,7 @@
 
 namespace App\Service;
 
+use App\Entity\WidgetContext;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Psr\Cache\CacheItemPoolInterface;
@@ -38,9 +39,9 @@ class EreolenSearch
      *
      * @return null|array
      */
-    public function search(array $query, array $context = null)
+    public function search(array $query, WidgetContext $context = null)
     {
-        $url = $context['ereol_widget_search_url'] ?? $this->parameterBag->get('ereol_widget_search_url');
+        $url = $context->get('ereol_widget_search_url') ?? $this->parameterBag->get('ereol_widget_search_url');
         $cacheTtl = (int) $this->parameterBag->get('search_cache_ttl');
         $cacheKey = 'app_widget_search_'.md5(json_encode($query));
         $cachedItem = $this->cacheItemPool->getItem($cacheKey);
