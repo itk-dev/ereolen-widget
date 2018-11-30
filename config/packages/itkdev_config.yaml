@@ -17,5 +17,6 @@ fos_ck_editor:
         widget_builder:
             toolbar:
                 - { name: 'styles', items: [ 'Format', 'Bold', 'Italic', 'RemoveFormat' ] }
+                - { name: 'links', items: [ 'Link', 'Unlink' ] }
                 - { name: 'lists', items: [ 'NumberedList', 'BulletedList' ] }
                 - { name: 'source', items: [ 'Source' ] }
