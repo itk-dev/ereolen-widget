@@ -51,6 +51,7 @@ class WidgetController extends AbstractController
     public function search(Request $request)
     {
         $query = $request->query->all();
+        unset($query['context']);
 
         try {
             $context = $this->contextService->getContext();
