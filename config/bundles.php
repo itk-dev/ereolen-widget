@@ -25,4 +25,5 @@ return [
     ItkDev\ConfigBundle\ItkDevConfigBundle::class => ['all' => true],
     FOS\CKEditorBundle\FOSCKEditorBundle::class => ['all' => true],
     Craue\ConfigBundle\CraueConfigBundle::class => ['all' => true],
+    FM\ElfinderBundle\FMElfinderBundle::class => ['all' => true],
 ];
