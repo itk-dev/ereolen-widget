@@ -106,7 +106,7 @@
                                 <div class="form-group">
                                     <label for="widgetTitle">{{ $t('Widget title') }}</label>
                                     <input type="text" class="form-control" name="widgetTitle" id="widgetTitle" aria-describedby="widgetTitleHelp" v-bind:placeholder="$t('Fx New titles')" v-model="widgetTitle">
-                                    <small id="widgetTitleHelp" class="form-text text-muted">{{ $t('The widget title is displayed as a heading in the widgeten') }}</small>
+                                    <small id="widgetTitleHelp" class="form-text text-muted">{{ $t('The widget title is displayed as a heading in the widget') }}</small>
                                 </div>
                             </div>
                         </div>
