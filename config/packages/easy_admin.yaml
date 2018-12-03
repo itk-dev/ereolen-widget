@@ -1,8 +1,26 @@
 easy_admin:
+    site_name: Widget-bygger
+
     design:
+        brand_color: '#b81b40'
+
         form_theme:
             - '@EasyAdmin/form/bootstrap_3_layout.html.twig'
             - '@ItkDevConfig/easy_admin/form/setting.html.twig'
+
+        menu:
+            - entity: 'Widget'
+              label: Widgets
+            - entity: 'WidgetContext'
+              label: Widget contexts
+            - entity: 'User'
+              icon: 'user'
+              label: Users
+            - entity: 'Setting'
+              icon: 'cog'
+              label: Settings
+            - label: 'Widget builder'
+              route: 'default'
 
     entities:
         Widget:
@@ -38,6 +56,7 @@ easy_admin:
                       template: statistics.html.twig
 
         WidgetContext:
+            label: Context
             class: App\Entity\WidgetContext
             disabled_actions: ['delete']
             list:
