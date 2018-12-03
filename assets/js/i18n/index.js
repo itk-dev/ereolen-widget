@@ -45,7 +45,7 @@ const messages = {
         'Choose how to add content to the widget carousel': 'Vælg hvordan du vil tilføje indhold til karrusellen.',
         'Build widget': 'Byg widget',
         'How to': 'Vejledninger',
-        'About widgets': 'Om brug af widgets',
+        'About widgets': 'Om',
         'Searching for {ereolen_searchQuery}': 'Søger efter {ereolen_searchQuery}',
         'Searching …': 'Søger',
         'Search result loaded. Preview is updated.': 'Søgeresultatet er hentet og forhåndsvisningen er opdateret.',
