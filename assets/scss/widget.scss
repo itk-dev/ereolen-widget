@@ -265,7 +265,7 @@ body, html, #widget {
             text-align: center;
         }
         &-main {
-            flex: 1 0 70%;
+            flex: 1 0 80%;
             position: relative;
             &:before, &:after {
                 content: "";
@@ -316,6 +316,10 @@ body, html, #widget {
             display: grid;
             grid-template-columns: 35% 35%;
             justify-content: space-evenly;
+            img {
+                width: auto !important;
+                max-width: 100% !important;
+            }
         }
     }
     /*
@@ -333,15 +337,16 @@ body, html, #widget {
         &-bottom {
             position: absolute;
             bottom: 0;
-            right: $spacer*2;
+            right: 0;
             padding: 0;
         }
         &-backlink {
             display: none;
         }
         &-logo {
+            line-height: 1;
             img {
-                height: .5rem;
+                height: .4rem;
             }
         }
     }

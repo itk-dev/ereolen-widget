@@ -5,7 +5,7 @@
                 <h1 class="er-widget-title">{{ title }}</h1>
             </div>
             <div class="er-widget-main">
-                <ul v-if="widgetDirection === 'landscape'" class="materials" v-bind:style="'transform: translateX' + '(' + currentOffset + 'px' + '); width:' + materialContainerWidth + 'px'">
+                <ul v-if="widgetDirection === 'landscape'" class="materials" v-bind:style="'transform: translateX' + '(' + currentOffset + 'px' + '); width:' + materialContainer + 'px'">
                     <li v-for="(material, index) in data" class="material-item" v-bind:key="index">
                         <a class="material-item-link" v-bind:href="material.url" target="_top">
                             <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title" v-bind:style="'height: ' + materialDimensions + 'px;'">
@@ -15,7 +15,7 @@
                 <ul v-else class="materials" v-bind:style="'transform: translateY' + '(' + currentOffset + 'px' + '); width:' + size.width + 'px'">
                     <li v-for="(material, index) in data" class="material-item" v-bind:key="index">
                         <a class="material-item-link" v-bind:href="material.url" target="_top">
-                            <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title" v-bind:style="'width: ' + materialDimensions + 'px;' + 'max-width:' + size.width + 'px'">
+                            <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title" v-bind:style="'width: ' + materialDimensions + 'px;' + 'max-width:' + size.width*.8 + 'px'">
                         </a>
                     </li>
                 </ul>
@@ -24,7 +24,7 @@
                 <!-- <a class="er-widget-backlink" v-bind:href="context.url">Se flere titler</a> -->
                 <a v-bind:href="context.url" class="er-widget-logo" target="_top"><img v-bind:src="context.logo" class="er-widget-logo-image" v-bind:alt="context.label"></a>
             </div>
-            <div class="er-btns" v-if="widgetDirection === 'landscape' && materialContainerWidth > size.width || widgetDirection === 'portrait' && materialContainerWidth > size.height">
+            <div class="er-btns" v-if="widgetDirection === 'landscape' && materialContainer > size.width || widgetDirection === 'portrait' && materialContainer > size.height">
                 <button class="er-btn er-btn-left" href="#" role="button" v-on:click.prevent="moveCarousel(-1)" v-bind:disabled="atHeadOfList"><v-icon name="angle-left" /></button>
                 <button class="er-btn er-btn-right" href="#" role="button" v-on:click.prevent="moveCarousel(1)" v-bind:disabled="atEndOfList"><v-icon name="angle-right" /></button>
             </div>
@@ -70,7 +70,7 @@
                 currentOffset: 0,
                 windowSize: {
                     landscape: 2,
-                    portrait: 6
+                    portrait: 4
                 }
             }
         },
@@ -79,26 +79,50 @@
                 return (this.size.width >= this.size.height) ? 'landscape' : 'portrait'
             },
             materialDimensions: function() {
-
-                if (this.size.width >= this.size.height) {
+                if (this.widgetDirection == 'landscape') {
                     var tmpSize = (this.size.width / this.windowSize.landscape)
                     if (tmpSize < this.size.height) {
-                        return (tmpSize)
+                        return tmpSize
                     } else {
-                        return (this.size.height * 0.8)
+                        return this.size.height * 0.8
                     }
                 } else {
-                    return (this.size.height / this.windowSize.portrait)
+                    var tmpSize = (this.size.height / this.windowSize.portrait)
+                    if (tmpSize < this.size.height) {
+                        return tmpSize
+                    } else {
+                        if (this.size.width === 300 && this.size.height === 600) {
+                            return this.size.width * 0.4
+                        } else {
+                            return this.size.width * 0.8
+                        }
+                    }
+                }
+             },
+            materialContainer: function() {
+                // Need a more accurate way to calculate the container width/height. This way the container width doesn't match the length of the materials combined width.
+                if (this.widgetDirection == 'landscape') {
+                    var conWidth = (this.data.length - this.windowSize.landscape) * this.materialDimensions
+                    if (conWidth <= this.size.width) {
+                        return this.size.width
+                    } else {
+                        return conWidth
+                    }
+                } else {
+                    return (this.data.length * (this.materialDimensions * (25/18))) // Estimate the height of the cover based on commen aspect of 25:18
                 }
             },
-            paginationFactor: function() {
-                return this.materialDimensions
-            },
-            materialContainerWidth() {
-                return this.data.length * this.paginationFactor
-            },
             atEndOfList: function() {
-                return this.currentOffset <= (this.paginationFactor * -1) * (this.data.length - this.windowSize.landscape)
+                if (this.widgetDirection == 'landscape') {
+                    return this.currentOffset <= -(this.materialContainer - ( this.materialDimensions * (this.size.width/this.materialDimensions)))
+                } else {
+                    if (this.size.width === 300 && this.size.height === 600) {
+                        // In this case we divide the length of the container in two since we have cover in 2 columns.
+                        return this.currentOffset <= -(this.materialContainer - ( this.materialDimensions * ((this.size.height*.8)/this.materialDimensions)))/2 // Multiply the height with .8 since we only have 80% of the height available for the carousel.
+                    } else {
+                        return this.currentOffset <= -(this.materialContainer - ( this.materialDimensions * ((this.size.height*.8)/this.materialDimensions))) // Multiply the height with .8 since we only have 80% of the height available for the carousel.
+                    }
+                }
             },
             atHeadOfList: function() {
                 return this.currentOffset === 0
@@ -115,11 +139,12 @@
         methods: {
             moveCarousel: function(direction) {
                 if (direction === 1 && !this.atEndOfList) {
-                    this.currentOffset -= this.paginationFactor
+                    this.currentOffset -= this.materialDimensions
                 } else if (direction === -1 && !this.atHeadOfList) {
-                    this.currentOffset += this.paginationFactor
+                    this.currentOffset += this.materialDimensions
                 }
-            }
+            },
+
         }
     }
 </script>
