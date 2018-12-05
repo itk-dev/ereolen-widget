@@ -4,16 +4,16 @@
             <div class="er-widget-top">
                 <h1 class="er-widget-title">{{ title }}</h1>
             </div>
-            <div class="er-widget-main">
-                <ul v-if="widgetDirection === 'landscape'" class="materials" v-bind:style="'transform: translateX' + '(' + currentOffset + 'px' + '); width:' + materialContainer + 'px'">
-                    <li v-for="(material, index) in data" class="material-item" v-bind:key="index">
+            <div class="er-widget-main" ref="materials">
+                <ul v-if="widgetDirection === 'landscape'" class="materials" v-bind:style="'transform: translateX' + '(' + currentOffset + 'px' + '); width: 9999px'">
+                    <li v-for="(material, index) in data" class="material-item" v-bind:key="index" v-bind:style="'width: ' + size.width/material.length + 'px'">
                         <a class="material-item-link" v-bind:href="material.url" target="_top">
                             <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title" v-bind:style="'height: ' + materialDimensions + 'px;'">
                         </a>
                     </li>
                 </ul>
                 <ul v-else class="materials" v-bind:style="'transform: translateY' + '(' + currentOffset + 'px' + '); width:' + size.width + 'px'">
-                    <li v-for="(material, index) in data" class="material-item" v-bind:key="index">
+                    <li v-for="(material, index) in data" class="material-item" v-bind:key="index" v-bind:style="'min-height: ' + size.height/material.length + 'px'">
                         <a class="material-item-link" v-bind:href="material.url" target="_top">
                             <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title" v-bind:style="'width: ' + materialDimensions + 'px;' + 'max-width:' + size.width*.8 + 'px'">
                         </a>
@@ -24,7 +24,7 @@
                 <!-- <a class="er-widget-backlink" v-bind:href="context.url">Se flere titler</a> -->
                 <a v-bind:href="context.url" class="er-widget-logo" target="_top"><img v-bind:src="context.logo" class="er-widget-logo-image" v-bind:alt="context.label"></a>
             </div>
-            <div class="er-btns" v-if="widgetDirection === 'landscape' && materialContainer > size.width || widgetDirection === 'portrait' && materialContainer > size.height">
+            <div class="er-btns" v-if="widgetDirection === 'landscape' || widgetDirection === 'portrait'">
                 <button class="er-btn er-btn-left" href="#" role="button" v-on:click.prevent="moveCarousel(-1)" v-bind:disabled="atHeadOfList"><v-icon name="angle-left" /></button>
                 <button class="er-btn er-btn-right" href="#" role="button" v-on:click.prevent="moveCarousel(1)" v-bind:disabled="atEndOfList"><v-icon name="angle-right" /></button>
             </div>
@@ -68,9 +68,10 @@
         data () {
             return {
                 currentOffset: 0,
+                lastMaterial: 9999,
                 windowSize: {
                     landscape: 2,
-                    portrait: 4
+                    portrait: 3
                 }
             }
         },
@@ -98,31 +99,9 @@
                         }
                     }
                 }
-             },
-            materialContainer: function() {
-                // Need a more accurate way to calculate the container width/height. This way the container width doesn't match the length of the materials combined width.
-                if (this.widgetDirection == 'landscape') {
-                    var conWidth = (this.data.length - this.windowSize.landscape) * this.materialDimensions
-                    if (conWidth <= this.size.width) {
-                        return this.size.width
-                    } else {
-                        return conWidth
-                    }
-                } else {
-                    return (this.data.length * (this.materialDimensions * (25/18))) // Estimate the height of the cover based on commen aspect of 25:18
-                }
             },
             atEndOfList: function() {
-                if (this.widgetDirection == 'landscape') {
-                    return this.currentOffset <= -(this.materialContainer - ( this.materialDimensions * (this.size.width/this.materialDimensions)))
-                } else {
-                    if (this.size.width === 300 && this.size.height === 600) {
-                        // In this case we divide the length of the container in two since we have cover in 2 columns.
-                        return this.currentOffset <= -(this.materialContainer - ( this.materialDimensions * ((this.size.height*.8)/this.materialDimensions)))/2 // Multiply the height with .8 since we only have 80% of the height available for the carousel.
-                    } else {
-                        return this.currentOffset <= -(this.materialContainer - ( this.materialDimensions * ((this.size.height*.8)/this.materialDimensions))) // Multiply the height with .8 since we only have 80% of the height available for the carousel.
-                    }
-                }
+                return this.currentOffset <= -this.lastMaterial
             },
             atHeadOfList: function() {
                 return this.currentOffset === 0
@@ -130,21 +109,48 @@
         },
         watch: {
             size: function (val) {
+                this.reCalculate()
                 this.currentOffset = 0
+
             },
             data: function (val) {
+                this.reCalculate()
                 this.currentOffset = 0
-            }
-        },
-        methods: {
-            moveCarousel: function(direction) {
-                if (direction === 1 && !this.atEndOfList) {
-                    this.currentOffset -= this.materialDimensions
-                } else if (direction === -1 && !this.atHeadOfList) {
-                    this.currentOffset += this.materialDimensions
-                }
             },
 
+        },
+        methods: {
+            moveCarousel: function (direction) {
+                if (direction === 1 && !this.atEndOfList) {
+                    if (this.widgetDirection == 'landscape') {
+                        this.currentOffset -= this.size.width/this.windowSize.landscape
+                    } else {
+                        this.currentOffset -= this.size.height/this.windowSize.portrait
+                    }
+                } else if (direction === -1 && !this.atHeadOfList) {
+                    if (this.widgetDirection == 'landscape') {
+                        this.currentOffset += this.size.width/this.windowSize.landscape
+                    } else {
+                        this.currentOffset += this.size.height/this.windowSize.portrait
+                    }
+                }
+            },
+            reCalculate: function () {
+                var container = this.$refs.materials.querySelector('ul')
+                var el = container.querySelector('li:last-child')
+                if (this.widgetDirection == 'landscape') {
+                    this.lastMaterial = el.offsetLeft-(this.size.width-el.offsetWidth)
+                } else {
+                    this.lastMaterial = el.offsetTop-((this.size.height*0.8)-el.offsetHeight)
+                }
+            }
+        },
+        mounted() {
+            const self = this
+            // Waiting for images to finish loading
+            window.addEventListener('load', function(){
+                self.reCalculate()
+            })
         }
     }
 </script>

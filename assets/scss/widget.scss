@@ -168,6 +168,8 @@ body, html, #widget {
         li {
             margin: 0;
             display: inline-block;
+            min-width: $spacer*2;
+            min-height: $spacer*2;
             a {
                 display: block;
                 img {
@@ -182,9 +184,8 @@ body, html, #widget {
                 }
             }
         }
-
     }
-    &-backlink {
+    /*&-backlink {
         flex: 0 1 50%;
         border: 1px solid $border-color;
         border-radius: 2px;
@@ -202,7 +203,7 @@ body, html, #widget {
             transition: color .4s ease-out, border-color .4s ease-out, background-color .4s ease-out;
             text-decoration: none;
         }
-    }
+    }*/
     &-logo {
         flex-basis: 0 1 50%;
         margin-left: auto;
@@ -225,6 +226,24 @@ body, html, #widget {
         }
     }
     &.portrait {
+        .er-widget-main {
+            &:before {
+                .theme-light & {
+                    background: linear-gradient(to bottom, rgba(240,240,240,1) 0%,rgba(240,240,240,0) 100%);
+                }
+                .theme-dark & {
+                    background: linear-gradient(to bottom, rgba(33,33,33,1) 0%,rgba(33,33,33,0) 100%);
+                }
+            }
+            &:after {
+                .theme-light & {
+                    background: linear-gradient(to bottom, rgba(240,240,240,0) 0%,rgba(240,240,240,1) 100%);
+                }
+                .theme-dark & {
+                    background: linear-gradient(to top, rgba(33,33,33,1) 0%,rgba(33,33,33,0) 100%);
+                }
+            }
+        }
         ul.materials {
             li {
                 a {
@@ -278,12 +297,10 @@ body, html, #widget {
             &:before {
                 top: 0;
                 left: 0;
-                background: linear-gradient(to bottom, rgba(240,240,240,1) 0%,rgba(240,240,240,0) 100%);
             }
             &:after {
                 bottom: 0;
                 left: 0;
-                background: linear-gradient(to bottom, rgba(240,240,240,0) 0%,rgba(240,240,240,1) 100%);
             }
             ul.materials {
                 width: 100%;
@@ -316,6 +333,9 @@ body, html, #widget {
             display: grid;
             grid-template-columns: 35% 35%;
             justify-content: space-evenly;
+            li {
+                min-height: auto;
+            }
             img {
                 width: auto !important;
                 max-width: 100% !important;
@@ -348,6 +368,11 @@ body, html, #widget {
             img {
                 height: .4rem;
             }
+        }
+    }
+    .wsize320x50 &, .wsize468x60 & {
+        ul.materials {
+            margin-left: $spacer*2;
         }
     }
     .wsize320x100 & {
