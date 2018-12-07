@@ -44,7 +44,7 @@ const messages = {
         'Fx New titles': 'F.eks.: Nyeste titler',
         'Choose how to add content to the widget carousel': 'Vælg hvordan du vil tilføje indhold til karrusellen.',
         'Build widget': 'Byg widget',
-        'How to': 'Vejledninger',
+        'How to': 'Vejledning',
         'About widgets': 'Om',
         'Searching for {ereolen_searchQuery}': 'Søger efter {ereolen_searchQuery}',
         'Searching …': 'Søger',
