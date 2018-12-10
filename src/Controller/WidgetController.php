@@ -105,10 +105,11 @@ class WidgetController extends AbstractController
         $this->statistics->addRequest($widget, $request);
 
         $configuration = $widget->getConfiguration();
+        $context = $this->getWidgetContext($widget);
 
         if (isset($configuration['search']['type'], $configuration['search']['url']) && 'url' === $configuration['search']['type']) {
             try {
-                $result = $this->search->search(['url' => $configuration['search']['url']]);
+                $result = $this->search->search(['url' => $configuration['search']['url']], $context);
                 if (isset($result['data'])) {
                     $widget->setContent($result['data']);
                 }
@@ -127,7 +128,6 @@ class WidgetController extends AbstractController
             );
         }
         $widget->setContent($content);
-        $context = $this->getWidgetContext($widget);
 
         return $this->render('widget/embed.html.twig', ['widget' => $widget, 'context' => $context]);
     }

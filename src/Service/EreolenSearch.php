@@ -39,7 +39,7 @@ class EreolenSearch
      *
      * @return null|array
      */
-    public function search(array $query, WidgetContext $context = null)
+    public function search(array $query, WidgetContext $context)
     {
         $url = $context->get('ereol_widget_search_url') ?? $this->parameterBag->get('ereol_widget_search_url');
         $cacheTtl = (int) $this->parameterBag->get('search_cache_ttl');
