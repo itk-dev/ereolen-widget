@@ -5,14 +5,14 @@
                 <h1 class="er-widget-title">{{ title }}</h1>
             </div>
             <div class="er-widget-main" ref="materials">
-                <ul v-if="widgetDirection === 'landscape'" class="materials" v-bind:style="'transform: translateX' + '(' + currentOffset + 'px' + '); width: 9999px'">
+                <ul v-if="widgetDirection === 'landscape'" class="materials" v-bind:style="'transform: translateX' + '(' + currentOffset + 'px' + '); width:  '+ materialContainer">
                     <li v-for="(material, index) in data" class="material-item" v-bind:key="index" v-bind:style="'width: ' + size.width/material.length + 'px'">
                         <a class="material-item-link" v-bind:href="material.url" target="_top">
                             <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title" v-bind:style="'height: ' + materialDimensions + 'px;'">
                         </a>
                     </li>
                 </ul>
-                <ul v-else class="materials" v-bind:style="'transform: translateY' + '(' + currentOffset + 'px' + '); width:' + size.width + 'px'">
+                <ul v-else class="materials" v-bind:style="'transform: translateY' + '(' + currentOffset + 'px' + '); width:' + size.width ">
                     <li v-for="(material, index) in data" class="material-item" v-bind:key="index" v-bind:style="'min-height: ' + size.height/material.length + 'px'">
                         <a class="material-item-link" v-bind:href="material.url" target="_top">
                             <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title" v-bind:style="'width: ' + materialDimensions + 'px;' + 'max-width:' + size.width*.8 + 'px'">
@@ -24,7 +24,7 @@
                 <!-- <a class="er-widget-backlink" v-bind:href="context.url">Se flere titler</a> -->
                 <a v-bind:href="context.url" class="er-widget-logo" target="_top"><img v-bind:src="context.logo" class="er-widget-logo-image" v-bind:alt="context.label"></a>
             </div>
-            <div class="er-btns" v-if="widgetDirection === 'landscape' || widgetDirection === 'portrait'">
+            <div class="er-btns" v-if="widgetDirection === 'landscape' && materialContainer >= size.width || widgetDirection === 'portrait' && materialContainer >= (size.height*0.7)">
                 <button class="er-btn er-btn-left" href="#" role="button" v-on:click.prevent="moveCarousel(-1)" v-bind:disabled="atHeadOfList"><v-icon name="angle-left" /></button>
                 <button class="er-btn er-btn-right" href="#" role="button" v-on:click.prevent="moveCarousel(1)" v-bind:disabled="atEndOfList"><v-icon name="angle-right" /></button>
             </div>
@@ -69,6 +69,7 @@
             return {
                 currentOffset: 0,
                 lastMaterial: 9999,
+                materialContainer: 9999,
                 windowSize: {
                     landscape: 2,
                     portrait: 3
@@ -116,8 +117,7 @@
             data: function (val) {
                 this.reCalculate()
                 this.currentOffset = 0
-            },
-
+            }
         },
         methods: {
             moveCarousel: function (direction) {
@@ -138,10 +138,12 @@
             reCalculate: function () {
                 var container = this.$refs.materials.querySelector('ul')
                 var el = container.querySelector('li:last-child')
-                if (this.widgetDirection == 'landscape') {
+                if (this.widgetDirection === 'landscape') {
                     this.lastMaterial = el.offsetLeft-(this.size.width-el.offsetWidth)
+                    this.materialContainer = container.offsetWidth
                 } else {
-                    this.lastMaterial = el.offsetTop-((this.size.height*0.8)-el.offsetHeight)
+                    this.lastMaterial = el.offsetTop-((this.size.height*0.7)-el.offsetHeight)
+                    this.materialContainer = container.offsetHeight
                 }
             }
         },
