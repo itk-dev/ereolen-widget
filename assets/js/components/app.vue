@@ -382,11 +382,11 @@
                         }
                     })
                 }
-                this.widgetSize = this.widgetSizes[0]
+                this.widgetConfiguration.size = this.widgetSizes[0]
                 if (configuration.size) {
                     this.widgetSizes.forEach((size) => {
                         if (size.label === configuration.size.label) {
-                            this.widgetSize = size
+                            this.widgetConfiguration.size = size
                         }
                     })
                 }
