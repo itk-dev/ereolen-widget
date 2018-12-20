@@ -49,6 +49,8 @@ const messages = {
         'Searching for {ereolen_searchQuery}': 'Søger efter {ereolen_searchQuery}',
         'Searching …': 'Søger',
         'Search result loaded. Preview is updated.': 'Søgeresultatet er hentet og forhåndsvisningen er opdateret.',
+        'Select materials and enter a widget title to show embed code.': 'Vælg materialer og indtast en titel for at se indlejringskoden.',
+        '<strong>Note</strong>: If you change the widget size, you have to get a new embed code.': '<strong>Bemærk</strong>: Hvis du ændrer størrelse på din widget, skal du indsætte ny indlejringskode.',
         theme: {
             dark: 'Mørk',
             light: 'Lys'

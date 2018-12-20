@@ -130,6 +130,10 @@
                                             {{ size.label }} {{ size.width }}x{{ size.height }}
                                         </option>
                                     </select>
+                                    <small id="widgetTitleHelp" class="form-text text-muted"
+                                           v-if="embedCode.code"
+                                           v-html="$t('<strong>Note</strong>: If you change the widget size, you have to get a new embed code.')"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -145,27 +149,33 @@
                         <div class="row">
                             <div class="col-sm-10 col-lg-8">
                                 <h3>{{ $t('Widget embed code') }}</h3>
-                                <label>{{ $t('Insert this code on your website to display the widget.') }}</label>
-                                <div class="code-preview">
-                                    <div class="code-preview-header">
-                                        <div class="row">
-                                            <div class="col-auto">
-                                                <span class="code-preview-header-title">
-                                                    <v-icon name="code" />{{ $t('HTML') }}
-                                                </span>
-                                            </div>
-                                            <div class="col-auto ml-auto">
-                                                <button type="button" class="code-preview-header-copy" v-on:click="doCopyEmbedCode">
-                                                    <v-icon name="copy" />{{ $t('Copy') }}
-                                                </button>
+
+                                <div v-if="embedCode.code">
+                                    <label>{{ $t('Insert this code on your website to display the widget.') }}</label>
+                                    <div class="code-preview">
+                                        <div class="code-preview-header">
+                                            <div class="row">
+                                                <div class="col-auto">
+                                                    <span class="code-preview-header-title">
+                                                        <v-icon name="code" />{{ $t('HTML') }}
+                                                    </span>
+                                                </div>
+                                                <div class="col-auto ml-auto">
+                                                    <button type="button" class="code-preview-header-copy" v-on:click="doCopyEmbedCode">
+                                                        <v-icon name="copy" />{{ $t('Copy') }}
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div class="code-preview-content">
+                                            <pre><code>
+                                                    {{ embedCode.code }}
+                                            </code></pre>
+                                        </div>
                                     </div>
-                                    <div class="code-preview-content">
-                                        <pre><code>
-                                            {{ embedCode.code }}
-                                        </code></pre>
-                                    </div>
+                                </div>
+                                <div v-else>
+                                    <p>{{ $t('Select materials and enter a widget title to show embed code.') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -284,7 +294,9 @@
             embedCode() {
                 const url = this.embedUrl
                 return {
-                    code: '<iframe src="'+url+'" width="' + this.widgetConfiguration.size.width + '" height="' + this.widgetConfiguration.size.height + '" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"></iframe>'
+                    code: null !== url
+                        ? '<iframe src="'+url+'" width="' + this.widgetConfiguration.size.width + '" height="' + this.widgetConfiguration.size.height + '" scrolling="no" frameborder="0" style="border:none; overflow:hidden;" allowtransparency="true"></iframe>'
+                        : null
                 }
             }
         },
