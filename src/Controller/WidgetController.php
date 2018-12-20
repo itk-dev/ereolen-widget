@@ -144,6 +144,20 @@ class WidgetController extends AbstractController
 
         $this->statistics->addRedirectRequest($widget, $url, $request);
 
+        // Add additional widget information to url (for web statistics).
+        $query = ['widget' => $widget->getId()];
+        foreach ($widget->getContent() as $item) {
+            if ($url === $item['url']) {
+                if (isset($item['isbn']) && \is_array($item['isbn'])) {
+                    $query['isbn'] = array_values($item['isbn'])[0];
+                }
+
+                break;
+            }
+        }
+
+        $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?').http_build_query($query);
+
         return $this->redirect($url);
     }
 
