@@ -77,32 +77,11 @@
             widgetDirection: function() {
                 return (this.size.width >= this.size.height) ? 'landscape' : 'portrait'
             },
-            materialDimensions: function() {
-                if (this.widgetDirection == 'landscape') {
-                    var tmpSize = (this.size.width / this.windowSize.landscape)
-                    if (tmpSize < this.size.height) {
-                        return tmpSize
-                    } else {
-                        return this.size.height * 0.8
-                    }
-                } else {
-                    var tmpSize = (this.size.height / this.windowSize.portrait)
-                    if (tmpSize < this.size.height) {
-                        return tmpSize
-                    } else {
-                        if (this.size.width === 300 && this.size.height === 600) {
-                            return this.size.width * 0.4
-                        } else {
-                            return this.size.width * 0.8
-                        }
-                    }
-                }
-            },
             atEndOfList: function() {
                 return this.currentOffset <= -this.lastMaterial
             },
             atHeadOfList: function() {
-                return this.currentOffset === 0
+                return this.currentOffset >= 0
             }
         },
         watch: {
@@ -120,15 +99,37 @@
             moveCarousel: function (direction) {
                 if (direction === 1 && !this.atEndOfList) {
                     if (this.widgetDirection == 'landscape') {
-                        this.currentOffset -= this.size.width/this.windowSize.landscape
+                        var width = -(this.materialContainer-(this.size.width+this.$refs.materials.querySelector('.materials a:last-child').offsetWidth))
+                        if (this.currentOffset <= width) {
+                            this.currentOffset = -this.lastMaterial
+                        } else {
+                            this.currentOffset -= this.materialContainer/this.data.length
+                        }
+                        console.log('width: ',width)
+                        console.log('this.currentOffset: ',this.currentOffset)
                     } else {
-                        this.currentOffset -= this.size.height/this.windowSize.portrait
+                        var height = -(this.materialContainer-(this.size.height+this.$refs.materials.querySelector('.materials a:last-child').offsetHeight))
+                        if (this.currentOffset <= height) {
+                            this.currentOffset = -this.lastMaterial
+                        } else {
+                            this.currentOffset -= this.materialContainer/this.data.length
+                        }
                     }
                 } else if (direction === -1 && !this.atHeadOfList) {
                     if (this.widgetDirection == 'landscape') {
-                        this.currentOffset += this.size.width/this.windowSize.landscape
+                        var width = -this.$refs.materials.querySelector('.materials a:first-child').offsetWidth
+                        if (this.currentOffset >= width) {
+                            this.currentOffset = 0
+                        } else {
+                            this.currentOffset += this.materialContainer/this.data.length
+                        }
                     } else {
-                        this.currentOffset += this.size.height/this.windowSize.portrait
+                        var height = -this.$refs.materials.querySelector('.materials a:first-child').offsetHeight
+                        if (this.currentOffset >= height) {
+                            this.currentOffset = 0
+                        } else {
+                            this.currentOffset += this.materialContainer/this.data.length
+                        }
                     }
                 }
             },
