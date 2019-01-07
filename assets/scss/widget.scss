@@ -1,3 +1,6 @@
+/* Import slick carousel styling */
+@import "_slick.scss";
+
 /*
 * Styles only used for the vue widget component.
 */
@@ -110,8 +113,8 @@ body, html, #widget {
         text-align: center;
         margin: 0;
     }
-    .er-btn {
-        display: block;
+    .er-btn, .slick-arrow {
+        //display: block;
         position: absolute;
         transition: opacity .2s ease-out, background-color .2s ease-in, color .2s ease-in;
         opacity: 1;
@@ -133,17 +136,17 @@ body, html, #widget {
             color: $color-white;
             transition: background-color .4s ease-out, color .4s ease-out;
         }
-        &-left, &-right {
+        &-left, &-right, &.slick-prev, &.slick-next {
             top: calc(50% - 1rem );
             box-shadow: 0 4px 16px rgba(0,0,0,.16);
         }
-        &-left {
+        &-left, &.slick-prev {
             left: -1px;
         }
-        &-right {
+        &-right, &.slick-next {
             right: -1px;
         }
-        &[disabled] {
+        &[disabled], &.slick-disabled {
             transition: opacity .2s ease-out;
             opacity: .5;
             cursor: not-allowed;
@@ -329,3 +332,16 @@ body, html, #widget {
     }
 }
 
+.slick-slider {
+    width: 100%;
+}
+
+.slick-slide {
+    height: auto;
+}
+.slick-track {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+}

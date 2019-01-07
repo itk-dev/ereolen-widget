@@ -5,7 +5,15 @@
                 <h1 class="er-widget-title">{{ title }}</h1>
             </div>
             <div class="er-widget-main" ref="materials">
-                <div v-if="widgetDirection === 'landscape'" class="materials" v-bind:style="'transform: translateX' + '(' + currentOffset + 'px' + '); '">
+
+
+                <vue-slick ref="slick" :options="slickOptions">
+                    <a v-for="(material, index) in data" class="" v-bind:key="index" v-bind:href="material.url" target="_top">
+                        <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title">
+                    </a>
+                </vue-slick>
+
+                <!--<div v-if="widgetDirection === 'landscape'" class="materials" v-bind:style="'transform: translateX' + '(' + currentOffset + 'px' + '); '">
                     <a v-for="(material, index) in data" class="material-item" v-bind:key="index" v-bind:href="material.url" target="_top">
                         <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title">
                     </a>
@@ -14,16 +22,16 @@
                     <a v-for="(material, index) in data" class="material-item" v-bind:key="index" v-bind:href="material.url" target="_top">
                         <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title">
                     </a>
-                </div>
+                </div>-->
             </div>
             <div class="er-widget-bottom">
                 <!-- <a class="er-widget-backlink" v-bind:href="context.url">Se flere titler</a> -->
                 <a v-bind:href="context.url" class="er-widget-logo" target="_top"><img v-bind:src="context.logo" class="er-widget-logo-image" v-bind:alt="context.label"></a>
             </div>
-            <div class="er-btns" v-if="widgetDirection === 'landscape' && materialContainer >= mainContainer || widgetDirection === 'portrait' && materialContainer >= mainContainer">
+            <!--<div class="er-btns" v-if="widgetDirection === 'landscape' && materialContainer >= mainContainer || widgetDirection === 'portrait' && materialContainer >= mainContainer">
                 <button class="er-btn er-btn-left" href="#" role="button" v-on:click.prevent="moveCarousel(-1)" v-bind:disabled="atHeadOfList"><v-icon name="angle-left" /></button>
                 <button class="er-btn er-btn-right" href="#" role="button" v-on:click.prevent="moveCarousel(1)" v-bind:disabled="atEndOfList"><v-icon name="angle-right" /></button>
-            </div>
+            </div>-->
         </div>
     </div>
 </template>
@@ -70,6 +78,16 @@
                 windowSize: {
                     landscape: 2,
                     portrait: 3
+                },
+                slickOptions: {
+                    infinite: false,
+                    speed: 700,
+                    slidesToShow: 2,
+                    slidesToScroll: 2,
+                    centerMode: true,
+                    adaptiveHeight: true
+                    //variableWidth: true
+                    // Any other options that can be got from plugin documentation
                 }
             }
         },
@@ -134,18 +152,18 @@
                 }
             },
             reCalculate: function () {
-                var main = this.$refs.materials
-                var container = this.$refs.materials.querySelector('.materials')
-                var el = container.querySelector('a:last-child')
-                if (this.widgetDirection === 'landscape') {
-                    this.lastMaterial = el.offsetLeft-(main.offsetWidth-el.offsetWidth)
-                    this.materialContainer = container.offsetWidth
-                    this.mainContainer = main.offsetWidth
-                } else {
-                    this.lastMaterial = el.offsetTop-(main.offsetHeight-el.offsetHeight)
-                    this.materialContainer = container.offsetHeight
-                    this.mainContainer = main.offsetHeight
-                }
+                // var main = this.$refs.materials
+                // var container = this.$refs.materials.querySelector('.materials')
+                // var el = container.querySelector('a:last-child')
+                // if (this.widgetDirection === 'landscape') {
+                //     this.lastMaterial = el.offsetLeft-(main.offsetWidth-el.offsetWidth)
+                //     this.materialContainer = container.offsetWidth
+                //     this.mainContainer = main.offsetWidth
+                // } else {
+                //     this.lastMaterial = el.offsetTop-(main.offsetHeight-el.offsetHeight)
+                //     this.materialContainer = container.offsetHeight
+                //     this.mainContainer = main.offsetHeight
+                // }
             }
         },
         mounted() {
