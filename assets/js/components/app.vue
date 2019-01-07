@@ -406,6 +406,20 @@
             },
             // Get data to send to api.
             getWidgetData: function() {
+                // Add image info to widget content.
+                const content = this.widgetContent.map((item) => {
+                    const img = document.querySelector('img[src="'+item.cover+'"]')
+                    if (null !== img) {
+                        item.image = {
+                            url: item.cover,
+                            width: img.naturalWidth,
+                            height: img.naturalHeight
+                        }
+                    }
+
+                    return item
+                })
+
                 return {
                     title: this.widgetTitle,
                     configuration: {
@@ -414,7 +428,7 @@
                         search: this.search,
                         context: this.widgetContext.name
                     },
-                    content: this.widgetContent
+                    content: content
                 }
             },
             doSave: function() {
