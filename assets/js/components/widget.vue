@@ -6,32 +6,26 @@
             </div>
             <div class="er-widget-main" ref="materials">
 
-
-                <vue-slick ref="slick" :options="slickOptions">
-                    <a v-for="(material, index) in data" class="" v-bind:key="index" v-bind:href="material.url" target="_top">
+                <vue-slick v-if="widgetDirection === 'landscape'" ref="slick" :options="slickOptionsLandscape">
+                    <a v-for="(material, index) in data" v-bind:key="index" v-bind:href="material.url" target="_top">
                         <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title">
                     </a>
                 </vue-slick>
 
-                <!--<div v-if="widgetDirection === 'landscape'" class="materials" v-bind:style="'transform: translateX' + '(' + currentOffset + 'px' + '); '">
-                    <a v-for="(material, index) in data" class="material-item" v-bind:key="index" v-bind:href="material.url" target="_top">
+                <vue-slick v-else ref="slick" :options="slickOptionsPortrait">
+                    <a v-for="(material, index) in data" v-bind:key="index" v-bind:href="material.url" target="_top">
                         <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title">
                     </a>
-                </div>
-                <div v-else class="materials" v-bind:style="'transform: translateY' + '(' + currentOffset + 'px' + '); width:' + size.width ">
-                    <a v-for="(material, index) in data" class="material-item" v-bind:key="index" v-bind:href="material.url" target="_top">
-                        <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title">
-                    </a>
-                </div>-->
+                </vue-slick>
+
             </div>
             <div class="er-widget-bottom">
-                <!-- <a class="er-widget-backlink" v-bind:href="context.url">Se flere titler</a> -->
                 <a v-bind:href="context.url" class="er-widget-logo" target="_top"><img v-bind:src="context.logo" class="er-widget-logo-image" v-bind:alt="context.label"></a>
             </div>
-            <!--<div class="er-btns" v-if="widgetDirection === 'landscape' && materialContainer >= mainContainer || widgetDirection === 'portrait' && materialContainer >= mainContainer">
-                <button class="er-btn er-btn-left" href="#" role="button" v-on:click.prevent="moveCarousel(-1)" v-bind:disabled="atHeadOfList"><v-icon name="angle-left" /></button>
-                <button class="er-btn er-btn-right" href="#" role="button" v-on:click.prevent="moveCarousel(1)" v-bind:disabled="atEndOfList"><v-icon name="angle-right" /></button>
-            </div>-->
+            <div class="er-btns" v-if="materialContainer >= mainContainer">
+                <button class="er-btn er-btn-prev" role="button"><v-icon name="angle-left" /></button>
+                <button class="er-btn er-btn-next" role="button"><v-icon name="angle-right" /></button>
+            </div>
         </div>
     </div>
 </template>
@@ -79,15 +73,66 @@
                     landscape: 2,
                     portrait: 3
                 },
-                slickOptions: {
-                    infinite: false,
-                    speed: 700,
-                    slidesToShow: 2,
-                    slidesToScroll: 2,
+                slickOptionsLandscape: {
+                    infinite: true,
+                    speed: 500,
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
                     centerMode: true,
-                    adaptiveHeight: true
-                    //variableWidth: true
-                    // Any other options that can be got from plugin documentation
+                    centerPadding: '8px',
+                    adaptiveHeight: false,
+                    prevArrow: '.er-btn-prev',
+                    nextArrow: '.er-btn-next',
+                    variableWidth: true,
+                    respondTo: 'min',
+                    responsive: [
+                        {
+                            breakpoint: 971,
+                            settings: {
+                                slidesToShow: 10,
+                            }
+                        },
+                        {
+                            breakpoint: 469,
+                            settings: {
+                                slidesToShow: 8,
+                            }
+                        },
+                        {
+                            breakpoint: 337,
+                            settings: {
+                                slidesToShow: 3,
+                            }
+                        },
+                        {
+                            breakpoint: 301,
+                            settings: {
+                                slidesToShow: 2,
+                            }
+                        }
+                    ]
+                },
+                slickOptionsPortrait: {
+                    infinite: true,
+                    speed: 500,
+                    slidesToShow: 3,
+                    slidesToScroll: 3,
+                    centerMode: true,
+                    centerPadding: '8px',
+                    adaptiveHeight: true,
+                    vertical: true,
+                    verticalSwiping: true,
+                    prevArrow: '.er-btn-prev',
+                    nextArrow: '.er-btn-next',
+                    respondTo: 'min',
+                    responsive: [{
+                        breakpoint: 301,
+                        settings: {
+                            rows: 1,
+                            slidesPerRow: 2,
+                            slidesToShow: 3
+                        }
+                    }]
                 }
             }
         },
