@@ -76,36 +76,42 @@
                 slickOptionsLandscape: {
                     infinite: true,
                     speed: 500,
-                    slidesToShow: 1,
+                    slidesToShow: 2,
                     slidesToScroll: 1,
                     centerMode: true,
                     centerPadding: '8px',
-                    adaptiveHeight: false,
+                    adaptiveHeight: true,
                     prevArrow: '.er-btn-prev',
                     nextArrow: '.er-btn-next',
-                    variableWidth: true,
+                    variableWidth: false,
                     respondTo: 'min',
                     responsive: [
                         {
                             breakpoint: 971,
                             settings: {
-                                slidesToShow: 10,
+                                slidesToShow: 12
                             }
                         },
                         {
                             breakpoint: 469,
                             settings: {
-                                slidesToShow: 8,
+                                slidesToShow: 8
                             }
                         },
                         {
-                            breakpoint: 337,
+                            breakpoint: 468,
                             settings: {
-                                slidesToShow: 3,
+                                slidesToShow: 2,
                             }
                         },
                         {
-                            breakpoint: 301,
+                            breakpoint: 321,
+                            settings: {
+                                slidesToShow: 5
+                            }
+                        },
+                        {
+                            breakpoint: 320,
                             settings: {
                                 slidesToShow: 2,
                             }
@@ -125,14 +131,22 @@
                     prevArrow: '.er-btn-prev',
                     nextArrow: '.er-btn-next',
                     respondTo: 'min',
-                    responsive: [{
-                        breakpoint: 301,
-                        settings: {
-                            rows: 1,
-                            slidesPerRow: 2,
-                            slidesToShow: 3
+                    responsive: [
+                        {
+                            breakpoint: 301,
+                            settings: {
+                                rows: 1,
+                                slidesPerRow: 2,
+                                slidesToShow: 3
+                            }
+                        },
+                        {
+                            breakpoint: 300,
+                            settings: {
+                                rows: 0
+                            }
                         }
-                    }]
+                    ]
                 }
             }
         },
