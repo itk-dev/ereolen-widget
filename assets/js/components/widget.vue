@@ -23,8 +23,8 @@
                 <a v-bind:href="context.url" class="er-widget-logo" target="_top"><img v-bind:src="context.logo" class="er-widget-logo-image" v-bind:alt="context.label"></a>
             </div>
             <div class="er-btns" v-if="materialContainer >= mainContainer">
-                <button class="er-btn er-btn-prev" role="button"><v-icon name="angle-left" /></button>
-                <button class="er-btn er-btn-next" role="button"><v-icon name="angle-right" /></button>
+                <button type="button" class="er-btn er-btn-prev" role="button"><v-icon name="angle-left" /></button>
+                <button type="button" class="er-btn er-btn-next" role="button"><v-icon name="angle-right" /></button>
             </div>
         </div>
     </div>
