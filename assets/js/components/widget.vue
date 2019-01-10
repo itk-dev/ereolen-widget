@@ -164,7 +164,6 @@
                 this.$refs.slick.destroy()
                 this.$nextTick(() => {
                     this.$refs.slick.create()
-                    this.$refs.slick.goTo(currIndex, true)
                 })
             }
         },
