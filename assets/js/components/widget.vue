@@ -22,7 +22,7 @@
             <div class="er-widget-bottom">
                 <a v-bind:href="context.url" class="er-widget-logo" target="_top"><img v-bind:src="context.logo" class="er-widget-logo-image" v-bind:alt="context.label"></a>
             </div>
-            <div class="er-btns" v-if="materialContainer >= mainContainer">
+            <div class="er-btns">
                 <button type="button" class="er-btn er-btn-prev" role="button"><v-icon name="angle-left" /></button>
                 <button type="button" class="er-btn er-btn-next" role="button"><v-icon name="angle-right" /></button>
             </div>
@@ -66,19 +66,12 @@
         data () {
             return {
                 currentOffset: 0,
-                lastMaterial: 9999,
-                materialContainer: 9999,
-                mainContainer: 0,
-                windowSize: {
-                    landscape: 2,
-                    portrait: 3
-                },
                 slickOptionsLandscape: {
                     infinite: true,
                     speed: 500,
                     slidesToShow: 2,
                     slidesToScroll: 1,
-                    centerMode: true,
+                    centerMode: false,
                     centerPadding: '8px',
                     adaptiveHeight: true,
                     prevArrow: '.er-btn-prev',
@@ -122,10 +115,10 @@
                     infinite: true,
                     speed: 500,
                     slidesToShow: 3,
-                    slidesToScroll: 3,
-                    centerMode: true,
+                    slidesToScroll: 1,
+                    centerMode: false,
                     centerPadding: '8px',
-                    adaptiveHeight: true,
+                    adaptiveHeight: false,
                     vertical: true,
                     verticalSwiping: true,
                     prevArrow: '.er-btn-prev',
@@ -141,7 +134,7 @@
                             }
                         },
                         {
-                            breakpoint: 300,
+                            breakpoint: 280,
                             settings: {
                                 rows: 0
                             }
@@ -153,76 +146,22 @@
         computed: {
             widgetDirection: function() {
                 return (this.size.width >= this.size.height) ? 'landscape' : 'portrait'
-            },
-            atEndOfList: function() {
-                return this.currentOffset <= -this.lastMaterial
-            },
-            atHeadOfList: function() {
-                return this.currentOffset >= 0
             }
         },
         watch: {
             size: function (val) {
                 this.reCalculate()
-                this.currentOffset = 0
+
 
             },
             data: function (val) {
                 this.reCalculate()
-                this.currentOffset = 0
             }
         },
         methods: {
-            moveCarousel: function (direction) {
-                if (direction === 1 && !this.atEndOfList) {
-                    if (this.widgetDirection == 'landscape') {
-                        var width = -(this.materialContainer-(this.size.width+this.$refs.materials.querySelector('.materials a:last-child').offsetWidth))
-                        if (this.currentOffset <= width) {
-                            this.currentOffset = -this.lastMaterial
-                        } else {
-                            this.currentOffset -= this.materialContainer/this.data.length
-                        }
-                        console.log('width: ',width)
-                        console.log('this.currentOffset: ',this.currentOffset)
-                    } else {
-                        var height = -(this.materialContainer-(this.size.height+this.$refs.materials.querySelector('.materials a:last-child').offsetHeight))
-                        if (this.currentOffset <= height) {
-                            this.currentOffset = -this.lastMaterial
-                        } else {
-                            this.currentOffset -= this.materialContainer/this.data.length
-                        }
-                    }
-                } else if (direction === -1 && !this.atHeadOfList) {
-                    if (this.widgetDirection == 'landscape') {
-                        var width = -this.$refs.materials.querySelector('.materials a:first-child').offsetWidth
-                        if (this.currentOffset >= width) {
-                            this.currentOffset = 0
-                        } else {
-                            this.currentOffset += this.materialContainer/this.data.length
-                        }
-                    } else {
-                        var height = -this.$refs.materials.querySelector('.materials a:first-child').offsetHeight
-                        if (this.currentOffset >= height) {
-                            this.currentOffset = 0
-                        } else {
-                            this.currentOffset += this.materialContainer/this.data.length
-                        }
-                    }
-                }
-            },
             reCalculate: function () {
-                // var main = this.$refs.materials
-                // var container = this.$refs.materials.querySelector('.materials')
-                // var el = container.querySelector('a:last-child')
-                // if (this.widgetDirection === 'landscape') {
-                //     this.lastMaterial = el.offsetLeft-(main.offsetWidth-el.offsetWidth)
-                //     this.materialContainer = container.offsetWidth
-                //     this.mainContainer = main.offsetWidth
-                // } else {
-                //     this.lastMaterial = el.offsetTop-(main.offsetHeight-el.offsetHeight)
-                //     this.materialContainer = container.offsetHeight
-                //     this.mainContainer = main.offsetHeight
-                // }
+                this.currentOffset = 0
+                this.$refs.slick.reSlick()
             }
         },
         mounted() {
