@@ -10,7 +10,7 @@
 
 namespace App\Controller;
 
-use AlterPHP\EasyAdminExtensionBundle\Controller\AdminController as BaseAdminController;
+use AlterPHP\EasyAdminExtensionBundle\Controller\EasyAdminController as BaseAdminController;
 use App\Entity\User;
 use FOS\UserBundle\Model\UserManagerInterface;
 

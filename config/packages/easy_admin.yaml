@@ -5,7 +5,7 @@ easy_admin:
         brand_color: '#b81b40'
 
         form_theme:
-            - '@EasyAdmin/form/bootstrap_3_layout.html.twig'
+            - '@EasyAdmin/form/bootstrap_4.html.twig'
             - '@ItkDevConfig/easy_admin/form/setting.html.twig'
 
         menu:
@@ -53,7 +53,7 @@ easy_admin:
                 fields:
                     - property: title
                     - property: statistics
-                      template: statistics.html.twig
+                      template: easy_admin/statistics.html.twig
 
         WidgetContext:
             label: Context
