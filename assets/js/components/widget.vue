@@ -161,7 +161,11 @@
         methods: {
             reCalculate: function () {
                 this.currentOffset = 0
-                this.$refs.slick.reSlick()
+                this.$refs.slick.destroy()
+                this.$nextTick(() => {
+                    this.$refs.slick.create()
+                    this.$refs.slick.goTo(currIndex, true)
+                })
             }
         },
         mounted() {
