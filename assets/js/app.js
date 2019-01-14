@@ -28,6 +28,12 @@ import 'vue-awesome/icons/angle-left'
 import 'vue-awesome/icons/angle-right'
 
 /**
+* Import vue-slick https://github.com/staskjs/vue-slick
+*/
+
+import Slick from 'vue-slick';
+
+/**
 * Require the scss for the app.
 */
 require('../scss/app.scss')
@@ -39,6 +45,7 @@ Vue.component('v-icon', Icon)
 Vue.component('widget', Widget)
 Vue.component('material', Material)
 Vue.component('itk-spinner', ItkSpinner)
+Vue.component('vue-slick', Slick)
 
 Vue.use(VueClipboard)
 
