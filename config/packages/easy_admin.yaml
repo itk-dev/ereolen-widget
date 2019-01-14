@@ -24,6 +24,9 @@ easy_admin:
 
     entities:
         Widget:
+            templates:
+                list: 'admin/list/widget.html.twig'
+
             class: App\Entity\Widget
             disabled_actions: ['new', 'delete', 'edit']
             list:

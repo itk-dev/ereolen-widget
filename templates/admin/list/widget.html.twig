@@ -1,0 +1,22 @@
+{% extends '@EasyAdmin/default/list.html.twig' %}
+
+{% block global_actions %}
+    {{ parent() }}
+{% endblock %}
+
+{% block main %}
+    {% set ids = [] %}
+    {% for item in paginator %}
+        {% set ids = ids|merge([item.id]) %}
+    {% endfor %}
+
+    {#{ dump([_request_parameters.sortField, _request_parameters.sortDirection]) }#}
+
+    <div class="pull-right">
+        Export:
+        <a class="btn btn-link" href="{{ path('api_widgets_get_collection', {_format: 'csv', id: ids, order: {(_request_parameters.sortField): _request_parameters.sortDirection}}) }}">CSV</a>
+        <a class="btn btn-link" href="{{ path('api_widgets_get_collection', {_format: 'json', id: ids, order: {(_request_parameters.sortField): _request_parameters.sortDirection}}) }}">JSON</a>
+    </div>
+
+    {{ parent() }}
+{% endblock %}

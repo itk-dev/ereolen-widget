@@ -10,7 +10,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Traits\BlameableEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Loggable\Loggable;
@@ -35,6 +38,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     attributes={"order"={"title"}}
  * )
+ * @ApiFilter(SearchFilter::class, properties={"id": "exact"})
+ * @ApiFilter(OrderFilter::class, properties={"id", "title", "createdAt"})
  */
 class Widget implements Loggable
 {
