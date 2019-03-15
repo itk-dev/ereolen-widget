@@ -11,8 +11,8 @@
             <div class="row" style="height: 60px;">
                 <div class="col-12 text-center">
                     {% set logo = {
-                    url: context.logo|default('https://ereolen.dk/sites/all/themes/orwell/svg/eReolen_Logo.svg'),
-                    label: context.label|default('eReolen'),
+                    url: context.data.logo|default('https://ereolen.dk/sites/all/themes/orwell/svg/eReolen_Logo.svg'),
+                    label: context.data.label|default('eReolen'),
                     }
                     %}
                     <img src="{{ logo.url }}" alt="{{ logo.label }}" class="img-fluid" style="max-height: 40px; margin-top: 10px;">

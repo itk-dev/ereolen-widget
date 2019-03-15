@@ -7,7 +7,7 @@
                 <v-icon v-bind:name="icon" />
             </div>
             <div class="result-title">
-                <p><strong>{{ title }}</strong></p>
+                <p><strong>{{ title }}</strong> <span v-if="data.type" class="type-wrapper">(<span class="type">{{ data.type }}</span>)</span></p>
                 <p v-if="authors">{{ $tc('Author', authors.length) }}: <span v-for="(author, index) in authors" v-bind:key="index">{{ author }}<span v-if="index < authors.length - 1">, </span></span></p>
             </div>
         </div>

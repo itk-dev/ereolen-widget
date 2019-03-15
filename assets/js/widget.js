@@ -10,26 +10,22 @@ import Icon from 'vue-awesome/components/Icon'
 /**
 * Import the individual font-awesome icons
 */
-import 'vue-awesome/icons/code'
-import 'vue-awesome/icons/copy'
-import 'vue-awesome/icons/bars'
-import 'vue-awesome/icons/search'
-import 'vue-awesome/icons/plus'
-import 'vue-awesome/icons/minus'
 import 'vue-awesome/icons/angle-left'
 import 'vue-awesome/icons/angle-right'
 
 /**
-* Require the scss for the app.
+* Import vue-slick https://github.com/staskjs/vue-slick
 */
 
+import Slick from 'vue-slick';
 
 /**
-* Add the Icon component globally
+* Add the components globally
 */
 Vue.component('v-icon', Icon)
 Vue.component('widget', Widget)
 Vue.component('material', Material)
+Vue.component('vue-slick', Slick)
 
 const container = document.getElementById('widget')
 
@@ -48,6 +44,6 @@ if (null !== container) {
     new Vue({
         el: container,
         config,
-        components: {Widget, Material}
+        components: {Widget, Material, Slick}
     })
 }

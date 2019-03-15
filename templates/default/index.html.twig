@@ -11,7 +11,7 @@
                 title: widget.title,
                 configuration: widget.configuration,
                 content: widget.content,
-                context: widget.context,
+                context: context.data,
                 createdAt: widget.createdAt,
                 updatedAt: widget.updatedAt
                 }|json_encode|raw }}
@@ -30,7 +30,7 @@
     {% set configuration = {
         widget_embed_url: widgetEmbedUrl,
         search_url: path('widget_search', {context: context.name}),
-        context: context
+        context: context.data
         } %}
 
     <div id="app" data-configuration="{{ configuration|json_encode }}">
