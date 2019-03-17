@@ -11,6 +11,7 @@
 namespace App\Controller;
 
 use App\Entity\Widget;
+use App\Repository\WidgetRepository;
 use App\Service\EreolenSearch;
 use App\Service\SearchException;
 use App\Service\WidgetContextService;
@@ -18,15 +19,22 @@ use App\Service\WidgetStatisticsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @Route("/widget")
  */
 class WidgetController extends AbstractController
 {
+    /** @var \App\Repository\WidgetRepository */
+    private $repository;
+
     /** @var \App\Service\WidgetContextService */
     private $contextService;
 
@@ -36,11 +44,60 @@ class WidgetController extends AbstractController
     /** @var \App\Service\WidgetStatisticsService */
     private $statistics;
 
-    public function __construct(WidgetContextService $contextService, EreolenSearch $search, WidgetStatisticsService $statistics)
+    /** @var \Symfony\Component\Serializer\SerializerInterface */
+    private $serializer;
+
+    public function __construct(WidgetRepository $repository, WidgetContextService $contextService, EreolenSearch $search, WidgetStatisticsService $statistics, SerializerInterface $serializer)
     {
+        $this->repository = $repository;
         $this->contextService = $contextService;
         $this->search = $search;
         $this->statistics = $statistics;
+        $this->serializer = $serializer;
+    }
+
+    /**
+     * @Route("/export.{_format}", name="widget_export",
+     *     defaults={"_format": "html"},
+     *     requirements={
+     *         "_format": "html|csv"
+     *     }
+     * )
+     *
+     * @param mixed $_format
+     */
+    public function export($_format)
+    {
+        $widgets = $this->repository->findBy([], ['title' => 'ASC']);
+        $data = array_map(function (Widget $widget) {
+            $createdBy = $widget->getCreatedBy() ? $widget->getCreatedBy()->getUsername() : null;
+
+            return [
+                'id' => $widget->getId(),
+                'title' => $widget->getTitle(),
+                'statistics' => $this->statistics->getStatistics($widget),
+                'preview_url' => $this->generateUrl('widget_embed', ['id' => $widget->getId(), 'preview' => true], UrlGeneratorInterface::ABSOLUTE_URL),
+                'created_by' => $createdBy,
+                'created_at' => $widget->getCreatedAt(),
+                'updated_at' => $widget->getUpdatedAt(),
+            ];
+        }, $widgets);
+
+        if ('csv' === $_format) {
+            $serialized = $this->serializer->serialize($data, 'csv');
+
+            $response = new Response($serialized);
+            $contentType = 'text/csv';
+            $contentType = 'text/plain';
+            $filename = 'widgets.csv';
+            $disposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename);
+            $response->headers->set('content-type', $contentType);
+            $response->headers->set('content-disposition', $disposition);
+
+            return $response;
+        }
+
+        return $this->render('widget/export.html.twig', ['data' => $data]);
     }
 
     /**
@@ -102,7 +159,9 @@ class WidgetController extends AbstractController
      */
     public function embed(Request $request, Widget $widget)
     {
-        $this->statistics->addRequest($widget, $request);
+        if (empty($request->query->get('preview'))) {
+            $this->statistics->addRequest($widget, $request);
+        }
 
         $configuration = $widget->getConfiguration();
         $context = $this->getWidgetContext($widget);
