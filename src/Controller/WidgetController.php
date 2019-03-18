@@ -16,6 +16,8 @@ use App\Service\EreolenSearch;
 use App\Service\SearchException;
 use App\Service\WidgetContextService;
 use App\Service\WidgetStatisticsService;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,7 +62,7 @@ class WidgetController extends AbstractController
      * @Route("/export.{_format}", name="widget_export",
      *     defaults={"_format": "html"},
      *     requirements={
-     *         "_format": "html|csv"
+     *         "_format": "html|csv|xlsx"
      *     }
      * )
      *
@@ -71,30 +73,59 @@ class WidgetController extends AbstractController
         $widgets = $this->repository->findBy([], ['title' => 'ASC']);
         $data = array_map(function (Widget $widget) {
             $createdBy = $widget->getCreatedBy() ? $widget->getCreatedBy()->getUsername() : null;
+            $statistics = $this->statistics->getStatistics($widget);
 
             return [
                 'id' => $widget->getId(),
                 'title' => $widget->getTitle(),
-                'statistics' => $this->statistics->getStatistics($widget),
+                'statistics_redirect' => $statistics['redirect'] ?? 0,
+                'statistics_show' => $statistics['show'] ?? 0,
                 'preview_url' => $this->generateUrl('widget_embed', ['id' => $widget->getId(), 'preview' => true], UrlGeneratorInterface::ABSOLUTE_URL),
                 'created_by' => $createdBy,
-                'created_at' => $widget->getCreatedAt(),
-                'updated_at' => $widget->getUpdatedAt(),
+                'created_at' => $widget->getCreatedAt() ? $widget->getCreatedAt()->format(\DateTime::ATOM) : null,
+                'updated_at' => $widget->getUpdatedAt() ? $widget->getUpdatedAt()->format(\DateTime::ATOM) : null,
             ];
         }, $widgets);
 
-        if ('csv' === $_format) {
-            $serialized = $this->serializer->serialize($data, 'csv');
+        switch ($_format) {
+            case 'csv':
+                $serialized = $this->serializer->serialize($data, 'csv');
 
-            $response = new Response($serialized);
-            $contentType = 'text/csv';
-            $contentType = 'text/plain';
-            $filename = 'widgets.csv';
-            $disposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename);
-            $response->headers->set('content-type', $contentType);
-            $response->headers->set('content-disposition', $disposition);
+                $response = new Response($serialized);
+                $contentType = 'text/csv';
+                $filename = 'widgets.csv';
+                $disposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename);
+                $response->headers->set('content-type', $contentType);
+                $response->headers->set('content-disposition', $disposition);
 
-            return $response;
+                return $response;
+            case 'xlsx':
+                $spreadsheet = new Spreadsheet();
+                $sheet = $spreadsheet->getActiveSheet();
+                $sheet->setTitle('Widgets');
+
+                foreach ($data as $index => $row) {
+                    if (0 === $index) {
+                        $col = 1;
+                        foreach (array_keys($row) as $value) {
+                            $sheet->setCellValueByColumnAndRow($col, $index + 1, $value);
+                            ++$col;
+                        }
+                    }
+                    $col = 1;
+                    foreach ($row as $value) {
+                        $sheet->setCellValueByColumnAndRow($col, $index + 2, $value);
+                        ++$col;
+                    }
+                }
+
+                $writer = new Xlsx($spreadsheet);
+                $fileName = 'widgets.xlsx';
+                $temp_file = tempnam(sys_get_temp_dir(), $fileName);
+                $writer->save($temp_file);
+
+                // Return the excel file as an attachment
+                return $this->file($temp_file, $fileName, ResponseHeaderBag::DISPOSITION_INLINE);
         }
 
         return $this->render('widget/export.html.twig', ['data' => $data]);

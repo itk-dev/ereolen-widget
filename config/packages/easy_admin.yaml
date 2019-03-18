@@ -29,7 +29,7 @@ easy_admin:
             - label: 'Widgets'
               route: 'widget_export'
               params:
-                  _format: csv
+                  _format: xlsx
 
 
     entities:
