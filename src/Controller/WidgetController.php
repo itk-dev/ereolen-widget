@@ -11,6 +11,7 @@
 namespace App\Controller;
 
 use App\Entity\Widget;
+use App\Entity\WidgetRequestItem;
 use App\Repository\WidgetRepository;
 use App\Service\EreolenSearch;
 use App\Service\SearchException;
@@ -78,8 +79,8 @@ class WidgetController extends AbstractController
             return [
                 'id' => $widget->getId(),
                 'title' => $widget->getTitle(),
-                'statistics_redirect' => $statistics['redirect'] ?? 0,
-                'statistics_show' => $statistics['show'] ?? 0,
+                'views' => $statistics[WidgetRequestItem::TYPE_SHOW] ?? 0,
+                'clicks' => $statistics[WidgetRequestItem::TYPE_REDIRECT] ?? 0,
                 'preview_url' => $this->generateUrl('widget_embed', ['id' => $widget->getId(), 'preview' => true], UrlGeneratorInterface::ABSOLUTE_URL),
                 'created_by' => $createdBy,
                 'created_at' => $widget->getCreatedAt() ? $widget->getCreatedAt()->format(\DateTime::ATOM) : null,
@@ -258,7 +259,10 @@ class WidgetController extends AbstractController
     {
         $statistics = $this->statistics->getStatistics($widget);
 
-        return new JsonResponse($statistics);
+        return new JsonResponse([
+            'views' => $statistics[WidgetRequestItem::TYPE_SHOW],
+            'clicks' => $statistics[WidgetRequestItem::TYPE_REDIRECT],
+        ]);
     }
 
     private function getWidgetContext(Widget $widget)
