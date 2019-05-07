@@ -7,20 +7,20 @@
             <div class="er-widget-main" ref="materials">
 
                 <vue-slick v-if="widgetDirection === 'landscape'" ref="slick" :options="slickOptionsLandscape">
-                    <a v-for="(material, index) in data" v-bind:key="index" v-bind:href="material.url" target="_top">
+                    <a v-for="(material, index) in data" v-bind:key="index" v-bind:href="getUrl(material.url)" target="_top">
                         <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title">
                     </a>
                 </vue-slick>
 
                 <vue-slick v-else ref="slick" :options="slickOptionsPortrait">
-                    <a v-for="(material, index) in data" v-bind:key="index" v-bind:href="material.url" target="_top">
+                    <a v-for="(material, index) in data" v-bind:key="index" v-bind:href="getUrl(material.url)" target="_top">
                         <img v-bind:src="material.cover" v-bind:alt="material.title" v-bind:title="material.title">
                     </a>
                 </vue-slick>
 
             </div>
             <div class="er-widget-bottom">
-                <a v-bind:href="context.url" class="er-widget-logo" target="_top"><img v-bind:src="context.logo" class="er-widget-logo-image" v-bind:alt="context.label"></a>
+                <a v-bind:href="getUrl(context.url)" class="er-widget-logo" target="_top"><img v-bind:src="context.logo" class="er-widget-logo-image" v-bind:alt="context.label"></a>
             </div>
             <div class="er-btns">
                 <button type="button" class="er-btn er-btn-prev" role="button"><v-icon name="angle-left" /></button>
@@ -140,7 +140,9 @@
                             }
                         }
                     ]
-                }
+                },
+                // @see https://stackoverflow.com/questions/3420004/access-parent-url-from-iframe
+                pageUrl: (self===top) ? null : document.referrer
             }
         },
         computed: {
@@ -165,6 +167,12 @@
                 this.$nextTick(() => {
                     this.$refs.slick.create()
                 })
+            },
+            getUrl: function (url) {
+                if (null !== this.pageUrl) {
+                    url += (url.indexOf('?') === -1 ? '?' : '&') + 'pageUrl='+encodeURIComponent(this.pageUrl)
+                }
+                return url
             }
         },
         mounted() {

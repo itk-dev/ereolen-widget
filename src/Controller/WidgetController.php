@@ -156,6 +156,10 @@ class WidgetController extends AbstractController
             }
         }
 
+        if (null !== ($pageUrl = $request->query->get('pageUrl'))) {
+            $query['sourceUrl'] = $pageUrl;
+        }
+
         $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?').http_build_query($query);
 
         return $this->redirect($url);
