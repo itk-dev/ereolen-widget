@@ -11,22 +11,33 @@
 namespace App\Controller;
 
 use App\Entity\Widget;
+use App\Entity\WidgetRequestItem;
+use App\Repository\WidgetRepository;
 use App\Service\EreolenSearch;
 use App\Service\SearchException;
 use App\Service\WidgetContextService;
 use App\Service\WidgetStatisticsService;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @Route("/widget")
  */
 class WidgetController extends AbstractController
 {
+    /** @var \App\Repository\WidgetRepository */
+    private $repository;
+
     /** @var \App\Service\WidgetContextService */
     private $contextService;
 
@@ -36,11 +47,89 @@ class WidgetController extends AbstractController
     /** @var \App\Service\WidgetStatisticsService */
     private $statistics;
 
-    public function __construct(WidgetContextService $contextService, EreolenSearch $search, WidgetStatisticsService $statistics)
+    /** @var \Symfony\Component\Serializer\SerializerInterface */
+    private $serializer;
+
+    public function __construct(WidgetRepository $repository, WidgetContextService $contextService, EreolenSearch $search, WidgetStatisticsService $statistics, SerializerInterface $serializer)
     {
+        $this->repository = $repository;
         $this->contextService = $contextService;
         $this->search = $search;
         $this->statistics = $statistics;
+        $this->serializer = $serializer;
+    }
+
+    /**
+     * @Route("/export.{_format}", name="widget_export",
+     *     defaults={"_format": "html"},
+     *     requirements={
+     *         "_format": "html|csv|xlsx"
+     *     }
+     * )
+     *
+     * @param mixed $_format
+     */
+    public function export($_format)
+    {
+        $widgets = $this->repository->findBy([], ['title' => 'ASC']);
+        $data = array_map(function (Widget $widget) {
+            $createdBy = $widget->getCreatedBy() ? $widget->getCreatedBy()->getUsername() : null;
+            $statistics = $this->statistics->getStatistics($widget);
+
+            return [
+                'id' => $widget->getId(),
+                'title' => $widget->getTitle(),
+                'views' => $statistics[WidgetRequestItem::TYPE_SHOW] ?? 0,
+                'clicks' => $statistics[WidgetRequestItem::TYPE_REDIRECT] ?? 0,
+                'preview_url' => $this->generateUrl('widget_embed', ['id' => $widget->getId(), 'preview' => true], UrlGeneratorInterface::ABSOLUTE_URL),
+                'created_by' => $createdBy,
+                'created_at' => $widget->getCreatedAt() ? $widget->getCreatedAt()->format(\DateTime::ATOM) : null,
+                'updated_at' => $widget->getUpdatedAt() ? $widget->getUpdatedAt()->format(\DateTime::ATOM) : null,
+            ];
+        }, $widgets);
+
+        switch ($_format) {
+            case 'csv':
+                $serialized = $this->serializer->serialize($data, 'csv');
+
+                $response = new Response($serialized);
+                $contentType = 'text/csv';
+                $filename = 'widgets.csv';
+                $disposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename);
+                $response->headers->set('content-type', $contentType);
+                $response->headers->set('content-disposition', $disposition);
+
+                return $response;
+            case 'xlsx':
+                $spreadsheet = new Spreadsheet();
+                $sheet = $spreadsheet->getActiveSheet();
+                $sheet->setTitle('Widgets');
+
+                foreach ($data as $index => $row) {
+                    if (0 === $index) {
+                        $col = 1;
+                        foreach (array_keys($row) as $value) {
+                            $sheet->setCellValueByColumnAndRow($col, $index + 1, $value);
+                            ++$col;
+                        }
+                    }
+                    $col = 1;
+                    foreach ($row as $value) {
+                        $sheet->setCellValueByColumnAndRow($col, $index + 2, $value);
+                        ++$col;
+                    }
+                }
+
+                $writer = new Xlsx($spreadsheet);
+                $fileName = 'widgets.xlsx';
+                $temp_file = tempnam(sys_get_temp_dir(), $fileName);
+                $writer->save($temp_file);
+
+                // Return the excel file as an attachment
+                return $this->file($temp_file, $fileName, ResponseHeaderBag::DISPOSITION_INLINE);
+        }
+
+        return $this->render('widget/export.html.twig', ['data' => $data]);
     }
 
     /**
@@ -102,7 +191,9 @@ class WidgetController extends AbstractController
      */
     public function embed(Request $request, Widget $widget)
     {
-        $this->statistics->addRequest($widget, $request);
+        if (empty($request->query->get('preview'))) {
+            $this->statistics->addRequest($widget, $request);
+        }
 
         $configuration = $widget->getConfiguration();
         $context = $this->getWidgetContext($widget);
@@ -168,7 +259,10 @@ class WidgetController extends AbstractController
     {
         $statistics = $this->statistics->getStatistics($widget);
 
-        return new JsonResponse($statistics);
+        return new JsonResponse([
+            'views' => $statistics[WidgetRequestItem::TYPE_SHOW],
+            'clicks' => $statistics[WidgetRequestItem::TYPE_REDIRECT],
+        ]);
     }
 
     private function getWidgetContext(Widget $widget)

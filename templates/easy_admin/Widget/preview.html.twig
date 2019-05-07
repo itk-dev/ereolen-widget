@@ -1,0 +1,10 @@
+{% set url = path('widget_embed', {id: item.id, 'preview': true}) %}
+
+<iframe
+    scrolling="no"
+    frameborder="0"
+    style="border:none; overflow:hidden;"
+    allowtransparency="true"
+    width="{{ item.configuration.size.width }}"
+    height="{{ item.configuration.size.height }}"
+    src="{{ url }}"></iframe>
