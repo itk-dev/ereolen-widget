@@ -4,6 +4,10 @@ easy_admin:
     design:
         brand_color: '#b81b40'
 
+        assets:
+            css:
+                - 'build/admin.css'
+
         form_theme:
             - '@EasyAdmin/form/bootstrap_4.html.twig'
             - '@ItkDevConfig/easy_admin/form/setting.html.twig'
@@ -21,6 +25,12 @@ easy_admin:
               label: Settings
             - label: 'Widget builder'
               route: 'default'
+            - label: 'Export'
+            - label: 'Widgets'
+              route: 'widget_export'
+              params:
+                  _format: xlsx
+
 
     entities:
         Widget:
@@ -54,6 +64,9 @@ easy_admin:
                     - property: title
                     - property: statistics
                       template: easy_admin/statistics.html.twig
+                    - property: preview
+                      css_class: widget-preview
+                      template: easy_admin/Widget/preview.html.twig
 
         WidgetContext:
             label: Context

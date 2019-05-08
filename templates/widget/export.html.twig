@@ -1,0 +1,24 @@
+<table>
+    <thead>
+        <tr>
+            <th>{{ 'id'|trans }}</th>
+            <th>{{ 'title'|trans }}</th>
+            <th>{{ 'statistics.show'|trans }}</th>
+            <th>{{ 'statistics.redirect'|trans }}</th>
+            <th>{{ 'preview_url'|trans }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in data %}
+            <tr>
+                <td>{{ row.id }}</td>
+                <td>{{ row.title }}</td>
+                <td>{{ row.statistics.show }}</td>
+                <td>{{ row.statistics.redirect }}</td>
+                <td>{{ row.preview_url }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{{ dump(data) }}
