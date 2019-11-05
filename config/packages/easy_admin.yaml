@@ -85,18 +85,19 @@ easy_admin:
                     - property: host
                     - property: configuration
                       type: App\Form\Type\YamlType
-                      help: |
-                          Example:
-                          <pre>
-                          name: 'ereolen'
-                          host: 'widget.ereolen.dk'
-                          label: 'eReolen'
-                          url: 'https://www.ereolen.dk'
-                          search_link: '<a href="https://ereolen.dk/search/ting" target="_blank">eReolen</a>'
-                          logo: '/images/eReolen_Logo.svg'
-                          search_url: 'https://www.ereolen.dk/search/ting'
-                          ereol_widget_search_url: 'https://itk:itk@stg.ereolen.dk/widget/search'
-                          </pre>
+                      # This YAML multiline spell breaks cache.
+                      # help: |
+                      #     Example:
+                      #     <pre>
+                      #     name: 'ereolen'
+                      #     host: 'widget.ereolen.dk'
+                      #     label: 'eReolen'
+                      #     url: 'https://www.ereolen.dk'
+                      #     search_link: '<a href="https://ereolen.dk/search/ting" target="_blank">eReolen</a>'
+                      #     logo: '/images/eReolen_Logo.svg'
+                      #     search_url: 'https://www.ereolen.dk/search/ting'
+                      #     ereol_widget_search_url: 'https://itk:itk@stg.ereolen.dk/widget/search'
+                      #     </pre>
 
         User:
             class: App\Entity\User
