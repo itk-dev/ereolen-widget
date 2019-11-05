@@ -1,1 +1,1 @@
-require('../scss/admin.scss')
+require('../css/admin.scss')

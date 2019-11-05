@@ -26,4 +26,5 @@ return [
     FOS\CKEditorBundle\FOSCKEditorBundle::class => ['all' => true],
     Craue\ConfigBundle\CraueConfigBundle::class => ['all' => true],
     FM\ElfinderBundle\FMElfinderBundle::class => ['all' => true],
+    Symfony\WebpackEncoreBundle\WebpackEncoreBundle::class => ['all' => true],
 ];

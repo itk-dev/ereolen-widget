@@ -36,7 +36,7 @@ import Slick from 'vue-slick';
 /**
 * Require the scss for the app.
 */
-require('../scss/app.scss')
+require('../css/app.scss')
 
 /**
 * Add the Icon component globally
