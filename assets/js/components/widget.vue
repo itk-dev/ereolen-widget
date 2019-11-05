@@ -30,7 +30,7 @@
     </div>
 </template>
 <script>
-    require('../../scss/widget.scss')
+    require('../../css/widget.scss')
     export default {
         name: 'Widget',
         props: {

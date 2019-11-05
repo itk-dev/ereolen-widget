@@ -1,5 +1,45 @@
 # eReolen widget
 
+## Getting started
+
+```sh
+docker-compose up --detach
+docker-compose exec phpfpm composer install
+docker-compose exec phpfpm bin/console doctrine:migrations:migrate --no-interaction
+docker-compose exec phpfpm bin/console fos:user:create --super-admin super-admin@example.com super-admin@example.com super-admin-password
+```
+
+Sign in and create a new widget context (go to `/admin/?entity=WidgetContext&action=new`):
+
+**Name**: ereolen-widget.docker.localhost
+
+**Host**: ereolen-widget.docker.localhost
+
+**Configuration**:
+```
+label: ereolen-widget.docker.localhost
+url: https://ereolen.dk
+search_link: '<a href="https://ereolen.dk/search/ting" target="_blank">eReolen</a>'
+logo: /images/eReolen_Logo.svg
+search_url: https://ereolen.dk/search/ting
+ereol_widget_search_url: https://ereolen.dk/widget/search
+```
+
+## Building assets
+
+```sh
+docker-compose run yarn install
+docker-compose run yarn build
+```
+
+Note: `git add` and `commit` changes in `public/build`.
+
+For development, use
+```sh
+docker-compose run yarn watch
+```
+
+
 ## API
 
 The API (see http://127.0.0.1:8000/api/) can be used to create, edit
