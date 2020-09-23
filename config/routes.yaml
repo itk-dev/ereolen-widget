@@ -4,3 +4,6 @@
 
 api_login_check:
     path: /api/login_check
+
+was_bundle:
+    resource: '@ItkDevWebAccessibilityStatementBundle/Resources/config/routing.php'
