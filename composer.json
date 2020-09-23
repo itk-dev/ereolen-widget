@@ -13,6 +13,7 @@
         "helios-ag/fm-elfinder-bundle": "^9.1",
         "itk-dev/config-bundle": "^3.0",
         "itk-dev/database-bundle": "^1.2",
+        "itk-dev/web-accessibility-statement-bundle": "^1.0",
         "lexik/jwt-authentication-bundle": "^2.5",
         "phpoffice/phpspreadsheet": "^1.6",
         "sensio/framework-extra-bundle": "^5.2",

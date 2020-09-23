@@ -27,4 +27,5 @@ return [
     Craue\ConfigBundle\CraueConfigBundle::class => ['all' => true],
     FM\ElfinderBundle\FMElfinderBundle::class => ['all' => true],
     Symfony\WebpackEncoreBundle\WebpackEncoreBundle::class => ['all' => true],
+    ItkDev\WebAccessibilityStatementBundle\ItkDevWebAccessibilityStatementBundle::class => ['all' => true],
 ];
